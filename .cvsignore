@@ -6,6 +6,3 @@ Makefile
 *.lo
 *.a
 *.la
-Main
-Main.debug
-genclass
