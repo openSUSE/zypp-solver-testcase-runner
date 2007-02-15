@@ -2,9 +2,17 @@
 # Makefile.am for testsuite/target/tests
 #
 
-LDADD =	$(top_srcdir)/zypp/lib@PACKAGE@.la $(top_srcdir)/testsuite/src/utils/lib@PACKAGE@_testsuite_utils.la
+LDADD =	$(libdir)/libzypp.la $(top_srcdir)/src/utils/lib@PACKAGE@_testsuite_utils.la
 
 noinst_PROGRAMS = hal librpmDb RpmDb storagetargettest import_old_sources_test dumpstore
+
+testsuitetargettestsbindir = ${testsuitebindir}
+testsuitetargettestsbin_DATA = hal librpmDb RpmDb storagetargettest import_old_sources_test dumpstore
+
+testsuitetargettestsdatadir = ${testsuitedatadir}/target/tests
+testsuitetargettestsdata_DATA = *.gz
+
+EXTRA_DIST = ${testsuitetargettestsdata_DATA}
 
 hal_SOURCES = hal.cc
 

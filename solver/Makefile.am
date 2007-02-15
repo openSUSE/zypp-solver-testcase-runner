@@ -2,23 +2,25 @@
 # Makefile.am for zypp/solver/testsuite
 #
 
-SUBDIRS = src single.out
+SUBDIRS = src single.out config lib solver.test
 AUTOMAKE_OPTIONS = dejagnu
-PACKAGE = solver
 
-EXTRA_DIST = config/*.exp				\
-	    lib/*.exp					\
-	    $(PACKAGE).test/*.exp			\
-	    data.deptestomatic/*-tests/*.xml		\
-	    data.deptestomatic/*-tests/*.solution	\
-	    data.deptestomatic/*-tests/ignore		\
-	    data.deptestomatic/*-tests/xfail		\
-	    data.deptestomatic/*-tests/README
+EXTRA_DIST = data.deptestomatic/*
 
-dist-local: clean-local
+install-data-hook:
+	$(INSTALL) -d $(DESTDIR)$(testsuitedatadir);	\
+	$(INSTALL) -d $(DESTDIR)$(testsuitedatadir)/solver;	\
+	$(INSTALL) -d $(DESTDIR)$(testsuitedatadir)/solver/data.deptestomatic;	\
+	for f in `(cd $(srcdir)/data.deptestomatic; find -type d)`; do             \
+		$(INSTALL) -d $(DESTDIR)$(testsuitedatadir)/solver/data.deptestomatic/$$f;                     \
+	done;                                                       \
+	for f in `(cd $(srcdir)/data.deptestomatic; find -type f)`; do             \
+		$(INSTALL_DATA) $(srcdir)/data.deptestomatic/$$f $(DESTDIR)$(testsuitedatadir)/solver/data.deptestomatic/$$f; \
+	done;
+	for f in `(cd $(srcdir)/data.deptestomatic; find -type d -name '.svn')`; do	\
+		rm -rf $(DESTDIR)$(testsuitedatadir)/solver/data.deptestomatic/$$f;	\
+	done
 
-clean-local:
-	rm -rf data.deptestomatic/*/*.out
-	rm -rf data.deptestomatic/*/*.diff
-	rm -rf data.deptestomatic/*/*.mistake
-	rm -rf single.out/out
+  
+uninstall:
+	rm -rf $(testsuitedatadir)/solver/data.deptestomatic

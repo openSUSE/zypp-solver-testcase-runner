@@ -1,13 +1,16 @@
 #
 # Makefile.am for testsuite/parser
 #
-SUBDIRS = tests
+SUBDIRS = tests config lib parser.test
 AUTOMAKE_OPTIONS = dejagnu
 PACKAGE = parser
 
-LDADD = $(top_srcdir)/zypp/lib@PACKAGE@.la
+LDADD = $(libdir)/libzypp.la
 
 noinst_PROGRAMS = YUMtest YUMParserTest
+
+testsuiteparserbindir = ${testsuitebindir}
+testsuiteparserbin_DATA = YUMtest YUMParserTest
 
 YUMtest_SOURCES = YUMtest.cc
 
@@ -25,4 +28,4 @@ clean-local:
 
 .PHONY:        always
 
-$(noinst_PROGRAMS):    $(top_srcdir)/zypp/lib@PACKAGE@.la
+$(noinst_PROGRAMS):    $(libdir)/libzypp.la

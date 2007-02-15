@@ -1,7 +1,7 @@
 #
 # Makefile.am for zypp/target/testsuite
 #
-SUBDIRS = tests
+SUBDIRS = tests config lib target.test
 AUTOMAKE_OPTIONS = dejagnu
 PACKAGE = target
 

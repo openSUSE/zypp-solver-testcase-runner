@@ -1,0 +1,97 @@
+#
+# spec file for package libzypp-testsuite
+#
+# Copyright (c) 2006 SUSE LINUX Products GmbH, Nuernberg, Germany.
+# This file and all modifications and additions to the pristine
+# package are under the same license as the package itself.
+#
+# Please submit bugfixes or comments via http://bugs.opensuse.org/
+#
+
+# norootforbuild
+
+Name:			libzypp-testsuite-tools
+BuildRequires:	gcc-c++ libzypp-devel libzypp
+Requires:       libzypp
+License:		GPL
+BuildRoot:		%{_tmppath}/%{name}-%{version}-build
+Autoreqprov:	on
+Summary:        Package, Patch, Pattern, and Product Management - testsuite-tools
+Version:		@VERSION@
+Release:		0
+Source:			zypp-testsuite-tools-@VERSION@.tar.bz2
+Prefix:			/usr
+Group:          System/Packages
+
+%description
+Package, Patch, Pattern, and Product Management - testsuite-tools
+
+Authors:
+--------
+    Michael Andres <ma@suse.de>
+    Jiri Srain <jsrain@suse.cz>
+    Stefan Schubert <schubi@suse.de>
+    Duncan Mac-Vicar <dmacvicar@suse.de>
+    Klaus Kaempf <kkaempf@suse.de>
+    Marius Tomaschewski <mt@suse.de>
+    Stanislav Visnovsky <visnov@suse.cz>
+    Ladislav Slezak <lslezak@suse.cz>
+
+%package data
+Requires:       libzypp-testsuite-tools
+Summary:        Package, Patch, Pattern, and Product Management - testsuite-data
+Group:          System/Packages
+
+%description -n libzypp-testsuite-tools-data
+Package, Patch, Pattern, and Product Management - testsuite-data
+
+Authors:
+--------
+    Michael Andres <ma@suse.de>
+    Jiri Srain <jsrain@suse.cz>
+    Stefan Schubert <schubi@suse.de>
+    Duncan Mac-Vicar <dmacvicar@suse.de>
+    Klaus Kaempf <kkaempf@suse.de>
+    Marius Tomaschewski <mt@suse.de>
+    Stanislav Visnovsky <visnov@suse.cz>
+    Ladislav Slezak <lslezak@suse.cz>
+
+%prep
+%setup -q -n zypp-testsuite-tools-@VERSION@
+
+%build
+mv configure.ac x
+grep -v devel/ x > configure.ac
+autoreconf --force --install --symlink --verbose
+%{?suse_update_config:%{suse_update_config -f}}
+CXXFLAGS="$RPM_OPT_FLAGS" \
+./configure --prefix=%{prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-static
+make %{?jobs:-j %jobs}
+#make check
+
+%install
+make install DESTDIR=$RPM_BUILD_ROOT
+
+%post
+%run_ldconfig
+
+%postun
+%run_ldconfig
+
+%clean
+
+%files
+%defattr(0755,root,root)
+%dir %{prefix}/share/zypp/testsuite
+%dir %{prefix}/share/zypp/testsuite/bin
+%{prefix}/share/zypp/testsuite/bin/
+
+%files data
+%defattr(-,root,root)
+%dir %{prefix}/share/zypp/testsuite/data
+%{prefix}/share/zypp/testsuite/data/
+
+%changelog -n libzypp-testsuite
+ converted neededforbuild to BuildRequires
+* Wed Jan 31 2007 - shaas@suse.de
+- Initial version
