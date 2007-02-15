@@ -18,8 +18,7 @@ TESTS = Arch Url \
 	PathInfo \
 	Digest \
 	Signature \
-	KeyRing \
-	Lazy
+	KeyRing
 
 check_PROGRAMS = Arch Url \
 	RWPtr \
@@ -32,12 +31,25 @@ check_PROGRAMS = Arch Url \
 	PathInfo \
 	Digest \
 	Signature \
-	KeyRing \
-	Lazy
+	KeyRing
+
+testsuitezyppbindir = ${testsuitebindir}
+testsuitezyppbin_DATA = Arch Url \
+	RWPtr \
+	Edition		\
+	Capabilities	\
+	PtrTypes \
+	TranslatedText \
+	CheckSum \
+	PublicKey \
+	PathInfo \
+	Digest \
+	Signature \
+	KeyRing
 
 ## ##################################################
 
-LDADD =	$(top_srcdir)/zypp/lib@PACKAGE@.la 
+LDADD =	$(libdir)/libzypp.la 
 
 ## ##################################################
 
@@ -77,14 +89,11 @@ Url_LDADD  = $(LDADD) -lboost_unit_test_framework
 KeyRing_SOURCES = KeyRing.cc
 KeyRing_LDADD  = $(LDADD) -lboost_unit_test_framework
 
-Lazy_SOURCES = Lazy.cc
-Lazy_LDADD  = $(LDADD) $(top_srcdir)/zypp2/lib@PACKAGE@2.la  -lboost_unit_test_framework
-
 ## ##################################################
 
 .PHONY:        always
 
-$(noinst_PROGRAMS):    $(top_srcdir)/zypp/lib@PACKAGE@.la
+$(noinst_PROGRAMS):    $(libdir)/libzypp.la
 
 #$(top_srcdir)/zypp/lib@PACKAGE@.la:     always
 #	$(MAKE) -C $(top_srcdir)/zypp
