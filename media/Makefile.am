@@ -14,10 +14,13 @@ noinst_PROGRAMS = media2 media3 media4 fileexists throw_if_not_exists
 
 check_PROGRAMS = media1 fileexists throw_if_not_exists
 
+testsuitemediabindir = ${testsuitebindir}
+
+testsuitemediabin_DATA = media2 media3 media4 fileexists throw_if_not_exists media1 
 
 ## ##################################################
 
-LDADD =	$(top_srcdir)/zypp/lib@PACKAGE@.la 
+LDADD =	$(libdir)/libzypp.la 
 
 ## ##################################################
 
@@ -43,7 +46,7 @@ throw_if_not_exists_LDADD = $(LDADD) -lboost_unit_test_framework
 
 .PHONY:        always
 
-$(noinst_PROGRAMS):    $(top_srcdir)/zypp/lib@PACKAGE@.la
+$(noinst_PROGRAMS):    $(libdir)/libzypp.la
 
 #$(top_srcdir)/zypp/lib@PACKAGE@.la:     always
 #	$(MAKE) -C $(top_srcdir)/zypp

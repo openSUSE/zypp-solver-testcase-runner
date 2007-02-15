@@ -8,7 +8,7 @@ INCLUDES = 					\
 	-DG_LOG_DOMAIN=\"helix\"		\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"helix\"
 
-LDADD =	$(noinst_LTLIBRARIES) $(top_srcdir)/zypp/lib@PACKAGE@.la
+LDADD =	$(noinst_LTLIBRARIES) $(libdir)/libzypp.la
 
 noinst_HEADERS = \
 	Buffer.h				\

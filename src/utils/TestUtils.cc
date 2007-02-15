@@ -6,7 +6,7 @@
 #include "zypp/ResObject.h"
 #include "zypp/Patch.h"
 #include "zypp/ResStore.h"
-#include "testsuite/src/utils/TestUtils.h"
+#include "src/utils/TestUtils.h"
 
 using namespace std;
 
