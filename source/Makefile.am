@@ -2,7 +2,7 @@
 # Makefile.am for testsuite/source/tests
 #
 #SUBDIRS = data
-LDADD =	$(libdir)/libzypp.la $(top_srcdir)/src/utils/lib@PACKAGE@_testsuite_utils.la
+LDADD =	$(libdir)/libzypp.so $(top_srcdir)/src/utils/lib@PACKAGE@_testsuite_utils.la
 
 INCLUDES = 						\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
