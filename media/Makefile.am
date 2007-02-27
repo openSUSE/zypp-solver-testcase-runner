@@ -20,7 +20,7 @@ testsuitemediabin_DATA = media2 media3 media4 fileexists throw_if_not_exists med
 
 ## ##################################################
 
-LDADD =	$(libdir)/libzypp.la 
+LDADD =	$(libdir)/libzypp.so
 
 ## ##################################################
 
@@ -46,7 +46,7 @@ throw_if_not_exists_LDADD = $(LDADD) -lboost_unit_test_framework
 
 .PHONY:        always
 
-$(noinst_PROGRAMS):    $(libdir)/libzypp.la
+$(noinst_PROGRAMS):    $(libdir)/libzypp.so
 
 #$(top_srcdir)/zypp/lib@PACKAGE@.la:     always
 #	$(MAKE) -C $(top_srcdir)/zypp

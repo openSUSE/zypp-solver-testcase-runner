@@ -2,7 +2,7 @@
 # Makefile.am for testsuite/target/tests
 #
 
-LDADD =	$(libdir)/libzypp.la $(top_srcdir)/src/utils/lib@PACKAGE@_testsuite_utils.la
+LDADD =	$(libdir)/libzypp.so $(top_srcdir)/src/utils/lib@PACKAGE@_testsuite_utils.la
 
 noinst_PROGRAMS = hal librpmDb RpmDb storagetargettest import_old_sources_test dumpstore
 

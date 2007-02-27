@@ -49,7 +49,7 @@ testsuitezyppbin_DATA = Arch Url \
 
 ## ##################################################
 
-LDADD =	$(libdir)/libzypp.la 
+LDADD =	$(libdir)/libzypp.so
 
 ## ##################################################
 
@@ -93,7 +93,7 @@ KeyRing_LDADD  = $(LDADD) -lboost_unit_test_framework
 
 .PHONY:        always
 
-$(noinst_PROGRAMS):    $(libdir)/libzypp.la
+$(noinst_PROGRAMS):    $(libdir)/libzypp.so
 
 #$(top_srcdir)/zypp/lib@PACKAGE@.la:     always
 #	$(MAKE) -C $(top_srcdir)/zypp

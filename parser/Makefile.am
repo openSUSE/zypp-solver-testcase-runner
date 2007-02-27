@@ -5,7 +5,7 @@ SUBDIRS = tests config lib parser.test
 AUTOMAKE_OPTIONS = dejagnu
 PACKAGE = parser
 
-LDADD = $(libdir)/libzypp.la
+LDADD = $(libdir)/libzypp.so
 
 noinst_PROGRAMS = YUMtest YUMParserTest
 
@@ -28,4 +28,4 @@ clean-local:
 
 .PHONY:        always
 
-$(noinst_PROGRAMS):    $(libdir)/libzypp.la
+$(noinst_PROGRAMS):    $(libdir)/libzypp.so
