@@ -16,6 +16,7 @@
   <channel name="test" file="arch-x86_64-package.xml"/>
 </setup>
 <trial>
+<showpool prefix="xxxxx" all="yes"/>
   <install channel="test" package="C"/>
 </trial>
 </test>
