@@ -16,7 +16,6 @@
 >!> remove  joe-3.3-15.2.i586
 >!> remove  libcap-1.92-499.4.i586
 >!> remove  libevent-1.1-13.2.i586
->!> remove  libgssapi-0.6-13.2.i586
 >!> remove  librpcsecgss-0.7-13.4.i586
 >!> remove  libsamplerate-0.1.2-15.2.i586
 >!> remove  log4net-1.2.9-17.4.i586
@@ -37,4 +36,4 @@
 >!> remove  ypbind-1.19.1-14.4.i586
 >!> remove  zip-2.31-15.2.i586
 >!> remove  zsh-4.2.6-15.2.i586
->!> installs=0, upgrades=0, uninstalls=37
+>!> installs=0, upgrades=0, uninstalls=36
