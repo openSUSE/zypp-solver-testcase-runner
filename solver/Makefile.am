@@ -4,6 +4,7 @@
 
 SUBDIRS = src single.out config lib solver.test
 AUTOMAKE_OPTIONS = dejagnu
+PACKAGE = solver
 
 EXTRA_DIST = data.deptestomatic/*
 
