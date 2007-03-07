@@ -245,8 +245,25 @@ proc multi-run { src } {
 	      }
 	      perror "Testcase $testFilename has no solution" 0
 	  } else {
-	      set command "(cd $dircase; /usr/bin/diff -u $solutionfile $mistakefile > $difffile)"
-	      set oops [catch { set result [exec sh -c $command] } catched]
+		  set icount 1
+		  set ibool 1
+		  set command "(cd $dircase; /usr/bin/diff -u $solutionfile $mistakefile > $difffile)"
+		  while { $ibool == 1 } {
+		      set oops [catch { set result [exec sh -c $command] } catched]
+			  if { $oops == "0" } {
+				if { $icount > 1 } {
+					set output [expr $icount - 1]
+					puts "solution $output was the right one"
+				}
+				break
+              }
+			  if { [ file exists $dircase/$solutionfile$icount ] == 1 } {
+                set command "(cd $dircase; /usr/bin/diff -u $solutionfile$icount $mistakefile > $difffile)"
+			  	incr icount 
+			  } else {
+			    set ibool 0
+			  }
+		  }
 	      if { $oops != "0" } {
 #		  puts "Output doesn't match expected data:"
 #		  puts [ exec sh -c "cat $difffile" ]
