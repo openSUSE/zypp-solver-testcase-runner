@@ -5,3 +5,11 @@ bug206927-test.xml
 #does not work correctly ( do not recognize "super-sets" )
 bug205977-1-test.xml
 bug205977-2-test.xml
+#no valid bug
+bug218492-test.xml
+#no solution for
+bug220490-test.xml
+#transact in no longer needed
+bug205039-test.xml
+#not defined bahaviour of deleting a pattern
+bug220757-test.xml
