@@ -720,8 +720,8 @@
 >!> 718: I__s_[S1:0][package]zvbi-0.2.16-10.i586
 >!> 1 problems found:
 >!> Problem:
->!> This would invalidate nvidia-gfx-kmp-smp-1.0.8178_2.6.16_rc5_git14_2-1.i586.
->!> nvidia-gfx-kmp-smp-1.0.8178_2.6.16_rc5_git14_2-1.i586 has unfulfilled requirements
+>!> This would invalidate novfs-kmp-smp-1.2.0_2.6.16_rc5_git14_2-8.i586.
+>!> novfs-kmp-smp-1.2.0_2.6.16_rc5_git14_2-8.i586 has unfulfilled requirements
 >!>    Solution:
->!>       delete nvidia-gfx-kmp-smp
->!>       delete nvidia-gfx-kmp-smp-1.0.8178_2.6.16_rc5_git14_2-1.i586
+>!>       delete novfs-kmp-smp
+>!>       delete novfs-kmp-smp-1.2.0_2.6.16_rc5_git14_2-8.i586
