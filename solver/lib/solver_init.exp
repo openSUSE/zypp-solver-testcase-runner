@@ -238,14 +238,15 @@ proc multi-run { src } {
 	  set command "(cd $dircase; /usr/bin/fgrep \'>!>\' $outfile >$mistakefile)"
 	  set oops [catch { set result [exec sh -c $command] } catched]
 
-	  if { [ file exists $dircase/$solutionfile ] == 0 } {
+	  set icount 1
+
+	  if { ( [ file exists $dircase/$solutionfile ] == 0 )  && ( [ file exists $dircase/$solutionfile$icount ] == 0 ) } {
 	      if { $expect_to_fail == 1 } {
 		xfail $testBase_name
 		continue
 	      }
 	      perror "Testcase $testFilename has no solution" 0
 	  } else {
-		  set icount 1
 		  set ibool 1
 		  set command "(cd $dircase; /usr/bin/diff -u $solutionfile $mistakefile > $difffile)"
 		  while { $ibool == 1 } {
