@@ -254,7 +254,7 @@ proc multi-run { src } {
 			  if { $oops == "0" } {
 				if { $icount > 1 } {
 					set output [expr $icount - 1]
-					puts "solution $output was the right one"
+					puts "\tsolution $output was the right one"
 				}
 				break
               }
