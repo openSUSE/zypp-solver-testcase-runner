@@ -14,11 +14,9 @@ TESTS = Arch Url \
 	PtrTypes \
 	TranslatedText \
 	CheckSum \
-	PublicKey \
 	PathInfo \
 	Digest \
-	Signature \
-	KeyRing
+	Signature 
 
 check_PROGRAMS = Arch Url \
 	RWPtr \

@@ -26,7 +26,7 @@ void verifier_test()
   media::MediaId   id;
 
   //id = mm.open(zypp::Url("cd:/"), "");
-  id = mm.open(zypp::Url("ftp://machcd2/CDs/suse102-cd-oss-i386/CD1"), "");
+  id = mm.open(zypp::Url("ftp://machcd2/CDs/SLES-10-ISSLE-Beta1a-ppc/CD1"), "");
   mm.addVerifier( id, verifier);
   mm.attach(id);
   mm.provideFile(id, Pathname("/suse/setup/descr/EXTRA_PROV"));

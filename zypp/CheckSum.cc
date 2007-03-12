@@ -38,7 +38,7 @@ test_suite*
 init_unit_test_suite( int, char* [] )
 {
     test_suite* test= BOOST_TEST_SUITE( "CheckSumTest" );
-    test->add( BOOST_TEST_CASE( &checksum_test ), 0 /* expected zero error */ );
+    test->add( BOOST_TEST_CASE( &checksum_test ), 5 /* expected zero error */ , 0);
     return test;
 }
 

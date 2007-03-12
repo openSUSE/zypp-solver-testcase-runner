@@ -5,28 +5,31 @@
 LDADD =	$(libdir)/libzypp.so $(top_srcdir)/src/utils/lib@PACKAGE@_testsuite_utils.la
 
 INCLUDES = 						\
+	-I/usr/include/zypp	\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
 noinst_PROGRAMS = \
 	suseparser \
-	source_read_test 
+	source_read_test \
+	patterntagparsertest \
+	selectiontagparsertest \
+	producttagparsertest \
+	mediatagparsertest \
+	content_file_test
 
 testsuitesourcebindir = ${testsuitebindir}
 testsuitesourcebin_DATA = suseparser	\
 						  source_read_test
 
-# does not compile
-# packagetagparsertest_SOURCES = PackageTagParserTest.cc
-	
-# does not find zypp/source/susetags/*
-#selectiontagparsertest_SOURCES = SelectionTagParserTest.cc
-#patterntagparsertest_SOURCES = PatternTagParserTest.cc
-#producttagparsertest_SOURCES = ProductMetadataParserTest.cc
-#mediatagparsertest_SOURCES = MediaMetadataParserTest.cc
+#packagetagparsertest_SOURCES = PackageTagParserTest.cc
+selectiontagparsertest_SOURCES = SelectionTagParserTest.cc
+patterntagparsertest_SOURCES = PatternTagParserTest.cc
+producttagparsertest_SOURCES = ProductMetadataParserTest.cc
+mediatagparsertest_SOURCES = MediaMetadataParserTest.cc
 suseparser_SOURCES = suseparser.cc KeyRingCallbacks.h
 source_read_test_SOURCES = source-read-test.cc
-#content_file_test_SOURCES = content_file_test.cc
-#content_file_test_LDADD = $(LDADD) -lboost_unit_test_framework
+content_file_test_SOURCES = content_file_test.cc
+content_file_test_LDADD = $(LDADD) -lboost_unit_test_framework
 
 EXTRA_DIST = data/*
 

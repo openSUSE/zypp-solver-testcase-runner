@@ -69,11 +69,11 @@ void iso_test()
   MediaManager     mm;
   media::MediaId   id;
   
-  //Url url("nfs://dist.suse.de/dist/install");
-  Url url("dir:/mounts/dist/install/SUSE-10.1-RC5/");
+  //Url url("nfs://dist.suse.de/dist/install/openSUSE-10.2-GM/");
+  Url url("dir:/mounts/dist/install/openSUSE-10.2-GM/");
   
   Url iso_url("iso:/");
-  iso_url.setQueryParam("iso", "SUSE-Linux-10.1-RC5-i386-CD1.iso");
+  iso_url.setQueryParam("iso", "openSUSE-10.2-RC5-PromoDVD-i386.iso");
   iso_url.setQueryParam("url", url.asString());
 
   id = mm.open( iso_url, "");
@@ -97,7 +97,7 @@ void nfs_test()
   
   id = mm.open( url, "");
   mm.attach(id);
-  BOOST_REQUIRE( mm.doesFileExist(id, Pathname("/SLP/SUSE-10.1-RC5/i386/CD1/README")) );
+  BOOST_REQUIRE( mm.doesFileExist(id, Pathname("/SLP/openSUSE-10.2-RM/i386/DVD1/README")) );
   BOOST_REQUIRE( ! mm.doesFileExist(id, Pathname("/fakefile")) );
   mm.release(id);
   
@@ -106,12 +106,13 @@ void nfs_test()
 test_suite*
 init_unit_test_suite( int, char* [] )
 {
+  //tests would need root-privileges
   test_suite* test= BOOST_TEST_SUITE( "MediaFileExistTest" );
   //test->add( BOOST_TEST_CASE( &nfs_test ), 0 /* expected zero error */ );
   test->add( BOOST_TEST_CASE( &http_test ), 0 /* expected zero error */ );
   test->add( BOOST_TEST_CASE( &ftp_test ), 0 /* expected zero error */ );
-  test->add( BOOST_TEST_CASE( &iso_test ), 0 /* expected zero error */ );
-  test->add( BOOST_TEST_CASE( &nfs_test ), 0 /* expected zero error */ );
+  //test->add( BOOST_TEST_CASE( &iso_test ), 0 /* expected zero error */ );
+  //test->add( BOOST_TEST_CASE( &nfs_test ), 0 /* expected zero error */ );
   return test;
 }
 
