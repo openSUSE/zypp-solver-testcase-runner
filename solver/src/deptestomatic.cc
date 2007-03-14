@@ -852,6 +852,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	MIL << "Setting architecture to '" << architecture << "'" << endl;
 	try {
 	    God->setArchitecture( Arch( architecture ) );
+            setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
 	}
 	catch( const Exception & excpt_r ) {
 	    ZYPP_CAUGHT( excpt_r );
@@ -982,6 +983,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	    else {
 		MIL << "Setting architecture to '" << architecture << "'" << endl;
 		God->setArchitecture( Arch( architecture ) );
+                setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);                
 	    }
 	} else if (node->equals ("locale")) {
 	    string loc = node->getProp ("name");
