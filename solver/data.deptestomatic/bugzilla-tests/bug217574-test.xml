@@ -7,7 +7,7 @@
 -->
 
 <test>
-<setup arch="i686">
+<setup arch="i386">
   <system file="bug217574-system.xml.gz"/>
 </setup>
 <trial>
