@@ -4,7 +4,7 @@
 -->
 <test>
 <setup>
-  <arch name="i686"/>
+  <arch name="i386"/>
   <channel name="packages" file="sl10.1-beta3-packages.xml.gz"/>
   <channel name="selections" file="sl10.1-beta3-selections.xml.gz"/>
   <mediaid/>
