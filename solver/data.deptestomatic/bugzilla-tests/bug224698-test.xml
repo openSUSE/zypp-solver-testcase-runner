@@ -135,7 +135,7 @@
 <install channel="6" kind="patch" name="gdb"/>
 <install channel="6" kind="patch" name="libwnck"/>
 <reportproblems/>
-<takesolution problem="0" solution="1"/>
+<takesolution problem="1" solution="1"/>
 <reportproblems/>
 </trial>
 </test>

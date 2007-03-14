@@ -8,5 +8,7 @@
 <trial>
   <install channel="sles10" package="apache2-mod_python"/>
   <install channel="sles10" package="apache2-prefork"/>
+  <reportproblems/>
+  <takesolution problem="0" solution="0"/>
 </trial>
 </test>

@@ -23,9 +23,9 @@
   <install channel="sl10_selections" kind="selection" name="SuSE-Documentation"/>
   <install channel="sl10_selections" kind="selection" name="Laptop"/>
   <reportproblems/>
-  <takesolution problem="0" solution="0"/>
+  <takesolution problem="1" solution="0"/>
   <reportproblems/>
-  <takesolution problem="0" solution="3"/>
+  <takesolution problem="1" solution="3"/>
   <reportproblems/>
 </trial>
 </test>

@@ -10,7 +10,7 @@
 >!> Installing selection:Kde-Desktop from channel sl10_selections
 >!> Installing selection:SuSE-Documentation from channel sl10_selections
 >!> Installing selection:Laptop from channel sl10_selections
->!> 2 problems found:
+>!> 3 problems found:
 >!> Problem:
 >!> Cannot install suse-release-10.0.42-18.i586[sl10_packages] because it is conflicting with sles-release
 >!> A conflict over suse-release-oss (suse-release-oss) requires the removal of to-be-installed suse-release-10.0.42-18.i586[sl10_packages]
@@ -24,6 +24,12 @@
 >!>       Ignore this conflict of suse-release
 >!>       
 >!> Problem:
+>!> No valid solution found with only resolvables of best architecture.
+>!> With this run only resolvables with the best architecture has been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with compatible architecture.
+>!> Problem:
 >!> sles-release-9.90-19.i586[sles_packages] conflicts with other resolvables
 >!> sles-release-9.90-19.i586[sles_packages] conflicts with:
 >!>    Solution:
@@ -36,9 +42,15 @@
 >!>       Ignore this conflict of sles-release
 >!>       
 >!> Taking solution: 0
->!> For problem:     0
->!> 1 problems found:
->!> 1 problems found:
+>!> For problem:     1
+>!> 2 problems found:
+>!> 2 problems found:
+>!> Problem:
+>!> No valid solution found with only resolvables of best architecture.
+>!> With this run only resolvables with the best architecture has been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with compatible architecture.
 >!> Problem:
 >!> product:SUSE LINUX-1.noarch[sl10_packages] cannot be installed due to missing dependencies
 >!> There are no installable providers of suse-release == 10.0.42 for product:SUSE LINUX-1.noarch[sl10_packages]
@@ -55,7 +67,7 @@
 >!>       Ignore this requirement just here
 >!>       
 >!> Taking solution: 3
->!> For problem:     0
+>!> For problem:     1
 >!> No problems so far
 >!> No problems so far
 >!> Solution #1:

@@ -1,5 +1,11 @@
 >!> Installing patch:libzypp from channel 2
->!> 8 problems found:
+>!> 9 problems found:
+>!> Problem:
+>!> No valid solution found with only resolvables of best architecture.
+>!> With this run only resolvables with the best architecture has been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with compatible architecture.
 >!> Problem:
 >!> atom:libzypp-2.8.1-3.i586[2] cannot be installed due to missing dependencies
 >!> There are no installable providers of libzypp >= 2.8.1-3 for atom:libzypp-2.8.1-3.i586[2]

@@ -18,7 +18,7 @@
 >!> Installing xorg-x11-server from channel packages
 >!> Installing xorg-x11-server-glx from channel packages
 >!> Installing yast2-trans-en_US from channel packages
->!> 2 problems found:
+>!> 3 problems found:
 >!> Problem:
 >!> Cannot install sendmail-8.13.5-5.i586[packages] because it is conflicting with postfix
 >!> A conflict over sendmail == 8.13.5-5 (sendmail) requires the removal of to-be-installed sendmail-8.13.5-5.i586[packages]
@@ -31,6 +31,12 @@
 >!>    Solution:
 >!>       Ignore this conflict of sendmail
 >!>       
+>!> Problem:
+>!> No valid solution found with only resolvables of best architecture.
+>!> With this run only resolvables with the best architecture has been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with compatible architecture.
 >!> Problem:
 >!> postfix-2.2.6-6.i586[packages] conflicts with other resolvables
 >!> postfix-2.2.6-6.i586[packages] conflicts with:
