@@ -7,7 +7,7 @@
 -->
 <test>
 <setup>
-  <arch name="x86_64"/>
+  <arch name="i386"/>
   <channel name="test" file="arch4-x86_64-package.xml"/>
 </setup>
 <trial>
