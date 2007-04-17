@@ -86,8 +86,6 @@ AC_OUTPUT(
 	libzypp-testsuite-tools.pc			\
   src/Makefile \
 	src/utils/Makefile	\
-	zypp/Makefile		\
-  cache/Makefile \
 	solver/Makefile	\
 	solver/config/Makefile	\
 	solver/lib/Makefile	\
@@ -105,8 +103,7 @@ AC_OUTPUT(
 	target/config/Makefile	\
 	target/lib/Makefile	\
 	target/target.test/Makefile	\
-	target/tests/Makefile	\
-	media/Makefile	
+	target/tests/Makefile
 )
 dnl ==================================================
 
