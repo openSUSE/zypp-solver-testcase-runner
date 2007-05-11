@@ -563,7 +563,7 @@ struct FindPackage : public resfilter::ResObjectFilterFunctor
     }
 };
 
-
+static bool set_licence = false;
 
 static PoolItem_Ref
 get_poolItem (const string & source_alias, const string & package_name, const string & kind_name = "", const string & ver = "", const string & rel = "", const string & arch = "")
@@ -739,7 +739,7 @@ struct SortItem : public resfilter::PoolItemFilterFunctor
 // collect all installed items in a set
 
 void
-print_pool( const string & prefix = "", bool show_all = true )
+print_pool( const string & prefix = "", bool show_all = true, string show_licence = false )
 {
     SortItem info( show_all );
     cout << "Current pool:" << endl;
@@ -750,13 +750,33 @@ print_pool( const string & prefix = "", bool show_all = true )
     int count = 0;
     for (ItemMap::const_iterator it = info.sorted.begin(); it != info.sorted.end(); ++it) {
 	cout << prefix << ++count << ": ";
-	cout << it->second;
+	if(show_licence == "true"){
+		cout << it->second << " Licence: " << it->second.status().isLicenceConfirmed();
+	}else{
+		cout << it->second;
+	}
 	cout << endl;
     }
     cout << "Pool End." << endl;
     return;
 }
 
+// set licence-bit on all items in the pool
+void
+set_licence_Pool()
+{
+	
+	SortItem info( true );
+	invokeOnEach( God->pool().begin( ),
+		  God->pool().end ( ),
+		  functor::functorRef<bool,PoolItem> (info) );
+
+    for (ItemMap::const_iterator it = info.sorted.begin(); it != info.sorted.end(); ++it) {
+		it->second.status().setLicenceConfirmed();
+	}
+
+	return;	
+}
 
 static int
 load_source (const string & alias, const string & filename, const string & type, bool system_packages)
@@ -819,6 +839,8 @@ load_source (const string & alias, const string & filename, const string & type,
 	count = -1;
     }
 
+	if(set_licence)
+		set_licence_Pool();
     return count;
 }
 
@@ -993,6 +1015,8 @@ parse_xml_setup (XmlNode_Ptr node)
 		RESULT << "Requesting locale " << loc << endl;
 		locales.insert( Locale( loc ) );
 	    }
+	}else if (node->equals("setlicencebit")){
+		set_licence = true;
 	} else {
 	    cerr << "Unrecognized tag '" << node->name() << "' in setup" << endl;
 	}
@@ -1604,7 +1628,8 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	} else if (node->equals ("showpool")) {
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
-	    print_pool( prefix, !all.empty() );
+		string get_licence = node->getProp ("getlicence");
+	    print_pool( prefix, !all.empty(), get_licence );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("package");
@@ -2119,7 +2144,8 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	} else if (node->equals ("showpool")) {
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
-	    print_pool( prefix, !all.empty() );
+		string get_licence = node->getProp ("getlicence");
+	    print_pool( prefix, !all.empty(), get_licence );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("package");

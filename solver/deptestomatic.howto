@@ -17,6 +17,9 @@ Short instruction of all possible options to write a <description>-test.xml file
    <!-- Multiple <setup>..</setup> sections not allowed! -->
    <setup arch="..."> <!-- Setting Architecture -->
 
+	<setlicencebit/> <!-- set licence-bit on all Items in Pool and on all Items which will be definded later -->
+					 <!-- IMPORTANT: This flag has to bet set before the declaration of channel, source, system -->
+
 	<forceResolve/>: <!-- force Resolve -->
 		
 	<maxSolverPasses value=".."/> <!-- sets the max solver passes -->
@@ -94,7 +97,7 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<takesolution problem="..." solution="..."/> <!-- takes the given solution number to solve the given problem number -->
 
-	<showpool prefix="..." all="..."/> <!-- collect all objects in pool. With no given all only changing obejcts will be shown otherwise all  -->
+	<showpool prefix="..." all="..." getlicence="..."/> <!-- collect all objects in pool. With no given all only changing obejcts will be shown otherwise all. If getlicence is true, the licencebit will be shown  -->
 	
 	<lock channel="..." package="..." kind="..."/> <!-- locks the package from channel -->
 
