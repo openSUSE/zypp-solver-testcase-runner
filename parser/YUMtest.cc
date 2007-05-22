@@ -18,6 +18,8 @@ Maintainer: Michael Radziej <mir@suse.de>
 Purpose:    main() to test the YUM parsers
 /-*/
 
+#include <sstream>
+#include <iostream>
 #include "zypp/parser/yum/YUMParser.h"
 #include "zypp/base/Logger.h"
 
