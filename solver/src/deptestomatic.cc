@@ -739,7 +739,7 @@ struct SortItem : public resfilter::PoolItemFilterFunctor
 // collect all installed items in a set
 
 void
-print_pool( const string & prefix = "", bool show_all = true, string show_licence = false )
+print_pool( const string & prefix = "", bool show_all = true, string show_licence = "false" )
 {
     SortItem info( show_all );
     cout << "Current pool:" << endl;
@@ -1427,7 +1427,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 
 		resolver->context()->foreachMarked (print_marked_cb, &items);
                 print_items (items);
-//		print_pool( MARKER, false );
+//		print_pool( MARKER, "false" );
 		if (!freshen.empty()) {
 		    RESULT << "Freshening ..." << endl;
 		    resolver->context()->foreachMarked (freshen_marked_cb, &resolver);
@@ -1952,7 +1952,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 
 		resolver->context()->foreachMarked (print_marked_cb, &items);
                 print_items (items);
-//		print_pool( MARKER, false );
+//		print_pool( MARKER, "false" );
 		if (!freshen.empty()) {
 		    RESULT << "Freshening ..." << endl;
 		    resolver->context()->foreachMarked (freshen_marked_cb, &resolver);
