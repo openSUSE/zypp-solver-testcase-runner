@@ -532,12 +532,6 @@ struct FindPackage : public resfilter::ResObjectFilterFunctor
 
     bool operator()( PoolItem_Ref p)
     {
-//MIL << p << " ?" << endl;
-	Source_Ref s = p->source();
-
-	if (s.alias() != source.alias()) {
-	    return true;
-	}
 	if (arch_set && arch != p->arch()) {				// if arch requested, force this arch
 	    return true;
 	}
@@ -590,6 +584,14 @@ get_poolItem (const string & source_alias, const string & package_name, const st
 		      functor::functorRef<bool,PoolItem> (info) );
 
 	poolItem = info.poolItem;
+        if (!poolItem) {
+            // try to find the resolvable over all channel. This is useful for e.g. languages
+            invokeOnEach( God->pool().byNameBegin( package_name ),
+                          God->pool().byNameEnd( package_name ),
+                          resfilter::ByKind (kind),
+                          functor::functorRef<bool,PoolItem> (info) );
+            poolItem = info.poolItem;
+        }
     }
     catch (Exception & excpt_r) {
 	ZYPP_CAUGHT (excpt_r);
@@ -600,7 +602,7 @@ get_poolItem (const string & source_alias, const string & package_name, const st
     }
 
     if (!poolItem) {
-	cerr << "Can't find " << kind_name << ":'" << package_name << "' in source '" << source_alias << "': no such name/kind" << endl;
+	cerr << "Can't find kind: " << kind << ":'" << package_name << "' in source '" << source_alias << "': no such name/kind" << endl;
     }
 
     return poolItem;
