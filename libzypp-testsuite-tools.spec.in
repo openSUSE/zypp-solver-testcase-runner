@@ -11,7 +11,7 @@
 # norootforbuild
 
 Name:			libzypp-testsuite-tools
-BuildRequires:	gcc-c++ libzypp-devel libzypp
+BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes
 Requires:       libzypp
 License:		GPL
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -71,6 +71,7 @@ make check
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+%fdupes -s $RPM_BUILD_ROOT
 
 %post
 %run_ldconfig
@@ -82,12 +83,13 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
 %defattr(0755,root,root)
-%dir %{prefix}/share/zypp/testsuite
-%dir %{prefix}/share/zypp/testsuite/bin
-%{prefix}/share/zypp/testsuite/bin/
+%dir %{prefix}/lib/zypp/testsuite/
+%dir %{prefix}/lib/zypp/testsuite/bin
+%{prefix}/lib/zypp/testsuite/bin/
 
 %files data
 %defattr(-,root,root)
+%dir %{prefix}/share/zypp/testsuite
 %dir %{prefix}/share/zypp/testsuite/data
 %{prefix}/share/zypp/testsuite/data/
 

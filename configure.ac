@@ -31,7 +31,7 @@ dnl ==================================================
 
 zyppdir=${prefix}/share/zypp
 localedir=${prefix}/share/locale
-testsuitebindir=${zyppdir}/testsuite/bin
+testsuitebindir=${prefix}/lib/zypp/testsuite/bin
 testsuitedatadir=${zyppdir}/testsuite/data
 
 AC_SUBST(zyppdir)
