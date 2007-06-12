@@ -16,6 +16,7 @@ package-local:	dist-bzip2 libzypp-testsuite-tools.spec
 	fi
 	rm -f package/*.tar.bz2
 	rm -f package/*~
+	rm -f package/core
 	rm -f package/*.bak
 	rm -f package/*.auto
 	mv $(distdir).tar.bz2 package/
