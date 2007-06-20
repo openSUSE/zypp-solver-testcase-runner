@@ -32,21 +32,15 @@
 >!>       Ignore this conflict of sendmail
 >!>       
 >!> Problem:
+>!> Cannot install sendmail-8.13.5-5.i586[packages] due to dependency problems
+>!> sendmail-8.13.5-5.i586[packages] is scheduled to be installed, but this is not possible because of dependency problems.
+>!>    Solution:
+>!>       do not install sendmail
+>!>       do not install sendmail-8.13.5-5.i586[packages]
+>!> Problem:
 >!> No valid solution found with only resolvables of best architecture.
 >!> With this run only resolvables with the best architecture has been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with compatible architecture.
->!> Problem:
->!> postfix-2.2.6-6.i586[packages] conflicts with other resolvables
->!> postfix-2.2.6-6.i586[packages] conflicts with:
->!>    Solution:
->!>       do not install postfix
->!>       do not install postfix-2.2.6-6.i586[packages]
->!>    Solution:
->!>       do not install sendmail
->!>       do not install sendmail-8.13.5-5.i586[packages]
->!>    Solution:
->!>       Ignore this conflict of postfix
->!>       
 >!> Calculating installation order ...
