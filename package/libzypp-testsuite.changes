@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Jun 20 14:33:54 CEST 2007 - schubi@suse.de
+
+- added includes for gcc42 
+
+-------------------------------------------------------------------
 Tue Jun 12 12:10:29 CEST 2007 - schubi@suse.de
 
 - cleanup; moved bineries to /opt/zypp/testsuite/bin 
