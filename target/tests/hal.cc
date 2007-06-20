@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "zypp/target/hal/Hal.h"
 
 using namespace zypp::target::hal;
