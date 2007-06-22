@@ -741,7 +741,7 @@ struct SortItem : public resfilter::PoolItemFilterFunctor
 // collect all installed items in a set
 
 void
-print_pool( const string & prefix = "", bool show_all = true, string show_licence = "false" )
+print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", bool show_all = true, string show_licence = "false", bool verbose = false )
 {
     SortItem info( show_all );
     cout << "Current pool:" << endl;
@@ -758,6 +758,26 @@ print_pool( const string & prefix = "", bool show_all = true, string show_licenc
 		cout << it->second;
 	}
 	cout << endl;
+        if (verbose) {
+            zypp::solver::detail::ItemCapKindList selectedBy = resolver->isSelectedBy(it->second);
+            zypp::solver::detail::ItemCapKindList select = resolver->selects(it->second);
+            for (zypp::solver::detail::ItemCapKindList::const_iterator iter = selectedBy.begin(); iter != selectedBy.end(); ++iter) {
+                if (iter == selectedBy.begin()) {
+                    cout << prefix << ++count << ": ";            
+                    cout << "   will be selected by:" << endl;
+                }
+                cout << prefix << ++count << ": ";                
+                cout << "         " << iter->item << endl;
+            }
+            for (zypp::solver::detail::ItemCapKindList::const_iterator iter = select.begin(); iter != select.end(); ++iter) {
+                if (iter == select.begin()) {
+                    cout << prefix << ++count << ": ";            
+                    cout << "   will select:" << endl;
+                }
+                cout << prefix << ++count << ": ";                
+                cout << "         " << iter->item << endl;
+            }            
+        }
     }
     cout << "Pool End." << endl;
     return;
@@ -1412,7 +1432,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 
 	    resolver->doUpgrade(stats);
 
-	    print_pool( MARKER );
+	    print_pool( resolver, MARKER );
 
 	} else if (node->equals ("establish")) {
 
@@ -1630,8 +1650,9 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	} else if (node->equals ("showpool")) {
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
-		string get_licence = node->getProp ("getlicence");
-	    print_pool( prefix, !all.empty(), get_licence );
+            string get_licence = node->getProp ("getlicence");
+            string verbose = node->getProp ("verbose");            
+	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("package");
@@ -1937,7 +1958,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 
 	    resolver->doUpgrade(stats);
 
-	    print_pool( MARKER );
+	    print_pool( resolver, MARKER );
 
 	} else if (node->equals ("establish")) {
 
@@ -2146,8 +2167,9 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	} else if (node->equals ("showpool")) {
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
-		string get_licence = node->getProp ("getlicence");
-	    print_pool( prefix, !all.empty(), get_licence );
+            string get_licence = node->getProp ("getlicence");
+            string verbose = node->getProp ("verbose");                        
+	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("package");
@@ -2262,7 +2284,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	node = node->next();
     }
 
-print_pool( MARKER );
+print_pool( resolver, MARKER );
     report_solutions (resolver, instorder, mediaorder);
 }
 
