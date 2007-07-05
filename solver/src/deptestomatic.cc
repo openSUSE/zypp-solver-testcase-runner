@@ -759,8 +759,8 @@ print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", b
 	}
 	cout << endl;
         if (verbose) {
-            zypp::solver::detail::ItemCapKindList selectedBy = resolver->isSelectedBy(it->second);
-            zypp::solver::detail::ItemCapKindList select = resolver->selects(it->second);
+            zypp::solver::detail::ItemCapKindList selectedBy = resolver->isInstalledBy(it->second);
+            zypp::solver::detail::ItemCapKindList select = resolver->installs(it->second);
             for (zypp::solver::detail::ItemCapKindList::const_iterator iter = selectedBy.begin(); iter != selectedBy.end(); ++iter) {
                 if (iter == selectedBy.begin()) {
                     cout << prefix << ++count << ": ";            
