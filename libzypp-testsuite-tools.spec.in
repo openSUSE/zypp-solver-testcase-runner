@@ -11,7 +11,7 @@
 # norootforbuild
 
 Name:			libzypp-testsuite-tools
-BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes
+BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes dejagnu
 Requires:       libzypp
 License:		GPL
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
@@ -67,7 +67,12 @@ autoreconf --force --install --symlink --verbose
 CXXFLAGS="$RPM_OPT_FLAGS" \
 ./configure --prefix=%{prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-static
 make %{?jobs:-j %jobs}
+%ifarch %ix86
 make check
+%endif
+%ifarch ia64
+make check
+%endif
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT

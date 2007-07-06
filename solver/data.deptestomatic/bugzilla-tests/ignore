@@ -13,3 +13,5 @@ bug220490-test.xml
 bug205039-test.xml
 #not defined bahaviour of deleting a pattern
 bug220757-test.xml
+#different behaviour in autobuild
+bug217574-test.xml
