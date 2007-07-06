@@ -71,6 +71,7 @@
 #include "zypp/ZYpp.h"
 #include "zypp/ZYppFactory.h"
 
+#include "zypp/pool/GetResolvablesToInsDel.h"
 #include "zypp/solver/detail/Resolver.h"
 #include "zypp/solver/detail/ResolverContext.h"
 #include "zypp/solver/detail/ResolverQueue.h"
@@ -482,11 +483,15 @@ print_solution (ResolverContext_Ptr context, int *count, ChecksumList & checksum
     if (mediaorder) {
 	cout << endl;
 	RESULT << "Media Order:" << endl << endl;
-	God->initializeTarget("/");			// init, but don't populate pool
+	
 	Target::PoolItemList dellist;
 	Target::PoolItemList inslist;
 	Target::PoolItemList srclist;
-	God->target()->getResolvablesToInsDel( context->pool(), dellist, inslist, srclist );
+        pool::GetResolvablesToInsDel collect( context->pool() );
+        dellist.swap(collect._toDelete);
+        inslist.swap(collect._toInstall);
+        srclist.swap(collect._toSrcinstall);
+        
 	int count = 0;
 	for (Target::PoolItemList::const_iterator iter = dellist.begin(); iter != dellist.end(); iter++) {
 	    cout << "DEL " << ++count << ".: "; printRes (cout, (*iter)); cout << endl;
