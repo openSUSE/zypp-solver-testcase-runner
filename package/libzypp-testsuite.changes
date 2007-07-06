@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Fri Jul  6 16:47:28 CEST 2007 - schubi@suse.de
+
+- enable "make check" for ix68 and ia64 in autobuild
+- rev 5923 
+- ver 3.14.5
+
+-------------------------------------------------------------------
 Wed Jun 20 14:33:54 CEST 2007 - schubi@suse.de
 
 - added includes for gcc42 
