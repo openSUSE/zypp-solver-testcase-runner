@@ -32,7 +32,7 @@ public:
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixPackageImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixPackageImpl( Repository source_r, const zypp::HelixParser & data );
 
 	/** Package summary */
 	virtual TranslatedText summary() const;
@@ -48,7 +48,7 @@ public:
 	/** */
 	virtual unsigned sourceMediaNr() const;
 	/** */
-	virtual Source_Ref source() const;
+	virtual Repository source() const;
 
         /** */
         virtual Vendor vendor() const
@@ -56,7 +56,7 @@ public:
 
 
 protected:
-	Source_Ref _source;
+	Repository _source;
 	TranslatedText _summary;
 	TranslatedText _description;
 	PackageGroup _group;

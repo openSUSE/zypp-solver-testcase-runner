@@ -11,7 +11,7 @@
 */
 
 #include "HelixPatchImpl.h"
-#include "zypp/source/SourceImpl.h"
+#include "zypp/repo/RepositoryImpl.h"
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
 

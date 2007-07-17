@@ -29,7 +29,7 @@
 #include "zypp/CapSet.h"
 #include "zypp/ResStore.h"
 #include "zypp/Dependencies.h"
-#include "zypp/Source.h"
+#include "zypp/Repository.h"
 
 #include "XmlNode.h"
 

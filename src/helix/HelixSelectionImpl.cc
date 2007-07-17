@@ -11,7 +11,7 @@
 */
 
 #include "HelixSelectionImpl.h"
-#include "zypp/source/SourceImpl.h"
+#include "zypp/repo/RepositoryImpl.h"
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
 
@@ -29,14 +29,14 @@ namespace zypp
 
 /** Default ctor
 */
-HelixSelectionImpl::HelixSelectionImpl (Source_Ref source_r, const zypp::HelixParser & parsed)
+HelixSelectionImpl::HelixSelectionImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
     , _summary(parsed.summary)
     , _description(parsed.description)
 {
 }
 
-Source_Ref
+Repository
 HelixSelectionImpl::source() const
 { return _source; }
 

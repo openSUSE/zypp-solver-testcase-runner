@@ -18,11 +18,10 @@
 #include "zypp/Dependencies.h"
 #include "zypp/base/Logger.h"
 #include "zypp/base/LogControl.h"
-#include "zypp/SourceFactory.h"
-#include "zypp/Source.h"
+#include "zypp/Repository.h"
 #include "zypp/ZYpp.h"
 #include "zypp/ZYppFactory.h"
-#include "zypp/source/SourceImpl.h"
+#include "zypp/repo/RepositoryImpl.h"
 #include "zypp/media/MediaManager.h"
 #include "zypp/Dependencies.h"
 
