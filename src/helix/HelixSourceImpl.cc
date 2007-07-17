@@ -31,7 +31,7 @@
 #include "HelixPatternImpl.h"
 #include "HelixProductImpl.h"
 
-#include "zypp/source/SourceImpl.h"
+#include "zypp/repo/RepositoryImpl.h"
 #include "zypp/base/Logger.h"
 #include "zypp/base/Exception.h"
 
@@ -80,7 +80,7 @@ HelixSourceImpl::factoryCtor( const media::MediaId & media_r, const Pathname & p
 
 
 void
-HelixSourceImpl::createResolvables(Source_Ref source)
+HelixSourceImpl::createResolvables(Repository source)
 {
     _source = source;
 

@@ -28,7 +28,7 @@
 #define HELIXEXTRACT_H
 
 #include "zypp/Resolvable.h"
-#include "zypp/Source.h"
+#include "zypp/Repository.h"
 #include "zypp/ResStore.h"
 
 #include "HelixParser.h"

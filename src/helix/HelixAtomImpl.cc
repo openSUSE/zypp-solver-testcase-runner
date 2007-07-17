@@ -11,7 +11,7 @@
 */
 
 #include "HelixAtomImpl.h"
-#include "zypp/source/SourceImpl.h"
+#include "zypp/repo/RepositoryImpl.h"
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
 
@@ -29,12 +29,12 @@ namespace zypp
 
 /** Default ctor
 */
-HelixAtomImpl::HelixAtomImpl (Source_Ref source_r, const zypp::HelixParser & parsed)
+HelixAtomImpl::HelixAtomImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
 {
 }
 
-Source_Ref
+Repository
 HelixAtomImpl::source() const
 { return _source; }
 

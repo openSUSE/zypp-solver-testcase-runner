@@ -32,7 +32,7 @@ public:
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixLanguageImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixLanguageImpl( Repository source_r, const zypp::HelixParser & data );
 
 protected:
 

@@ -25,7 +25,7 @@
 #include <iosfwd>
 #include <string>
 
-#include "zypp/source/SourceImpl.h"
+#include "zypp/repo/RepositoryImpl.h"
 
 #include "HelixParser.h"
 
@@ -45,7 +45,7 @@ namespace zypp {
 //
 //	CLASS NAME : HelixSourceImpl
 
-class HelixSourceImpl : public zypp::source::SourceImpl {
+class HelixSourceImpl : public zypp::repo::RepositoryImpl {
 
   public:
 
@@ -84,9 +84,9 @@ class HelixSourceImpl : public zypp::source::SourceImpl {
     void parserCallback (const HelixParser & data);
 
   private:
-    Source_Ref _source;
+    Repository _source;
     Pathname _pathname;
-    void createResolvables(Source_Ref source_r);
+    void createResolvables(Repository source_r);
 
 };
 

@@ -23,7 +23,7 @@ namespace zypp
 //
 //        CLASS NAME : HelixPatchImpl
 //
-/** Class representing a package
+/** Class representing a Repository
 */
 class HelixPatchImpl : public detail::PatchImplIf
 {
@@ -43,7 +43,7 @@ public:
       virtual std::string category() const ;
       /** Does the system need to reboot to finish the update process? */
       virtual bool reboot_needed() const ;
-      /** Does the patch affect the package manager itself? */
+      /** Does the patch affect the Repository manager itself? */
       virtual bool affects_pkg_manager() const ;
       /** */
       virtual ByteCount size() const;

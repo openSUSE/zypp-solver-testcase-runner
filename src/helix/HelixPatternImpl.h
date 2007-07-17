@@ -25,7 +25,7 @@ namespace zypp
 //
 /** Class representing a package
 */
-class HelixPatternImpl : public detail::PatternImplIf
+class HelixPatternImpl : public detail::Repository
 {
 public:
 
