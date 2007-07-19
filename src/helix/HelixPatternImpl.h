@@ -25,14 +25,14 @@ namespace zypp
 //
 /** Class representing a package
 */
-class HelixPatternImpl : public detail::Repository
+class HelixPatternImpl : public detail::PatternImplIf
 {
 public:
 
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixPatternImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixPatternImpl( Repository source_r, const zypp::HelixParser & data );
 
 	/** Pattern summary */
 	virtual TranslatedText summary() const;
@@ -48,9 +48,9 @@ public:
 	/** */
 
 	/** */
-	virtual Source_Ref source() const;
+	virtual Repository repository() const;
 protected:
-	Source_Ref _source;
+	Repository _source;
 	TranslatedText _summary;
 	TranslatedText _description;
 	PackageGroup _group;

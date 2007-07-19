@@ -48,7 +48,7 @@ public:
 	/** */
 
 	/** */
-	virtual Repository source() const;
+	virtual Repository repository() const;
 
 protected:
 	Repository _source;

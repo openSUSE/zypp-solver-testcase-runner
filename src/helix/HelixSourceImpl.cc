@@ -46,7 +46,7 @@ HelixSourceImpl::HelixSourceImpl()
     MIL << "HelixSourceImpl::HelixSourceImpl()" << endl;
 }
 
-
+#if 0
 void
 HelixSourceImpl::factoryInit()
 {
@@ -67,7 +67,6 @@ HelixSourceImpl::factoryInit()
     return;
 }
 
-
 void
 HelixSourceImpl::factoryCtor( const media::MediaId & media_r, const Pathname & path_r, const std::string & alias_r, const Pathname cache_dir_r)
 {
@@ -87,7 +86,7 @@ HelixSourceImpl::createResolvables(Repository source)
     MIL << "HelixSourceImpl::createResolvables(" << _pathname << ", for source " << source.alias() << ")" << endl;
     extractHelixFile (_pathname.asString(), this);
 }
-
+#endif
 
 
 //-----------------------------------------------------------------------------

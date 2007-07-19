@@ -41,7 +41,7 @@ HelixPatternImpl::HelixPatternImpl (Repository source_r, const zypp::HelixParser
 }
 
 Repository
-HelixPatternImpl::source() const
+HelixPatternImpl::repository() const
 { return _source; }
 
 /** Pattern summary */

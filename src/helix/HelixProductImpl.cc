@@ -41,7 +41,7 @@ HelixProductImpl::HelixProductImpl (Repository source_r, const zypp::HelixParser
 }
 
 Repository
-HelixProductImpl::source() const
+HelixProductImpl::repository() const
 { return _source; }
 
 /** Package summary */
