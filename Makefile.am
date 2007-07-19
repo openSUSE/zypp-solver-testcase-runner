@@ -1,7 +1,7 @@
 #
 # Makefile.am for libzypp/testsuite
 #
-SUBDIRS = src target solver source parser solvertree
+SUBDIRS = src target solver source parser
 
 ## ##################################################
 
