@@ -35,7 +35,7 @@ HelixMessageImpl::HelixMessageImpl (Repository source_r, const zypp::HelixParser
 }
 
 Repository
-HelixMessageImpl::source() const
+HelixMessageImpl::repository() const
 { return _source; }
 
 TranslatedText

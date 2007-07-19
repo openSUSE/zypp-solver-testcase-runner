@@ -48,7 +48,7 @@ public:
 	/** */
 	virtual unsigned sourceMediaNr() const;
 	/** */
-	virtual Repository source() const;
+	virtual Repository repository() const;
 
         /** */
         virtual Vendor vendor() const

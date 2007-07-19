@@ -36,7 +36,7 @@ HelixScriptImpl::HelixScriptImpl (Repository source_r, const zypp::HelixParser &
 }
 
 Repository
-HelixScriptImpl::source() const
+HelixScriptImpl::repository() const
 { return _source; }
 
 /** Get the script to perform the change */

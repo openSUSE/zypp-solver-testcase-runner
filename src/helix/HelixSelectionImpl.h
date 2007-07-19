@@ -32,7 +32,7 @@ public:
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixSelectionImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixSelectionImpl( Repository source_r, const zypp::HelixParser & data );
 
 	/** Selection summary */
 	virtual TranslatedText summary() const;
@@ -40,9 +40,9 @@ public:
 	virtual TranslatedText description() const;
 
 	/** */
-	virtual Source_Ref source() const;
+	virtual Repository repository() const;
 protected:
-	Source_Ref _source;
+	Repository _source;
 	TranslatedText _summary;
 	TranslatedText _description;
 

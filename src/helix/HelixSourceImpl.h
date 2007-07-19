@@ -38,57 +38,55 @@
 #include "zypp/Product.h"
 #include "zypp/Selection.h"
 #include "zypp/Pattern.h"
+#include "zypp/media/MediaManager.h"
 
 namespace zypp {
-        
+
 ///////////////////////////////////////////////////////////////////
 //
 //	CLASS NAME : HelixSourceImpl
 
-class HelixSourceImpl : public zypp::repo::RepositoryImpl {
+  class HelixSourceImpl : public zypp::repo::RepositoryImpl
+  {
 
-  public:
+    public:
+      /** Default ctor */
+      HelixSourceImpl();
 
-    /** Default ctor */
-    HelixSourceImpl();
+    private:
+      virtual void createResolvables();
+      virtual void createPatchAndDeltas();
 
- private:
-    /** Ctor substitute.
-     * Actually get the metadata.
-     * \throw EXCEPTION on fail
-     */
-    virtual void factoryInit();
+    public:
+      void parserCallback( const HelixParser & data );
 
+    private:
+      Dependencies   createDependencies( const HelixParser & parsed );
 
- public:
-    void factoryCtor( const media::MediaId & media_r,
-                        const Pathname & path_r = "/",
+      Package::Ptr   createPackage( const HelixParser & data );
+      Message::Ptr   createMessage( const HelixParser & data );
+      Language::Ptr  createLanguage( const HelixParser & data );
+      Script::Ptr    createScript( const HelixParser & data );
+      Atom::Ptr      createAtom( const HelixParser & data );
+      Patch::Ptr     createPatch( const HelixParser & data );
+      Pattern::Ptr   createPattern( const HelixParser & data );
+      Selection::Ptr createSelection( const HelixParser & data );
+      Product::Ptr   createProduct( const HelixParser & data );
+
+    private:
+      Repository _source;
+
+#if 0
+      void factoryCtor( const media::MediaId & media_r,
+                        const Pathname & path_r     = "/",
                         const std::string & alias_r = "",
-                        const Pathname cache_dir_r = "");
+                        const Pathname cache_dir_r  = "");
 
-    virtual const bool valid() const
-    { return true; }
-
-    Package::Ptr createPackage (const HelixParser & data);
-    Message::Ptr createMessage (const HelixParser & data);
-    Language::Ptr createLanguage (const HelixParser & data);
-    Script::Ptr  createScript (const HelixParser & data);
-    Atom::Ptr createAtom (const HelixParser & data);
-    Patch::Ptr   createPatch (const HelixParser & data);
-    Pattern::Ptr createPattern (const HelixParser & data);
-    Selection::Ptr createSelection (const HelixParser & data);
-    Product::Ptr createProduct (const HelixParser & data);
-
-    Dependencies createDependencies (const HelixParser & data);
-
-    void parserCallback (const HelixParser & data);
-
-  private:
-    Repository _source;
-    Pathname _pathname;
-    void createResolvables(Repository source_r);
-
-};
+    private:
+      Repository _source;
+      Pathname _pathname;
+#endif
+  };
 
 
 } // namespace zypp

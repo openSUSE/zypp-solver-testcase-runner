@@ -38,7 +38,7 @@ public:
 	std::string type () const;
 	virtual ByteCount size() const;
 	/** */
-	virtual Repository source() const;
+	virtual Repository repository() const;
 
 protected:
 	Repository _source;

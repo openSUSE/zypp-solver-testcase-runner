@@ -37,7 +37,7 @@ HelixSelectionImpl::HelixSelectionImpl (Repository source_r, const zypp::HelixPa
 }
 
 Repository
-HelixSelectionImpl::source() const
+HelixSelectionImpl::repository() const
 { return _source; }
 
 /** Selection summary */

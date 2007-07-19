@@ -32,7 +32,7 @@ public:
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixPatchImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixPatchImpl( Repository source_r, const zypp::HelixParser & data );
 
 
       /** Patch ID */
@@ -50,10 +50,10 @@ public:
       /** The list of all atoms building the patch */
       virtual AtomList all_atoms() const;
       /** */
-      virtual Source_Ref source() const;
+      virtual Repository repository() const;
 
 protected:
-	Source_Ref _source;
+	Repository _source;
 	ByteCount _size_installed;
  };
   /////////////////////////////////////////////////////////////////

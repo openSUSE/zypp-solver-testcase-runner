@@ -32,13 +32,13 @@ public:
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixAtomImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixAtomImpl( Repository source_r, const zypp::HelixParser & data );
 
 	/** */
-	virtual Source_Ref source() const;
+	virtual Repository repository() const;
 
 protected:
-	Source_Ref _source;
+	Repository _source;
 
 
  };

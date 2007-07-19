@@ -35,7 +35,7 @@ HelixAtomImpl::HelixAtomImpl (Repository source_r, const zypp::HelixParser & par
 }
 
 Repository
-HelixAtomImpl::source() const
+HelixAtomImpl::repository() const
 { return _source; }
 
   /////////////////////////////////////////////////////////////////

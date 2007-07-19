@@ -29,14 +29,14 @@ namespace zypp
 
 /** Default ctor
 */
-HelixPatchImpl::HelixPatchImpl (Source_Ref source_r, const zypp::HelixParser & parsed)
+HelixPatchImpl::HelixPatchImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
     , _size_installed(parsed.installedSize)
 {
 }
 
-Source_Ref
-HelixPatchImpl::source() const
+Repository
+HelixPatchImpl::repository() const
 { return _source; }
 
 ByteCount HelixPatchImpl::size() const

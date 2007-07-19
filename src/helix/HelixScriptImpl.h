@@ -32,7 +32,7 @@ public:
 	class HelixParser;
 	/** Default ctor
 	*/
-	HelixScriptImpl( Source_Ref source_r, const zypp::HelixParser & data );
+	HelixScriptImpl( Repository source_r, const zypp::HelixParser & data );
 
       /** Get the script to perform the change */
       virtual Pathname do_script() const;
@@ -44,10 +44,10 @@ public:
       virtual ByteCount size() const;
 
 	/** */
-	virtual Source_Ref source() const;
+	virtual Repository repository() const;
 
 protected:
-	Source_Ref _source;
+	Repository _source;
 	ByteCount _size_installed;
 
 
