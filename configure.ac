@@ -103,7 +103,9 @@ AC_OUTPUT(
 	target/config/Makefile	\
 	target/lib/Makefile	\
 	target/target.test/Makefile	\
-	target/tests/Makefile
+	target/tests/Makefile		\
+	solvertree/Makefile		\
+	solvertree/src/Makefile
 )
 dnl ==================================================
 
