@@ -41,21 +41,13 @@ using namespace zypp;
 
 //---------------------------------------------------------------------------
 
-HelixSourceImpl::HelixSourceImpl()
-{
-    MIL << "HelixSourceImpl::HelixSourceImpl()" << endl;
-}
-
 HelixSourceImpl::HelixSourceImpl(const RepoInfo &info)
     : RepositoryImpl(info),
-      _pathname( info.path())
-{
-}
+      _pathname( info.baseUrlsBegin()->getPathName() )
+{}
 
 HelixSourceImpl::~HelixSourceImpl()
-{
-}
-
+{}
 
 void
 HelixSourceImpl::createResolvables()
