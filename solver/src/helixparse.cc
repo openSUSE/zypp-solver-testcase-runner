@@ -6,12 +6,11 @@
 #include <map>
 #include "zypp/base/Logger.h"
 #include "zypp/base/LogControl.h"
-#include "zypp/SourceFactory.h"
-#include "zypp/Source.h"
-#include "zypp/source/SourceImpl.h"
 #include "zypp/media/MediaManager.h"
 
 #include "src/helix/HelixSourceImpl.h"
+#include "zypp/Repository.h"
+#include "zypp/RepoManager.h"
 
 using namespace std;
 using namespace zypp;
@@ -48,7 +47,7 @@ int main( int argc, char * argv[] )
 #if 0 // via SourceFactory
     Pathname cache_dir("");
     Source_Ref src( SourceFactory().createFrom(url, p, alias, cache_dir) );
-#endif
+
 
     // via HelixSourceImpl
 
@@ -61,6 +60,21 @@ int main( int argc, char * argv[] )
     Source_Ref src( SourceFactory().createFrom(impl) );
 
     ResStore store = src.resolvables();
+#endif
+    Repository repo;    
+    RepoInfo nrepo;
+    nrepo
+	.setAlias      ( alias )
+	.setName       ( "namen sind schall und rauch" )
+	.setEnabled    ( true )
+	.setAutorefresh( false )
+	.addBaseUrl    ( p.asUrl() );
+
+    zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
+
+    repo = Repository( impl );
+    ResStore store = repo.resolvables();    
+    
     for (ResStore::const_iterator it = store.begin();
 	it != store.end(); it++)
     {
