@@ -810,21 +810,25 @@ load_source (const string & alias, const string & filename, const string & type,
     Pathname pathname = globalPath + filename;
     int count = 0;
 
-    Source_Ref src;
+    Repository repo;
 
     if (type == "url") {
 	try {
-	    Url url( filename );
-	    cout << "Load from Url '" << url << "' (" << filename << ")" << endl;
-	    if (url.getScheme() == "file") {
-		pathname = url.getPathName();
-		url = Url( "file:/" );
-	    }
-	    else
-		pathname = "";
+          cout << "Load from Url '" << filename << "'" << endl;
 
-	    Pathname cache_dir( "" );
-	    src = Source_Ref( SourceFactory().createFrom( url, pathname, alias, cache_dir ) );
+          RepoInfo nrepo;
+          nrepo
+              .setAlias      ( alias )
+              .setName       ( "namen sind schall und rauch" )
+              .setEnabled    ( true )
+              .setAutorefresh( false )
+              .addBaseUrl    ( Url( filename ) );
+
+          manager.addRepository( nrepo );
+          manager.refreshMetadata( nrepo );
+          manager.buildCache( nrepo );
+
+          repo = manager.createFromCache( nrepo );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
@@ -834,14 +838,19 @@ load_source (const string & alias, const string & filename, const string & type,
     }
     else {
 	try {
-	   Url url("file:/");
+          cout << "Load from File '" << pathname << "'" << endl;
 
-	   media::MediaManager mmgr;
-	   media::MediaId mediaid = mmgr.open( url );
-	   HelixSourceImpl *impl = new HelixSourceImpl ();
-	   cout << "Load from File '" << pathname << "'" << endl;
-	   impl->factoryCtor (mediaid, pathname, alias);
-	   src = Source_Ref( SourceFactory().createFrom( impl ) );
+          RepoInfo nrepo;
+          nrepo
+              .setAlias      ( alias )
+              .setName       ( "namen sind schall und rauch" )
+              .setEnabled    ( true )
+              .setAutorefresh( false )
+              .addBaseUrl    ( pathname.asUrl() );
+
+          zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
+
+          repo = Repository( impl );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
@@ -851,17 +860,15 @@ load_source (const string & alias, const string & filename, const string & type,
     }
 
     try {
-	manager->addSource (src);
-	count = src.resolvables().size();
-	cout << "Added source '" << alias << "' with " << count << " resolvables" << endl;
-	God->addResolvables( src.resolvables(), (alias == "@system") );
-//	print_pool ();
+	count = repo.resolvables().size();
+	cout << "Added repository '" << alias << "' with " << count << " resolvables" << endl;
+	God->addResolvables( repo.resolvables(), (alias == "@system") );
 
 	cout << "Loaded " << count << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
     }
     catch ( Exception & excpt_r ) {
 	ZYPP_CAUGHT (excpt_r);
-	cout << "Loaded NO package(s) from " << src << endl;
+	cout << "Loaded NO package(s) from " << repo << endl;
 	count = -1;
     }
 
