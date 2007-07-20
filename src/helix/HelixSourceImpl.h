@@ -26,6 +26,7 @@
 #include <string>
 
 #include "zypp/repo/RepositoryImpl.h"
+#include "zypp/RepoInfo.h"
 
 #include "HelixParser.h"
 
@@ -52,10 +53,11 @@ namespace zypp {
     public:
       /** Default ctor */
       HelixSourceImpl();
+      HelixSourceImpl( const RepoInfo &info = RepoInfo() );
+      virtual ~HelixSourceImpl();
 
     private:
       virtual void createResolvables();
-      virtual void createPatchAndDeltas();
 
     public:
       void parserCallback( const HelixParser & data );
@@ -75,17 +77,9 @@ namespace zypp {
 
     private:
       Repository _source;
+      Pathname _pathname;      
 
-#if 0
-      void factoryCtor( const media::MediaId & media_r,
-                        const Pathname & path_r     = "/",
-                        const std::string & alias_r = "",
-                        const Pathname cache_dir_r  = "");
 
-    private:
-      Repository _source;
-      Pathname _pathname;
-#endif
   };
 
 

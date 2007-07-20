@@ -46,47 +46,26 @@ HelixSourceImpl::HelixSourceImpl()
     MIL << "HelixSourceImpl::HelixSourceImpl()" << endl;
 }
 
-#if 0
-void
-HelixSourceImpl::factoryInit()
+HelixSourceImpl::HelixSourceImpl(const RepoInfo &info)
+    : RepositoryImpl(info),
+      _pathname( info.path())
 {
-    MIL << "HelixSourceImpl::factoryInit()" << endl;
-    try {
-	media::MediaManager media_mgr;
-	MIL << "Adding no media verifier" << endl;
-	media::MediaAccessId _media = _media_set->getMediaAccessId(1);
-	media_mgr.delVerifier(_media);
-	media_mgr.addVerifier(_media, media::MediaVerifierRef(new media::NoVerifier()));
-    }
-    catch (const Exception & excpt_r)
-    {
-#warning FIXME: If media data is not set, verifier is not set. Should the media be refused instead?
-	ZYPP_CAUGHT(excpt_r);
-	WAR << "Verifier not found" << endl;
-    }
-    return;
 }
 
-void
-HelixSourceImpl::factoryCtor( const media::MediaId & media_r, const Pathname & path_r, const std::string & alias_r, const Pathname cache_dir_r)
+HelixSourceImpl::~HelixSourceImpl()
 {
-    MIL << "HelixSourceImpl::factoryCtor(<media>, " << path_r << ", " << alias_r << ", " << cache_dir_r << ")" << endl;
-//    _media = media_r;
-    _pathname = path_r;
-    _alias = alias_r;
-    _cache_dir = cache_dir_r;
 }
 
 
 void
-HelixSourceImpl::createResolvables(Repository source)
+HelixSourceImpl::createResolvables()
 {
-    _source = source;
+    _source = Repository(this);
 
-    MIL << "HelixSourceImpl::createResolvables(" << _pathname << ", for source " << source.alias() << ")" << endl;
+    MIL << "HelixSourceImpl::createResolvables(" << _pathname << ", for source " << _source.info().alias() << ")" << endl;
     extractHelixFile (_pathname.asString(), this);
 }
-#endif
+
 
 
 //-----------------------------------------------------------------------------
