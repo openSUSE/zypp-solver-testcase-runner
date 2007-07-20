@@ -52,7 +52,6 @@ namespace zypp {
 
     public:
       /** Default ctor */
-      HelixSourceImpl();
       HelixSourceImpl( const RepoInfo &info = RepoInfo() );
       virtual ~HelixSourceImpl();
 
@@ -77,7 +76,7 @@ namespace zypp {
 
     private:
       Repository _source;
-      Pathname _pathname;      
+      Pathname _pathname;
 
 
   };
