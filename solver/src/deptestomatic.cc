@@ -50,6 +50,7 @@
 
 
 #include "zypp/Repository.h"
+#include "zypp/RepoManager.h"
 //#include "zypp/SourceFactory.h"
 //#include "zypp/SourceManager.h"
 //#include "zypp/source/SourceImpl.h"
@@ -808,7 +809,7 @@ load_source (const string & alias, const string & filename, const string & type,
 {
     Pathname pathname = globalPath + filename;
     int count = 0;
-#ifndef FAKE
+
     Source_Ref src;
 
     if (type == "url") {
@@ -866,7 +867,7 @@ load_source (const string & alias, const string & filename, const string & type,
 
     if(set_licence)
       set_licence_Pool();
-#endif
+
     return count;
 }
 
@@ -1319,27 +1320,11 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    verify = true;
 
 	} else if (node->equals ("current")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		resolver->setCurrentChannel (source);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (current)" << endl;
-	    }
-
 	} else if (node->equals ("subscribe")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		source->setSubscription (true);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (subscribe)" << endl;
-	    }
-
 	} else if (node->equals ("install")) {
 
 	    string source_alias = node->getProp ("channel");
@@ -1861,27 +1846,11 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	    verify = true;
 
 	} else if (node->equals ("current")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		resolver->setCurrentChannel (source);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (current)" << endl;
-	    }
-
 	} else if (node->equals ("subscribe")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		source->setSubscription (true);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (subscribe)" << endl;
-	    }
-
 	} else if (node->equals ("install")) {
 
 	    string source_alias = node->getProp ("channel");
