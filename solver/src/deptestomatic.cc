@@ -51,9 +51,6 @@
 
 #include "zypp/Repository.h"
 #include "zypp/RepoManager.h"
-//#include "zypp/SourceFactory.h"
-//#include "zypp/SourceManager.h"
-//#include "zypp/source/SourceImpl.h"
 
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
