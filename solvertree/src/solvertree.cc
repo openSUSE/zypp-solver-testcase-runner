@@ -24,16 +24,15 @@
  * USA.
  */
 
+#include <sstream>
+#include <iostream>
+#include <map>
+#include <set>
 #include <qapplication.h>
 #include <qdialog.h>
 #include <qfiledialog.h>     
 #include <qpushbutton.h>
 #include <qfont.h>
-
-#include <sstream>
-#include <iostream>
-#include <map>
-#include <set>
 
 #include <cstdlib>
 #include <cstring>
@@ -55,10 +54,8 @@
 #include "zypp/ProblemSolution.h"
 
 
-#include "zypp/Source.h"
-#include "zypp/SourceFactory.h"
-#include "zypp/SourceManager.h"
-#include "zypp/source/SourceImpl.h"
+#include "zypp/Repository.h"
+#include "zypp/RepoManager.h"
 
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
@@ -86,7 +83,6 @@
 #include "zypp/solver/detail/InstallOrder.h"
 #include "zypp/solver/detail/Testcase.h"
 #include "../../solver/src/KeyRingCallbacks.h"
-
 #include "zypp/QZyppSolverDialog.h"
 
 using namespace std;
@@ -107,7 +103,7 @@ static string globalPath;
 static ZYpp::LocaleSet locales;
 
 static ZYpp::Ptr God;
-static SourceManager_Ptr manager;
+static RepoManager manager;
 static bool forceResolve;
 static int maxSolverPasses = 0;
 
@@ -122,8 +118,16 @@ enum DepKind { PROVIDE, CONFLICT, REQUIRE };
 #define MARKER ">!> "
 #define RESULT cout << MARKER
 
+RepoManager makeRepoManager( const Pathname & mgrdir_r )
+{
+  RepoManagerOptions mgropt;
 
-solver::detail::Resolver_Ptr resolver;
+  mgropt.repoCachePath    = mgrdir_r/"cache";
+  mgropt.repoRawCachePath = mgrdir_r/"raw_cache";
+  mgropt.knownReposPath   = mgrdir_r/"repos";
+
+  return RepoManager( mgropt );
+}
 
 class compare_problems {
 public:
@@ -131,6 +135,8 @@ public:
 		    const boost::intrusive_ptr<zypp::ResolverProblem> & p2) const
 	{ return p1->description() < p2->description(); }
 };
+
+solver::detail::Resolver_Ptr resolver;
 
 //-----------------------------------------------------------------------------
 
@@ -140,7 +146,7 @@ printRes ( std::ostream & str, ResObject::constPtr r )
     if (show_mediaid) {
 	Resolvable::constPtr res = r;
 	Package::constPtr pkg = asKind<Package>(res);
-	if (pkg) str << "[" << pkg->sourceMediaNr() << "]";
+	if (pkg) str << "[" << pkg->mediaNr() << "]";
     }
     if (r->kind() != ResTraits<zypp::Package>::kind)
 	str << r->kind() << ':';
@@ -148,13 +154,13 @@ printRes ( std::ostream & str, ResObject::constPtr r )
     if (r->arch() != "") {
 	str << '.' << r->arch();
     }
-    Source_Ref s = r->source();
+    Repository s = r->repository();
     if (s) {
-	string alias = s.alias();
+	string alias = s.info().alias();
 	if (!alias.empty()
 	    && alias != "@system")
 	{
-	    str << '[' << s.alias() << ']';
+	    str << '[' << alias << ']';
 	}
 //	str << '[' << s << ']';
     }
@@ -372,7 +378,7 @@ struct KNEAOrder : public std::binary_function<PoolItem_Ref,PoolItem_Ref,bool>
 	    res = lhs->arch().compare( rhs->arch() );
 	    if ( res )
 		return res < 0;
-	    res = lhs->source().alias().compare( rhs->source().alias() );
+	    res = lhs->repository().info().alias().compare( rhs->repository().info().alias() );
 	    if ( res )
 		return res < 0;
 	    // no more criteria, still equal:
@@ -493,7 +499,7 @@ print_solution (ResolverContext_Ptr context, int *count, ChecksumList & checksum
     if (mediaorder) {
 	cout << endl;
 	RESULT << "Media Order:" << endl << endl;
-	
+
 	Target::PoolItemList dellist;
 	Target::PoolItemList inslist;
 	Target::PoolItemList srclist;
@@ -501,7 +507,7 @@ print_solution (ResolverContext_Ptr context, int *count, ChecksumList & checksum
         dellist.swap(collect._toDelete);
         inslist.swap(collect._toInstall);
         srclist.swap(collect._toSrcinstall);
-        
+
 	int count = 0;
 	for (Target::PoolItemList::const_iterator iter = dellist.begin(); iter != dellist.end(); iter++) {
 	    cout << "DEL " << ++count << ".: "; printRes (cout, (*iter)); cout << endl;
@@ -528,16 +534,14 @@ print_solution (ResolverContext_Ptr context, int *count, ChecksumList & checksum
 struct FindPackage : public resfilter::ResObjectFilterFunctor
 {
     PoolItem_Ref poolItem;
-    Source_Ref source;
     Resolvable::Kind kind;
     bool edition_set;
     Edition edition;
     bool arch_set;
     Arch arch;
 
-    FindPackage (Source_Ref s, Resolvable::Kind k, const string & v, const string & r, const string & a)
-	: source (s)
-	, kind (k)
+    FindPackage (Resolvable::Kind k, const string & v, const string & r, const string & a)
+	: kind (k)
 	, edition_set( !v.empty() )
 	, edition( v, r )
 	, arch_set( !a.empty() )
@@ -579,23 +583,13 @@ get_poolItem (const string & source_alias, const string & package_name, const st
 {
     PoolItem_Ref poolItem;
     Resolvable::Kind kind = string2kind (kind_name);
-    Source_Ref source;
 
     try {
-	source = manager->findSource (source_alias);
-    }
-    catch (Exception & excpt_r) {
-	ZYPP_CAUGHT (excpt_r);
-	cerr << "Can't find source '" << source_alias << "'" << endl;
-	return poolItem;
-    }
-
-    try {
-	FindPackage info (source, kind, ver, rel, arch);
+	FindPackage info (kind, ver, rel, arch);
 
 	invokeOnEach( God->pool().byNameBegin( package_name ),
 		      God->pool().byNameEnd( package_name ),
-		      functor::chain( resfilter::BySource(source), resfilter::ByKind (kind) ),
+		      functor::chain( resfilter::ByRepository(source_alias), resfilter::ByKind (kind) ),
 		      functor::functorRef<bool,PoolItem> (info) );
 
 	poolItem = info.poolItem;
@@ -778,20 +772,20 @@ print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", b
             zypp::solver::detail::ItemCapKindList select = resolver->installs(it->second);
             for (zypp::solver::detail::ItemCapKindList::const_iterator iter = selectedBy.begin(); iter != selectedBy.end(); ++iter) {
                 if (iter == selectedBy.begin()) {
-                    cout << prefix << ++count << ": ";            
+                    cout << prefix << ++count << ": ";
                     cout << "   will be selected by:" << endl;
                 }
-                cout << prefix << ++count << ": ";                
-                cout << "         " << iter->item << "  " << iter->initialInstallation << endl;
+                cout << prefix << ++count << ": ";
+                cout << "         " << iter->item << endl;
             }
             for (zypp::solver::detail::ItemCapKindList::const_iterator iter = select.begin(); iter != select.end(); ++iter) {
                 if (iter == select.begin()) {
-                    cout << prefix << ++count << ": ";            
+                    cout << prefix << ++count << ": ";
                     cout << "   will select:" << endl;
                 }
-                cout << prefix << ++count << ": ";                
-                cout << "         " << iter->item << "  " << iter->initialInstallation << endl;
-            }            
+                cout << prefix << ++count << ": ";
+                cout << "         " << iter->item << endl;
+            }
         }
     }
     cout << "Pool End." << endl;
@@ -802,7 +796,7 @@ print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", b
 void
 set_licence_Pool()
 {
-	
+
 	SortItem info( true );
 	invokeOnEach( God->pool().begin( ),
 		  God->pool().end ( ),
@@ -812,7 +806,7 @@ set_licence_Pool()
 		it->second.status().setLicenceConfirmed();
 	}
 
-	return;	
+	return;
 }
 
 static int
@@ -821,21 +815,25 @@ load_source (const string & alias, const string & filename, const string & type,
     Pathname pathname = globalPath + filename;
     int count = 0;
 
-    Source_Ref src;
+    Repository repo;
 
     if (type == "url") {
 	try {
-	    Url url( filename );
-	    cout << "Load from Url '" << url << "' (" << filename << ")" << endl;
-	    if (url.getScheme() == "file") {
-		pathname = url.getPathName();
-		url = Url( "file:/" );
-	    }
-	    else
-		pathname = "";
+          cout << "Load from Url '" << filename << "'" << endl;
 
-	    Pathname cache_dir( "" );
-	    src = Source_Ref( SourceFactory().createFrom( url, pathname, alias, cache_dir ) );
+          RepoInfo nrepo;
+          nrepo
+              .setAlias      ( alias )
+              .setName       ( "namen sind schall und rauch" )
+              .setEnabled    ( true )
+              .setAutorefresh( false )
+              .addBaseUrl    ( Url( filename ) );
+
+          manager.addRepository( nrepo );
+          manager.refreshMetadata( nrepo );
+          manager.buildCache( nrepo );
+
+          repo = manager.createFromCache( nrepo );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
@@ -845,14 +843,19 @@ load_source (const string & alias, const string & filename, const string & type,
     }
     else {
 	try {
-	   Url url("file:/");
+          cout << "Load from File '" << pathname << "'" << endl;
 
-	   media::MediaManager mmgr;
-	   media::MediaId mediaid = mmgr.open( url );
-	   HelixSourceImpl *impl = new HelixSourceImpl ();
-	   cout << "Load from File '" << pathname << "'" << endl;
-	   impl->factoryCtor (mediaid, pathname, alias);
-	   src = Source_Ref( SourceFactory().createFrom( impl ) );
+          RepoInfo nrepo;
+          nrepo
+              .setAlias      ( alias )
+              .setName       ( "namen sind schall und rauch" )
+              .setEnabled    ( true )
+              .setAutorefresh( false )
+              .addBaseUrl    ( pathname.asUrl() );
+
+          zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
+
+          repo = Repository( impl );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
@@ -862,22 +865,21 @@ load_source (const string & alias, const string & filename, const string & type,
     }
 
     try {
-	manager->addSource (src);
-	count = src.resolvables().size();
-	cout << "Added source '" << alias << "' with " << count << " resolvables" << endl;
-	God->addResolvables( src.resolvables(), (alias == "@system") );
-//	print_pool ();
+	count = repo.resolvables().size();
+	cout << "Added repository '" << alias << "' with " << count << " resolvables" << endl;
+	God->addResolvables( repo.resolvables(), (alias == "@system") );
 
 	cout << "Loaded " << count << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
     }
     catch ( Exception & excpt_r ) {
 	ZYPP_CAUGHT (excpt_r);
-	cout << "Loaded NO package(s) from " << src << endl;
+	cout << "Loaded NO package(s) from " << repo << endl;
 	count = -1;
     }
 
-	if(set_licence)
-		set_licence_Pool();
+    if(set_licence)
+      set_licence_Pool();
+
     return count;
 }
 
@@ -1042,7 +1044,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	    else {
 		MIL << "Setting architecture to '" << architecture << "'" << endl;
 		God->setArchitecture( Arch( architecture ) );
-                setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);                
+                setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
 	    }
 	} else if (node->equals ("locale")) {
 	    string loc = node->getProp ("name");
@@ -1330,27 +1332,11 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    verify = true;
 
 	} else if (node->equals ("current")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		resolver->setCurrentChannel (source);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (current)" << endl;
-	    }
-
 	} else if (node->equals ("subscribe")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		source->setSubscription (true);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (subscribe)" << endl;
-	    }
-
 	} else if (node->equals ("install")) {
 
 	    string source_alias = node->getProp ("channel");
@@ -1666,7 +1652,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
             string get_licence = node->getProp ("getlicence");
-            string verbose = node->getProp ("verbose");            
+            string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
@@ -1846,7 +1832,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 
     print_sep ();
 
-    resolver = new solver::detail::Resolver( pool );
+    solver::detail::Resolver_Ptr resolver = new solver::detail::Resolver( pool );
     resolver->setArchitecture( God->architecture() );
     resolver->setTesting ( true );			// continue despite missing target
     resolver->setForceResolve( forceResolve );
@@ -1872,27 +1858,11 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	    verify = true;
 
 	} else if (node->equals ("current")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		resolver->setCurrentChannel (source);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (current)" << endl;
-	    }
-
 	} else if (node->equals ("subscribe")) {
-
+            // unsupported
 	    string source_alias = node->getProp ("channel");
-	    Source_Ref source = manager->findSource (source_alias);
-
-	    if (source) {
-//FIXME		source->setSubscription (true);
-	    } else {
-		cerr << "Unknown source '" << source_alias << "' (subscribe)" << endl;
-	    }
-
 	} else if (node->equals ("install")) {
 
 	    string source_alias = node->getProp ("channel");
@@ -2183,7 +2153,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
             string get_licence = node->getProp ("getlicence");
-            string verbose = node->getProp ("verbose");                        
+            string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
@@ -2368,7 +2338,8 @@ main (int argc, char *argv[])
     zypp::base::LogControl::instance().logfile( "-" );
 
     forceResolve = false;
-    manager = SourceManager::sourceManager();
+
+    manager = makeRepoManager( "/tmp/myrepos" );
 
     try {
 	God = zypp::getZYpp();
@@ -2388,7 +2359,7 @@ main (int argc, char *argv[])
     DBG << "init_libzypp() done" << endl;
 
     process_xml_test_file (string (argv[1]), God->pool());
-
+    
     QApplication app(argc, argv);
 
     QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
@@ -2398,7 +2369,5 @@ main (int argc, char *argv[])
     dialog->show();
 
     return app.exec();    
-
-    return 0;
 }
 
