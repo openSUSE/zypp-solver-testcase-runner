@@ -46,7 +46,7 @@ public:
 	/** */
 	virtual bool installOnly() const;
 	/** */
-	virtual unsigned sourceMediaNr() const;
+	virtual unsigned mediaNr() const;
 	/** */
 	virtual Repository repository() const;
 

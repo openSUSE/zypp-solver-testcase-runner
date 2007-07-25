@@ -10,7 +10,6 @@
   <mediaid/>
 </setup>
 <trial>
-  <install channel="selections" kind="selection" name="default"/>
   <install channel="packages" package="kernel-default"/>
 <reportproblems/>
   <showpool prefix="xxxxxx" verbose="true"/>

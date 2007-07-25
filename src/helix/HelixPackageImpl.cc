@@ -66,7 +66,7 @@ ByteCount HelixPackageImpl::archivesize() const
 bool HelixPackageImpl::installOnly() const
 { return _install_only; }
 
-unsigned int HelixPackageImpl::sourceMediaNr() const
+unsigned int HelixPackageImpl::mediaNr() const
 { return _mediaid; }
 
 
