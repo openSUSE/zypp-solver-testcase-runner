@@ -39,18 +39,6 @@ Repository
 HelixScriptImpl::repository() const
 { return _source; }
 
-/** Get the script to perform the change */
-Pathname HelixScriptImpl::do_script() const
-{ return "do_script"; }
-
-/** Get the script to undo the change */
-Pathname HelixScriptImpl::undo_script() const
-{ return "undo_script"; }
-
-/** Check whether script to undo the change is available */
-bool HelixScriptImpl::undo_available() const
-{ return false; }
-
 ByteCount HelixScriptImpl::size() const
 { return _size_installed; }
 
