@@ -92,18 +92,18 @@ AC_OUTPUT(
 	solver/solver.test/Makefile	\
 	solver/src/Makefile	\
 	src/helix/Makefile	\
-	solver/single.out/Makefile	\
-	source/Makefile	\
-	parser/Makefile	\
-	parser/lib/Makefile	\
-	parser/config/Makefile	\
-	parser/parser.test/Makefile	\
-	parser/tests/Makefile	\
-	target/Makefile	\
-	target/config/Makefile	\
-	target/lib/Makefile	\
-	target/target.test/Makefile	\
-	target/tests/Makefile
+	solver/single.out/Makefile
+dnl	source/Makefile	\
+dnl	parser/Makefile	\
+dnl	parser/lib/Makefile	\
+dnl	parser/config/Makefile	\
+dnl	parser/parser.test/Makefile	\
+dnl	parser/tests/Makefile	\
+dnl	target/Makefile	\
+dnl	target/config/Makefile	\
+dnl	target/lib/Makefile	\
+dnl	target/target.test/Makefile	\
+dnl	target/tests/Makefile
 
 )
 dnl ==================================================
