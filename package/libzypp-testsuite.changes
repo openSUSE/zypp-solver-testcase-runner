@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Wed Jul 25 12:34:30 CEST 2007 - schubi@suse.de
+
+- new repo handling of libzypp included
+- rev 6197
+- ver 3.14.6 
+
+-------------------------------------------------------------------
 Fri Jul  6 16:47:28 CEST 2007 - schubi@suse.de
 
 - enable "make check" for ix68 and ia64 in autobuild
