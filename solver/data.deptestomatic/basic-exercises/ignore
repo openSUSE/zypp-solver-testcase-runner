@@ -59,3 +59,5 @@ exercise-59-force-test.xml
 exercise-59-test.xml
 exercise-60-test.xml
 exercise-solution-order-test.xml
+# addProvide is obsolte
+provide-1-test.xml
