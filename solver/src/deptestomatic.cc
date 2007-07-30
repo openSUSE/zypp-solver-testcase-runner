@@ -102,6 +102,8 @@ static bool forceResolve;
 static int maxSolverPasses = 0;
 
 static int sys_res_install = 0;
+static bool keepExtras = false;
+
 
 typedef list<unsigned int> ChecksumList;
 typedef set<PoolItem_Ref> PoolItemSet;
@@ -210,33 +212,6 @@ string2kind (const std::string & str)
 // helper functions
 
 typedef list<string> StringList;
-
-void addDependencies( const string & kind, const string & name,
-                      const DepKind & depKind, const ResPool & pool )
-{
-    CapSet capset;
-    vector<string> names;
-    str::split( name, back_inserter(names), "," );
-    for (unsigned i=0; i < names.size(); i++) {
-        capset.insert (CapFactory().parse (string2kind (kind), names[i]));
-    }
-
-    ResPool::AdditionalCapSet aCapSet;
-    aCapSet[ResStatus::USER] = capset;
-
-    switch (depKind) {
-        case PROVIDE:
-             pool.setAdditionalProvide( aCapSet );
-            break;
-        case CONFLICT:
-             pool.setAdditionalConflict( aCapSet );
-            break;
-        case REQUIRE:
-             pool.setAdditionalRequire( aCapSet );
-            break;
-    }
-}
-
 
 static void
 assemble_install_cb (PoolItem_Ref poolItem, const ResStatus & status, void *data)
@@ -1554,14 +1529,24 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 		    }
 		}
 	    }
-	} else if (node->equals ("addProvide")) {
-	    addDependencies (node->getProp ("kind") , node->getProp ("name"), PROVIDE, pool);
 	} else if (node->equals ("addConflict")) {
-	    addDependencies (node->getProp ("kind") , node->getProp ("name"), CONFLICT, pool);
+            vector<string> names;
+            str::split( node->getProp ("name"), back_inserter(names), "," );
+            for (unsigned i=0; i < names.size(); i++) {
+                resolver->addExtraConflict(CapFactory().parse (string2kind (node->getProp ("kind")),
+                                                                 names[i]));
+            }
+            keepExtras = true;
 	} else if (node->equals ("addRequire")) {
-	    addDependencies (node->getProp ("kind") , node->getProp ("name"), REQUIRE, pool);
+            vector<string> names;
+            str::split( node->getProp ("name"), back_inserter(names), "," );
+            for (unsigned i=0; i < names.size(); i++) {
+                resolver->addExtraCapability(CapFactory().parse (string2kind (node->getProp ("kind")),
+                                                                 names[i]));
+            }
+            keepExtras = true;
 	} else if (node->equals ("reportproblems")) {
-	    if (resolver->resolvePool() == true
+	    if (resolver->resolvePool(false, keepExtras) == true
                 && node->getProp ("ignoreValidSolution").empty()) {
 		RESULT << "No problems so far" << endl;
 	    }
@@ -1629,7 +1614,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 		RESULT << "Wrong solution number (0-" << solutionCounter << ")" <<endl;
 	    } else {
 		// resolve and check it again
-		if (resolver->resolvePool() == true) {
+		if (resolver->resolvePool(false, keepExtras) == true) {
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
@@ -1778,12 +1763,12 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	resolver->verifySystem ();
 #if 0
     else if (distupgrade)
-	resolver->resolvePool();
+	resolver->resolvePool(false, keepExtras);
     else
 	resolver->resolveDependencies (established);
 #else
     else
-	resolver->resolvePool();
+	resolver->resolvePool(false,keepExtras);
 
 #endif
 
@@ -2063,7 +2048,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	    }
 
 	} else if (node->equals ("reportproblems")) {
-	    if (resolver->resolvePool() == true) {
+	    if (resolver->resolvePool(false, keepExtras) == true) {
 		RESULT << "No problems so far" << endl;
 	    }
 	    else {
@@ -2130,7 +2115,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 		RESULT << "Wrong solution number (0-" << solutionCounter << ")" <<endl;
 	    } else {
 		// resolve and check it again
-		if (resolver->resolvePool() == true) {
+		if (resolver->resolvePool(false, keepExtras) == true) {
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
