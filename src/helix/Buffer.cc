@@ -44,7 +44,7 @@
 
 
 using namespace std;
-
+using namespace zypp;
 
 //---------------------------------------------------------------------------
 // compress/uncompress stuff
@@ -472,7 +472,7 @@ memory_looks_compressed (const unsigned char *buffer, size_t size)
  */
 
 Buffer *
-bufferMapFile (const string & filename)
+bufferMapFile (const Pathname & filename)
 {
     struct stat s;
     int fd;

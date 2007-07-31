@@ -144,6 +144,7 @@ class HelixParser
     void endElement(const std::string & token);
 
     void parseChunk (const char *xmlbuf, size_t size, HelixSourceImpl *impl);
+    void parseFile (const Pathname &p, HelixSourceImpl *impl);
     void done (void);
 
   private:

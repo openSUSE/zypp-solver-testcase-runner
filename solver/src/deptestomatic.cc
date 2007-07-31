@@ -785,7 +785,8 @@ load_source (const string & alias, const string & filename, const string & type,
     if (type == "url") {
 	try {
           cout << "Load from Url '" << filename << "'" << endl;
-
+          MIL << "Load from Url '" << filename << "'" << endl;
+          
           RepoInfo nrepo;
           nrepo
               .setAlias      ( alias )
@@ -809,7 +810,8 @@ load_source (const string & alias, const string & filename, const string & type,
     else {
 	try {
           cout << "Load from File '" << pathname << "'" << endl;
-
+          MIL << "Load from File '" << pathname << "'" << endl;
+          
           RepoInfo nrepo;
           nrepo
               .setAlias      ( alias )
@@ -819,8 +821,9 @@ load_source (const string & alias, const string & filename, const string & type,
               .addBaseUrl    ( pathname.asUrl() );
 
           zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
-
+          
           repo = Repository( impl );
+          repo.resolvables();
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);

@@ -28,7 +28,7 @@
 #define BUFFER_H
 
 #include <sys/types.h>
-#include <string>
+#include <zypp/Pathname.h>
 
 typedef unsigned char byte;
 
@@ -46,12 +46,12 @@ typedef struct {
     bool is_mmapped;
 } Buffer;
 
-Buffer *bufferMapFile (const std::string & filename);
+Buffer *bufferMapFile (const zypp::Pathname & filename);
 void bufferUnmapFile (Buffer *buffer);
 
 
 xmlDoc *parseXmlFromBuffer (const char *input_buffer, size_t input_length);
-xmlDoc *parseXmlFromFile (const std::string & filename);
+xmlDoc *parseXmlFromFile (const zypp::Pathname & filename);
 
 
 #endif // BUFFER_H
