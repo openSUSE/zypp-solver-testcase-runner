@@ -347,7 +347,7 @@ HelixParser::releaseBuffer ()
 void
 HelixParser::parseChunk(const char *xmlbuf, size_t size, HelixSourceImpl *impl)
 {
-//    _DBG("HelixParser") << "HelixParser::parseChunk(" << xmlbuf << "...," << (long)size << ")" << endl;
+    MIL << " << buffer size: " << (long)size << "" << endl;
 
     xmlSubstituteEntitiesDefault(true);
 
@@ -360,6 +360,20 @@ HelixParser::parseChunk(const char *xmlbuf, size_t size, HelixSourceImpl *impl)
     xmlParseChunk(_xml_context, xmlbuf, size, 0);
 }
 
+void HelixParser::parseFile (const Pathname &p, HelixSourceImpl *impl)
+{
+  MIL <<  endl;
+
+  xmlSubstituteEntitiesDefault(true);
+
+    if (!_xml_context) {
+	_xml_context = xmlCreatePushParserCtxt(&sax_handler, this, NULL, 0, NULL);
+    }
+
+    _impl = impl;
+
+    xmlParseFile(p.c_str());
+}
 
 void
 HelixParser::done()

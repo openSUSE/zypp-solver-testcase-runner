@@ -37,6 +37,8 @@ namespace zypp {
 int 
 extractHelixBuffer (const char *buf, size_t len, HelixSourceImpl *impl)
 {
+  ZYPP_THROW(Exception("I disabled this crap. dmacvicar"));
+  
     MIL << "extractHelixBuffer()" << endl;
 
     if (buf == NULL || len == 0)
@@ -51,9 +53,10 @@ extractHelixBuffer (const char *buf, size_t len, HelixSourceImpl *impl)
 
 
 int
-extractHelixFile (const std::string & filename, HelixSourceImpl *impl)
+extractHelixFile (const Pathname & filename, HelixSourceImpl *impl)
 {
-    MIL << "extractHelixFile(" << filename << ")" << endl;
+  
+    MIL << "'" << filename << "'" << endl;
 
     Buffer *buf;
 

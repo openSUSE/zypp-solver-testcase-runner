@@ -38,7 +38,7 @@ namespace zypp {
 class HelixSourceImpl;
 
 int extractHelixBuffer (const char *data, size_t len, HelixSourceImpl *impl);
-int extractHelixFile (const std::string & filename, HelixSourceImpl *impl);
+int extractHelixFile (const Pathname & filename, HelixSourceImpl *impl);
 
 }
 

@@ -54,8 +54,16 @@ HelixSourceImpl::createResolvables()
 {
     _source = Repository(this);
 
-    MIL << "HelixSourceImpl::createResolvables(" << _pathname << ", for source " << _source.info().alias() << ")" << endl;
-    extractHelixFile (_pathname.asString(), this);
+    MIL << " (" << _pathname << ", for source " << _source.info().alias() << ")" << endl;
+    
+    if ( ! PathInfo(_pathname).isExist() )
+      ZYPP_THROW(Exception(_pathname.asString() + " does not exist"));
+    
+    if ( extractHelixFile(_pathname, this) != 0 )
+      ZYPP_THROW(Exception("Error in extractHelixFile"));
+                 
+    MIL << "store sze: " << _store.size() << endl;
+    //MIL << " N: " << resolvables().size() << endl;
 }
 
 
@@ -302,6 +310,7 @@ HelixSourceImpl::createProduct (const HelixParser & parsed)
 void
 HelixSourceImpl::parserCallback (const HelixParser & parsed)
 {
+  MIL << endl;
   try {
     if (parsed.kind == ResTraits<Package>::kind) {
 	Package::Ptr p = createPackage (parsed);
