@@ -52,7 +52,7 @@ namespace zypp {
 
     public:
       /** Default ctor */
-      HelixSourceImpl( const RepoInfo &info = RepoInfo() );
+      HelixSourceImpl( const Pathname &file, const RepoInfo &info = RepoInfo() );
       virtual ~HelixSourceImpl();
 
     private:

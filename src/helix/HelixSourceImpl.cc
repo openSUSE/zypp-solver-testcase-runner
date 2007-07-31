@@ -41,9 +41,9 @@ using namespace zypp;
 
 //---------------------------------------------------------------------------
 
-HelixSourceImpl::HelixSourceImpl(const RepoInfo &info)
+HelixSourceImpl::HelixSourceImpl( const Pathname &file, const RepoInfo &info)
     : RepositoryImpl(info),
-      _pathname( info.baseUrlsBegin()->getPathName() )
+      _pathname(file)
 {}
 
 HelixSourceImpl::~HelixSourceImpl()

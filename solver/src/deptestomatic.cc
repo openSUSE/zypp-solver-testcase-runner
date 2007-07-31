@@ -778,6 +778,7 @@ static int
 load_source (const string & alias, const string & filename, const string & type, bool system_packages)
 {
     Pathname pathname = globalPath + filename;
+    MIL << "'" << pathname << "'" << endl;
     int count = 0;
 
     Repository repo;
@@ -819,8 +820,8 @@ load_source (const string & alias, const string & filename, const string & type,
               .setEnabled    ( true )
               .setAutorefresh( false )
               .addBaseUrl    ( pathname.asUrl() );
-
-          zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
+          
+          zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( pathname, nrepo ) );
           
           repo = Repository( impl );
           repo.resolvables();
