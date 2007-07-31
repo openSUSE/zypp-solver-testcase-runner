@@ -70,7 +70,7 @@ int main( int argc, char * argv[] )
 	.setAutorefresh( false )
 	.addBaseUrl    ( p.asUrl() );
 
-    zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
+    zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( p, nrepo ) );
 
     repo = Repository( impl );
     ResStore store = repo.resolvables();    
