@@ -102,8 +102,6 @@ static bool forceResolve;
 static int maxSolverPasses = 0;
 
 static int sys_res_install = 0;
-static bool keepExtras = false;
-
 
 typedef list<unsigned int> ChecksumList;
 typedef set<PoolItem_Ref> PoolItemSet;
@@ -1536,7 +1534,6 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
                 resolver->addExtraConflict(CapFactory().parse (string2kind (node->getProp ("kind")),
                                                                  names[i]));
             }
-            keepExtras = true;
 	} else if (node->equals ("addRequire")) {
             vector<string> names;
             str::split( node->getProp ("name"), back_inserter(names), "," );
@@ -1544,9 +1541,8 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
                 resolver->addExtraCapability(CapFactory().parse (string2kind (node->getProp ("kind")),
                                                                  names[i]));
             }
-            keepExtras = true;
 	} else if (node->equals ("reportproblems")) {
-	    if (resolver->resolvePool(false, keepExtras) == true
+	    if (resolver->resolvePool() == true
                 && node->getProp ("ignoreValidSolution").empty()) {
 		RESULT << "No problems so far" << endl;
 	    }
@@ -1614,7 +1610,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 		RESULT << "Wrong solution number (0-" << solutionCounter << ")" <<endl;
 	    } else {
 		// resolve and check it again
-		if (resolver->resolvePool(false, keepExtras) == true) {
+		if (resolver->resolvePool() == true) {
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
@@ -1763,12 +1759,12 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	resolver->verifySystem ();
 #if 0
     else if (distupgrade)
-	resolver->resolvePool(false, keepExtras);
+	resolver->resolvePool();
     else
 	resolver->resolveDependencies (established);
 #else
     else
-	resolver->resolvePool(false,keepExtras);
+	resolver->resolvePool();
 
 #endif
 
@@ -2048,7 +2044,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	    }
 
 	} else if (node->equals ("reportproblems")) {
-	    if (resolver->resolvePool(false, keepExtras) == true) {
+	    if (resolver->resolvePool() == true) {
 		RESULT << "No problems so far" << endl;
 	    }
 	    else {
@@ -2115,7 +2111,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 		RESULT << "Wrong solution number (0-" << solutionCounter << ")" <<endl;
 	    } else {
 		// resolve and check it again
-		if (resolver->resolvePool(false, keepExtras) == true) {
+		if (resolver->resolvePool() == true) {
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
