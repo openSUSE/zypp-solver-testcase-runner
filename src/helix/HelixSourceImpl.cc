@@ -310,7 +310,6 @@ HelixSourceImpl::createProduct (const HelixParser & parsed)
 void
 HelixSourceImpl::parserCallback (const HelixParser & parsed)
 {
-  MIL << endl;
   try {
     if (parsed.kind == ResTraits<Package>::kind) {
 	Package::Ptr p = createPackage (parsed);
