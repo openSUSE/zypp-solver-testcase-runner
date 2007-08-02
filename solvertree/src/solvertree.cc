@@ -853,7 +853,7 @@ load_source (const string & alias, const string & filename, const string & type,
               .setAutorefresh( false )
               .addBaseUrl    ( pathname.asUrl() );
 
-          zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( nrepo ) );
+          zypp::repo::RepositoryImpl_Ptr impl( new HelixSourceImpl( pathname, nrepo ) );
 
           repo = Repository( impl );
 	}
