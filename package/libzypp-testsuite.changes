@@ -1,9 +1,11 @@
 -------------------------------------------------------------------
 Mon Jul 30 14:14:38 CEST 2007 - schubi@suse.de
 
+- solvertree added (grafical interface)
 - Not using pool for retrieving additional dependencies which has to be
   regarded by the solver.
-- r 6282 
+- r 6400 
+- ver 3.14.7
 
 -------------------------------------------------------------------
 Wed Jul 25 12:34:30 CEST 2007 - schubi@suse.de
