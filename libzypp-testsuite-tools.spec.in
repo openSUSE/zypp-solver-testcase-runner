@@ -11,8 +11,8 @@
 # norootforbuild
 
 Name:			libzypp-testsuite-tools
-BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes dejagnu
-Requires:       libzypp
+BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes dejagnu qt3-devel libqdialogsolver1-devel
+Requires:       libzypp qt3 libqdialogsolver1
 License:		GPL
 BuildRoot:		%{_tmppath}/%{name}-%{version}-build
 Autoreqprov:	on

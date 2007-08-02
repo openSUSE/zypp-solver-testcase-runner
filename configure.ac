@@ -93,6 +93,8 @@ AC_OUTPUT(
 	solver/src/Makefile	\
 	src/helix/Makefile	\
 	solver/single.out/Makefile
+	solvertree/Makefile	\
+	solvertree/src/Makefile	\
 dnl	source/Makefile	\
 dnl	parser/Makefile	\
 dnl	parser/lib/Makefile	\
