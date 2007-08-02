@@ -4160,7 +4160,7 @@
 >!> 2 problems found:
 >!> Problem:
 >!> Can't satisfy requirement kernel(default:mm) == fdd7a678f669cbe4 for novfs-kmp-default-1.2.0_2.6.16.21_0.8-9.2.i586
->!> 
+>!> === novfs-kmp-default-1.2.0_2.6.16.21_0.8-9.2.i586 ===
 >!>    Solution:
 >!>       delete novfs-kmp-default
 >!>       delete novfs-kmp-default-1.2.0_2.6.16.21_0.8-9.2.i586

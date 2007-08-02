@@ -863,7 +863,7 @@
 >!> 2 problems found:
 >!> Problem:
 >!> Can't satisfy requirement mono(gmime-sharp) == 2.2.0.0 for beagle-0.2.17-28.i586
->!> 
+>!> === beagle-0.2.17-28.i586 ===
 >!>    Solution:
 >!>       delete beagle
 >!>       delete beagle-0.2.17-28.i586
