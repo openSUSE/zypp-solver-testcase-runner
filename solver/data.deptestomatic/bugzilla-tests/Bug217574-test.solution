@@ -2755,7 +2755,7 @@
 >!> 2754: U__s_[S2:0][package]pinfo-0.6.8-41.i586
 >!> 2755: U__s_[S2:0][package]pingus-0.6.0-336.i586
 >!> 2756: U__s_[S2:0][package]pixmp-2.6-1072.i586
->!> 2757: U__s_[S2:0][package]pkg-config-0.21-4.i586
+>!> 2757: U_Th_[S2:0][package]pkg-config-0.21-4.i586
 >!> 2758: I_Th_[S1:0][package]pkgconfig-0.20-32.i586
 >!> 2759: U__s_[S2:0][package]planmaker-2006.11.17-10.i586
 >!> 2760: U__s_[S2:0][package]planner-0.14.1-33.i586
@@ -3870,7 +3870,7 @@
 >!> 2 problems found:
 >!> Problem:
 >!> Can't satisfy requirement yast2-storage == 2.15.4-2 for yast2-storage-debuginfo-2.15.4-2.i586
->!> 
+>!> === yast2-storage-debuginfo-2.15.4-2.i586 ===
 >!>    Solution:
 >!>       delete yast2-storage-debuginfo
 >!>       delete yast2-storage-debuginfo-2.15.4-2.i586
