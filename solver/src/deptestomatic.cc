@@ -794,9 +794,9 @@ load_source (const string & alias, const string & filename, const string & type,
               .setName       ( "namen sind schall und rauch" )
               .setEnabled    ( true )
               .setAutorefresh( false )
-              .addBaseUrl    ( Url( filename ) );
+              .addBaseUrl    ( Url(filename) );
 
-          manager.addRepository( nrepo );
+          //manager.addRepository( nrepo );
           manager.refreshMetadata( nrepo );
           manager.buildCache( nrepo );
 
