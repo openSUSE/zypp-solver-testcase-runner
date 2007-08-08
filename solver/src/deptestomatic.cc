@@ -489,8 +489,8 @@ print_solution (ResolverContext_Ptr context, int *count, ChecksumList & checksum
     cout << "Context Info:" << endl;
     context->spewInfo ();
 
-    cout << "Context Context:" << endl;
-    cout << *context << endl;
+//    cout << "Context Context:" << endl;
+//    cout << *context << endl;
 
     return;
 }
