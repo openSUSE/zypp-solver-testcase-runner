@@ -70,9 +70,6 @@ make %{?jobs:-j %jobs}
 %ifarch %ix86
 make check
 %endif
-%ifarch ia64
-make check
-%endif
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
