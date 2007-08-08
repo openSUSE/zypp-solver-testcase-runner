@@ -71,7 +71,11 @@ unsigned int HelixPackageImpl::mediaNr() const
 { return _mediaid; }
 
 Vendor HelixPackageImpl::vendor() const
-{ return _vendor; }
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
 
   /////////////////////////////////////////////////////////////////
 } // namespace zypp
