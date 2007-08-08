@@ -84,6 +84,7 @@ class HelixParser
     std::string summary;
     std::string description;
     std::string section;
+    std::string vendor;
     int fileSize;
     int installedSize;
     bool installOnly;

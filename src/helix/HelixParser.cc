@@ -480,6 +480,7 @@ HelixParser::toplevelStart(const std::string & token, const xmlChar **attrs)
 	release.clear();
 	arch = "noarch";
 	summary.clear();
+   vendor.clear();
 	description.clear();
 	section.clear();
 	kind = string2kind (token);	// needed for <update>..</update>, see updateStart
@@ -718,7 +719,8 @@ HelixParser::resolvableEnd (const std::string & token)
     } else if (token == "summary") {		summary = _text_buffer;
     } else if (token == "description") {	description = _text_buffer;
     } else if (token == "section") {		section = _text_buffer;
-    } else if (token == "arch") {		arch = _text_buffer;
+    } else if (token == "vendor") {		   vendor = _text_buffer;
+    } else if (token == "arch") {		   arch = _text_buffer;
     } else if (token == "filesize") {		fileSize = str::strtonum<long>(_text_buffer);
     } else if (token == "installedsize") {	installedSize = str::strtonum<long>(_text_buffer);
     } else if (token == "install_only") {	installOnly = true;
