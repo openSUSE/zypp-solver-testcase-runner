@@ -38,6 +38,7 @@ HelixPackageImpl::HelixPackageImpl (Repository source_r, const zypp::HelixParser
     , _size_installed(parsed.installedSize)
     , _size_archive(parsed.fileSize)
     , _mediaid(parsed.location)
+    , _vendor(parsed.vendor)
 {
 }
 
@@ -69,6 +70,8 @@ bool HelixPackageImpl::installOnly() const
 unsigned int HelixPackageImpl::mediaNr() const
 { return _mediaid; }
 
+Vendor HelixPackageImpl::vendor() const
+{ return _vendor; }
 
   /////////////////////////////////////////////////////////////////
 } // namespace zypp
