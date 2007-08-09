@@ -989,7 +989,9 @@ parse_xml_setup (XmlNode_Ptr node)
 	} else if (node->equals ("lock")) {
 
 	    string source_alias = node->getProp ("channel");
-	    string package_name = node->getProp ("package");
+	    string package_name = node->getProp ("name");
+	    if (package_name.empty())
+		package_name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
 
 	    PoolItem_Ref poolItem;
@@ -1633,7 +1635,9 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
-	    string package_name = node->getProp ("package");
+	    string package_name = node->getProp ("name");
+	    if (package_name.empty())
+		package_name = node->getProp ("package");            
 	    string kind_name = node->getProp ("kind");
 
 	    PoolItem_Ref poolItem;
@@ -1742,7 +1746,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	} else if (node->equals ("createTestcase")) {
 	    string path = node->getProp ("path");
             if (path.empty())
-                path = ".";
+                path = "./solverTestcase";
             Testcase testcase (path);
             testcase.createTestcase (*resolver);
 
