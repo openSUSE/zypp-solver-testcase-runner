@@ -8,6 +8,6 @@
   <channel name="3rd" file="vendor-update-package.xml"/>
 </setup>
 <trial>
-  <install channel="3rd" package="A"/>
+  <distupgrade/>
 </trial>
 </test>
