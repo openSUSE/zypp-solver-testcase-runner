@@ -21,6 +21,7 @@
   <install channel="sl10_selections" kind="selection" name="Laptop"/>
   <install channel="sl10_selections" kind="selection" name="default"/>
   <install channel="sl10_selections" kind="selection" name="Fonts"/>
+  <install channel="sl10_packages" kind="package" name="kernel-smp"/>
   <install channel="sl10_packages" kind="package" name="OpenOffice_org"/>
   <install channel="sl10_packages" kind="package" name="bluez-cups"/>
   <install channel="sl10_packages" kind="package" name="bluez-firmware"/>

@@ -10,6 +10,7 @@
 >!> Installing selection:Laptop from channel sl10_selections
 >!> Installing selection:default from channel sl10_selections
 >!> Installing selection:Fonts from channel sl10_selections
+>!> Installing kernel-smp from channel sl10_packages
 >!> Installing OpenOffice_org from channel sl10_packages
 >!> Installing bluez-cups from channel sl10_packages
 >!> Installing bluez-firmware from channel sl10_packages
@@ -1632,6 +1633,7 @@
 >!> install [1]kbd-1.12-56.i586[sl10_packages]
 >!> install [1]kdelibs3-3.5.1-37.i586[sl10_packages]
 >!> install [1]kernel-default-2.6.16-8.i586[sl10_packages]
+>!> install [1]kernel-smp-2.6.16-8.i586[sl10_packages]
 >!> install [1]kerry-0.1-2.i586[sl10_packages]
 >!> install [1]klogd-1.4.1-554.i586[sl10_packages]
 >!> install [1]kpowersave-0.6.0-3.i586[sl10_packages]
@@ -1724,6 +1726,7 @@
 >!> install [1]netcfg-10.1-2.noarch[sl10_packages]
 >!> install [1]netpbm-10.26.22-9.i586[sl10_packages]
 >!> install [1]novfs-kmp-default-1.2.0_2.6.16_8-8.i586[sl10_packages]
+>!> install [1]novfs-kmp-smp-1.2.0_2.6.16_8-8.i586[sl10_packages]
 >!> install [1]nscd-2.4-12.i586[sl10_packages]
 >!> install [1]ntfsprogs-1.11.2-10.i586[sl10_packages]
 >!> install [1]openct-0.6.6-11.i586[sl10_packages]
@@ -2863,7 +2866,7 @@
 >!> |unflag selection:Minimal+X11-10.1-35.noarch[sl10_selections]
 >!> |unflag selection:Minimal-10.1-35.noarch[sl10_selections]
 >!> |unflag selection:default-Gnome-10.1-35.noarch[sl10_selections]
->!> installs=1407, upgrades=0, uninstalls=0
+>!> installs=1409, upgrades=0, uninstalls=0
 >!> Solution #3:
 >!> install [1]3ddiag-0.731-3.i586[sl10_packages]
 >!> install [1]855resolution-0.4-13.i586[sl10_packages]
@@ -3053,6 +3056,7 @@
 >!> install [1]kbd-1.12-56.i586[sl10_packages]
 >!> install [1]kdelibs3-3.5.1-37.i586[sl10_packages]
 >!> install [1]kernel-bigsmp-2.6.16-8.i586[sl10_packages]
+>!> install [1]kernel-smp-2.6.16-8.i586[sl10_packages]
 >!> install [1]kerry-0.1-2.i586[sl10_packages]
 >!> install [1]klogd-1.4.1-554.i586[sl10_packages]
 >!> install [1]kpowersave-0.6.0-3.i586[sl10_packages]
@@ -3145,6 +3149,7 @@
 >!> install [1]netcfg-10.1-2.noarch[sl10_packages]
 >!> install [1]netpbm-10.26.22-9.i586[sl10_packages]
 >!> install [1]novfs-kmp-bigsmp-1.2.0_2.6.16_8-8.i586[sl10_packages]
+>!> install [1]novfs-kmp-smp-1.2.0_2.6.16_8-8.i586[sl10_packages]
 >!> install [1]nscd-2.4-12.i586[sl10_packages]
 >!> install [1]ntfsprogs-1.11.2-10.i586[sl10_packages]
 >!> install [1]openct-0.6.6-11.i586[sl10_packages]
@@ -4284,4 +4289,4 @@
 >!> |unflag selection:Minimal+X11-10.1-35.noarch[sl10_selections]
 >!> |unflag selection:Minimal-10.1-35.noarch[sl10_selections]
 >!> |unflag selection:default-Gnome-10.1-35.noarch[sl10_selections]
->!> installs=1407, upgrades=0, uninstalls=0
+>!> installs=1409, upgrades=0, uninstalls=0
