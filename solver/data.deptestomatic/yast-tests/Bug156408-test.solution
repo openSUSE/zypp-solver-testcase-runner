@@ -10,7 +10,7 @@
 >!> Installing selection:Kde-Desktop from channel sl10_selections
 >!> Installing selection:SuSE-Documentation from channel sl10_selections
 >!> Installing selection:Laptop from channel sl10_selections
->!> 3 problems found:
+>!> 2 problems found:
 >!> Problem:
 >!> Cannot install suse-release-10.0.42-18.i586[sl10_packages] because it is conflicting with sles-release
 >!> A conflict over suse-release-oss (suse-release-oss) requires the removal of to-be-installed suse-release-10.0.42-18.i586[sl10_packages]
@@ -29,18 +29,6 @@
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with compatible architecture.
->!> Problem:
->!> sles-release-9.90-19.i586[sles_packages] conflicts with other resolvables
->!> sles-release-9.90-19.i586[sles_packages] conflicts with:
->!>    Solution:
->!>       do not install sles-release
->!>       do not install sles-release-9.90-19.i586[sles_packages]
->!>    Solution:
->!>       do not install suse-release
->!>       do not install suse-release-10.0.42-18.i586[sl10_packages]
->!>    Solution:
->!>       Ignore this conflict of sles-release
->!>       
 >!> Taking solution: 0
 >!> For problem:     1
 >!> 2 problems found:
