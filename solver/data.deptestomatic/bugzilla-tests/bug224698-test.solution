@@ -4168,14 +4168,14 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Taking solution: 1
 >!> For problem:     1
 >!> No problems so far

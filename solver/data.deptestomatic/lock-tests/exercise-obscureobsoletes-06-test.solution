@@ -4,7 +4,7 @@
 >!> 1 problems found:
 >!> Problem:
 >!> bar2-1.0-1.noarch is locked and cannot be uninstalled.
->!> barold2 obsoletes bar2-1.0-1.noarch. But bar2-1.0-1.noarch cannot be deleted because it is locked.
+>!> barold2 obsoletes bar2-1.0-1.noarch. But bar2-1.0-1.noarch cannot be deleted, because it is locked.
 >!>    Solution:
 >!>       unlock bar2
 >!>       

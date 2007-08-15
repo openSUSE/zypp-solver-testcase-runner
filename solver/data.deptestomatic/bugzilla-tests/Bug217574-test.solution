@@ -3878,7 +3878,7 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
 >!> Problem:
 >!> smartmontools-5.36.cvs20061025-15.i586[3] cannot be installed due to missing dependencies

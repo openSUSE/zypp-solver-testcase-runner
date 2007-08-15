@@ -1,8 +1,8 @@
 >!> Installing sendmail from channel test
 >!> 1 problems found:
 >!> Problem:
->!> Cannot install sendmail-2.0-1.noarch[test] because it is conflicting with smail
->!> A conflict over MTA (MTA) requires the removal of to-be-installed sendmail-2.0-1.noarch[test]
+>!> Cannot install sendmail-2.0-1.noarch[test], because it is conflicting with smail
+>!> A conflict over MTA (MTA) requires the removal of sendmail-2.0-1.noarch[test] which is scheduled for installation
 >!>    Solution:
 >!>       do not install sendmail
 >!>       do not install sendmail-2.0-1.noarch[test]

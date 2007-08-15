@@ -5,7 +5,7 @@
 >!> There are no installable providers of A == 1.1 for B-1.0-2.i686[test]
 >!>    Solution:
 >!>       Install A although it would change the architecture
->!>       A-1.1-2.i686[test] provides this dependency but would changed the architecture of the installed item
+>!>       A-1.1-2.i686[test] provides this dependency, but would change the architecture of the installed item
 >!>    Solution:
 >!>       do not install B
 >!>       do not install B-1.0-2.i686[test]

@@ -9741,25 +9741,10 @@
 >!> Uninstalling smlnj-debuginfo
 >!> Uninstalling sauerbraten
 >!> Uninstalling y2pmsh
->!> 2 problems found:
->!> Problem:
->!> selection:Gnome-.noarch has missing dependencies
->!> There are no alternative installed providers of Basis-Sound for selection:Gnome-.noarch
->!>    Solution:
->!>       keep Basis-Sound
->!>       keep selection:Basis-Sound-.noarch
->!>    Solution:
->!>       delete Gnome
->!>       delete selection:Gnome-.noarch
->!>    Solution:
->!>       Ignore this requirement just here
->!>       
->!>    Solution:
->!>       Ignore this requirement generally
->!>       
+>!> 1 problems found:
 >!> Problem:
 >!> selection:Kde-Desktop-.noarch has missing dependencies
->!> There are no alternative installed providers of Basis-Sound for selection:Kde-Desktop-.noarch
+>!> There are no alternative providers of Basis-Sound installed for selection:Kde-Desktop-.noarch
 >!>    Solution:
 >!>       keep Basis-Sound
 >!>       keep selection:Basis-Sound-.noarch
@@ -9770,5 +9755,5 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       

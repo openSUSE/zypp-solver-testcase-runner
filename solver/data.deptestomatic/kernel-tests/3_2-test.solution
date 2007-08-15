@@ -4,11 +4,11 @@
 >!> Installing kernel-default from channel sl10_packages
 >!> 2 problems found:
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
 >!> tpctl-4.17-17.i586[sl10_packages] cannot be installed due to missing dependencies
 >!> There are no installable providers of tpctl-kmp for tpctl-4.17-17.i586[sl10_packages]

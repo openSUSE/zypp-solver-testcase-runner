@@ -12,8 +12,8 @@
 >!> Installing selection:Laptop from channel sl10_selections
 >!> 2 problems found:
 >!> Problem:
->!> Cannot install suse-release-10.0.42-18.i586[sl10_packages] because it is conflicting with sles-release
->!> A conflict over suse-release-oss (suse-release-oss) requires the removal of to-be-installed suse-release-10.0.42-18.i586[sl10_packages]
+>!> Cannot install suse-release-10.0.42-18.i586[sl10_packages], because it is conflicting with sles-release
+>!> A conflict over suse-release-oss (suse-release-oss) requires the removal of suse-release-10.0.42-18.i586[sl10_packages] which is scheduled for installation
 >!>    Solution:
 >!>       do not install suse-release
 >!>       do not install suse-release-10.0.42-18.i586[sl10_packages]
@@ -24,21 +24,21 @@
 >!>       Ignore this conflict of suse-release
 >!>       
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Taking solution: 0
 >!> For problem:     1
 >!> 2 problems found:
 >!> 2 problems found:
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
 >!> product:SUSE LINUX-1.noarch[sl10_packages] cannot be installed due to missing dependencies
 >!> There are no installable providers of suse-release == 10.0.42 for product:SUSE LINUX-1.noarch[sl10_packages]

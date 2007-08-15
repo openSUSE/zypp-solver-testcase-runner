@@ -8,8 +8,8 @@
 >!> Installing pattern:x11.x86_64 from channel 1
 >!> 2 problems found:
 >!> Problem:
->!> Cannot install zypper-0.8.7-2.x86_64[1] because it is conflicting with openSUSE-release
->!> A conflict over rug (rug <= 7.1.100.0) requires the removal of to-be-installed zypper-0.8.7-2.x86_64[1]
+>!> Cannot install zypper-0.8.7-2.x86_64[1], because it is conflicting with openSUSE-release
+>!> A conflict over rug (rug <= 7.1.100.0) requires the removal of zypper-0.8.7-2.x86_64[1] which is scheduled for installation
 >!>    Solution:
 >!>       do not install zypper
 >!>       do not install zypper-0.8.7-2.x86_64[1]
@@ -20,11 +20,11 @@
 >!>       Ignore this conflict of zypper
 >!>       
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Taking solution: 2
 >!> For problem:     1
 >!> No problems so far
@@ -438,7 +438,7 @@
 >!> install libext2fs2-1.40.2-8.x86_64[1]
 >!> install libgadu-1.7.1-20.x86_64[1]
 >!> install libgalago-0.5.2-39.x86_64[1]
->!> install libgcc41-32bit-4.1.3_20070724-5.x86_64[1]
+>!> install libgcc42-32bit-4.2.1_20070724-4.x86_64[1]
 >!> install libgcc42-4.2.1_20070724-4.x86_64[1]
 >!> install libgcj42-4.2.1_20070724-5.x86_64[1]
 >!> install libgcrypt-1.2.4-29.x86_64[1]
@@ -1150,12 +1150,12 @@
 >!> |unflag libapparmor1-2.1-5.i586[1]
 >!> |unflag libbonobo-2.18.0-29.i586[2]
 >!> |unflag libbonobo-2.19.6-3.i586[1]
+>!> |unflag libgcc41-32bit-4.1.3_20070724-5.x86_64[1]
+>!> |unflag libgcc41-32bit-4.1.3_20070724-5.x86_64[2]
 >!> |unflag libgcc41-4.1.3_20070724-2.i586[2]
 >!> |unflag libgcc41-4.1.3_20070724-5.i586[1]
 >!> |unflag libgcc41-4.1.3_20070724-5.x86_64[1]
 >!> |unflag libgcc41-4.1.3_20070724-5.x86_64[2]
->!> |unflag libgcc42-32bit-4.2.1_20070724-4.x86_64[1]
->!> |unflag libgcc42-32bit-4.2.1_20070724-4.x86_64[2]
 >!> |unflag libgcc42-4.2.1_20070724-3.i586[2]
 >!> |unflag libgcc42-4.2.1_20070724-4.i586[1]
 >!> |unflag libgcj42-4.2.1_20070724-3.i586[2]
