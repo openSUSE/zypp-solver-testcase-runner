@@ -843,11 +843,11 @@
 >!> Installing zypper.i586 from channel 4
 >!> 2 problems found:
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
 >!> beagle-0.2.17-29.i586[4] cannot be installed due to missing dependencies
 >!> There are no installable providers of mono(gmime-sharp) == 2.2.0.0 for beagle-0.2.17-29.i586[4]
@@ -871,27 +871,27 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Taking solution: 0
 >!> For problem:     1
 >!> 5 problems found:
 >!> 5 problems found:
 >!> Problem:
->!> No valid solution found with only resolvables of best architecture.
->!> With this run only resolvables with the best architecture has been regarded.
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
->!>       Regarding all resolvables with compatible architecture.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
 >!> beagle-index-10.3_20070203-53.i586[4] has missing dependencies
->!> There are no alternative installed providers of beagle for beagle-index-10.3_20070203-53.i586[4]
+>!> There are no alternative providers of beagle installed for beagle-index-10.3_20070203-53.i586[4]
 >!>    Solution:
 >!>       keep beagle
 >!>       keep beagle-0.2.17-28.i586
@@ -902,11 +902,11 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
 >!> Problem:
 >!> kdebase3-beagle-3.5.7-30.i586[4] has missing dependencies
->!> There are no alternative installed providers of beagle >= 0.2.4 for kdebase3-beagle-3.5.7-30.i586[4]
+>!> There are no alternative providers of beagle >= 0.2.4 installed for kdebase3-beagle-3.5.7-30.i586[4]
 >!>    Solution:
 >!>       keep beagle
 >!>       keep beagle-0.2.17-28.i586
@@ -917,11 +917,11 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
 >!> Problem:
 >!> kerry-0.2.2-53.i586[4] has missing dependencies
->!> There are no alternative installed providers of beagle >= 0.2.6 for kerry-0.2.2-53.i586[4]
+>!> There are no alternative providers of beagle >= 0.2.6 installed for kerry-0.2.2-53.i586[4]
 >!>    Solution:
 >!>       keep beagle
 >!>       keep beagle-0.2.17-28.i586
@@ -932,11 +932,11 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
 >!> Problem:
 >!> kio_beagle-0.3.1-85.i586[4] has missing dependencies
->!> There are no alternative installed providers of beagle >= 0.2.4 for kio_beagle-0.3.1-85.i586[4]
+>!> There are no alternative providers of beagle >= 0.2.4 installed for kio_beagle-0.3.1-85.i586[4]
 >!>    Solution:
 >!>       keep beagle
 >!>       keep beagle-0.2.17-28.i586
@@ -947,5 +947,5 @@
 >!>       Ignore this requirement just here
 >!>       
 >!>    Solution:
->!>       Ignore this requirement generally
+>!>       Generally ignore this requirement
 >!>       
