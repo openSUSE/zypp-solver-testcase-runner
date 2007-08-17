@@ -8,7 +8,7 @@
 >!> Installing pattern:x11.x86_64 from channel 1
 >!> 2 problems found:
 >!> Problem:
->!> Cannot install zypper-0.8.7-2.x86_64[1], because it is conflicting with openSUSE-release
+>!> Cannot install zypper, because it is conflicting with openSUSE-release
 >!> A conflict over rug (rug <= 7.1.100.0) requires the removal of zypper-0.8.7-2.x86_64[1] which is scheduled for installation
 >!>    Solution:
 >!>       do not install zypper

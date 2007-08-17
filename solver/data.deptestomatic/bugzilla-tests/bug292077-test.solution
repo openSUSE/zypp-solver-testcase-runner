@@ -849,7 +849,7 @@
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
->!> beagle-0.2.17-29.i586[4] cannot be installed due to missing dependencies
+>!> beagle cannot be installed due to missing dependencies
 >!> There are no installable providers of mono(gmime-sharp) == 2.2.0.0 for beagle-0.2.17-29.i586[4]
 >!>    Solution:
 >!>       do not install beagle
@@ -890,7 +890,7 @@
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
->!> beagle-index-10.3_20070203-53.i586[4] has missing dependencies
+>!> beagle-index has missing dependencies
 >!> There are no alternative providers of beagle installed for beagle-index-10.3_20070203-53.i586[4]
 >!>    Solution:
 >!>       keep beagle
@@ -905,7 +905,7 @@
 >!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> kdebase3-beagle-3.5.7-30.i586[4] has missing dependencies
+>!> kdebase3-beagle has missing dependencies
 >!> There are no alternative providers of beagle >= 0.2.4 installed for kdebase3-beagle-3.5.7-30.i586[4]
 >!>    Solution:
 >!>       keep beagle
@@ -920,7 +920,7 @@
 >!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> kerry-0.2.2-53.i586[4] has missing dependencies
+>!> kerry has missing dependencies
 >!> There are no alternative providers of beagle >= 0.2.6 installed for kerry-0.2.2-53.i586[4]
 >!>    Solution:
 >!>       keep beagle
@@ -935,7 +935,7 @@
 >!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> kio_beagle-0.3.1-85.i586[4] has missing dependencies
+>!> kio_beagle has missing dependencies
 >!> There are no alternative providers of beagle >= 0.2.4 installed for kio_beagle-0.3.1-85.i586[4]
 >!>    Solution:
 >!>       keep beagle

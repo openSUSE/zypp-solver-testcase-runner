@@ -3881,7 +3881,7 @@
 >!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> smartmontools-5.36.cvs20061025-15.i586[3] cannot be installed due to missing dependencies
+>!> smartmontools cannot be installed due to missing dependencies
 >!> There are no installable providers of powersave for smartmontools-5.36.cvs20061025-15.i586[3]
 >!>    Solution:
 >!>       do not install smartmontools

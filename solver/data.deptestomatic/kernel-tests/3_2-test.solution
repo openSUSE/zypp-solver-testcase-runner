@@ -10,7 +10,7 @@
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
->!> tpctl-4.17-17.i586[sl10_packages] cannot be installed due to missing dependencies
+>!> tpctl cannot be installed due to missing dependencies
 >!> There are no installable providers of tpctl-kmp for tpctl-4.17-17.i586[sl10_packages]
 >!>    Solution:
 >!>       do not install tpctl

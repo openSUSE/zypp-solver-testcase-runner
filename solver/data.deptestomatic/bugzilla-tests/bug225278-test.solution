@@ -9743,7 +9743,7 @@
 >!> Uninstalling y2pmsh
 >!> 1 problems found:
 >!> Problem:
->!> selection:Kde-Desktop-.noarch has missing dependencies
+>!> selection:Kde-Desktop has missing dependencies
 >!> There are no alternative providers of Basis-Sound installed for selection:Kde-Desktop-.noarch
 >!>    Solution:
 >!>       keep Basis-Sound

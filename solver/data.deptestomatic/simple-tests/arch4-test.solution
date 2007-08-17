@@ -1,6 +1,6 @@
 >!> 2 problems found:
 >!> Problem:
->!> B-1.0-2.x86_64[test] cannot be installed due to missing dependencies
+>!> B cannot be installed due to missing dependencies
 >!> There are no installable providers of A_not == 1.1 for B-1.0-2.x86_64[test]
 >!>    Solution:
 >!>       do not install B

@@ -3,7 +3,7 @@
 >!> Uninstalling gnokii
 >!> 1 problems found:
 >!> Problem:
->!> xgnokii-0.6.10-6.i586 has missing dependencies
+>!> xgnokii has missing dependencies
 >!> There are no alternative providers of gnokii installed for xgnokii-0.6.10-6.i586
 >!>    Solution:
 >!>       keep gnokii

@@ -10,7 +10,7 @@
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
->!> suseRegister-1.0-22.noarch[sles_packages] cannot be installed due to missing dependencies
+>!> suseRegister cannot be installed due to missing dependencies
 >!> There are no installable providers of lsb for suseRegister-1.0-22.noarch[sles_packages]
 >!>    Solution:
 >!>       unlock lsb
