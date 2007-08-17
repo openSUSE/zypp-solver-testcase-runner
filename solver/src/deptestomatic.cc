@@ -741,7 +741,7 @@ print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", b
                     cout << "   will be selected by:" << endl;
                 }
                 cout << prefix << ++count << ": ";
-                cout << "         " << iter->item << endl;
+                cout << "         " << iter->item << " " << iter->cap << " " << iter->capKind << " " << iter->initialInstallation << endl;
             }
             for (zypp::solver::detail::ItemCapKindList::const_iterator iter = select.begin(); iter != select.end(); ++iter) {
                 if (iter == select.begin()) {
@@ -749,7 +749,7 @@ print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", b
                     cout << "   will select:" << endl;
                 }
                 cout << prefix << ++count << ": ";
-                cout << "         " << iter->item << endl;
+                cout << "         " << iter->item << " " << iter->cap << " " << iter->capKind << " " << iter->initialInstallation << endl;
             }
         }
     }
