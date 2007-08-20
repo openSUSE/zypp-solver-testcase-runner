@@ -16,12 +16,12 @@
   set prog "src/helixparse"
   set datadir "data.deptestomatic"
   set errorOccured 0
-  
+
   puts "Running $prog ..."
 
   set dircases [glob $datadir/*-tests datadir/*-exercises ]
 
-  foreach dircase $dircases { 
+  foreach dircase $dircases {
       set testPath [split $dircase "/"]
       set testFilename [lindex $testPath [expr [llength $testPath]-1]]
       set testFname [split $testFilename "."]
@@ -43,7 +43,7 @@
       #							look for *-packages.xml
       set testcases [glob $dircase/*-packages.xml $dircase/*-system.xml $dircase/*-package.xml]
 
-      foreach testcase $testcases { 
+      foreach testcase $testcases {
 
 	  set testPath [split $testcase "/"]
 	  set testPathLen  [llength $testPath]
@@ -57,7 +57,7 @@
 
 	  set testFname [split $testFilename "."]
 	  set testBase_name [lindex $testFname 0]
-	  puts "   ... $testDirname/$testFilename" 
+	  puts "   ... $testDirname/$testFilename"
 
 	  #generate output directory
 
@@ -78,7 +78,7 @@
 	  }
 
 	  # check return code from runprg
-      
+
 	  if {$result != ""} {
 	      warning "Run of $testBase_name results in '$result'"
 	      set errorOccured 0

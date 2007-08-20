@@ -80,11 +80,11 @@ dnl ==================================================
 dnl checks for system services
 dnl ==================================================
 dnl AC_CONFIG_FILES([FILE...])
-AC_OUTPUT( 
+AC_OUTPUT(
 	Makefile			\
 	libzypp-testsuite-tools.spec			\
 	libzypp-testsuite-tools.pc			\
-  src/Makefile \
+	src/Makefile \
 	src/utils/Makefile	\
 	solver/Makefile	\
 	solver/config/Makefile	\
@@ -95,6 +95,10 @@ AC_OUTPUT(
 	solver/single.out/Makefile
 	solvertree/Makefile	\
 	solvertree/src/Makefile	\
+	pokus/Makefile			\
+	pokus/config/Makefile		\
+	pokus/pokus.test/Makefile	\
+	pokus/src/Makefile		\
 dnl	source/Makefile	\
 dnl	parser/Makefile	\
 dnl	parser/lib/Makefile	\
@@ -106,7 +110,6 @@ dnl	target/config/Makefile	\
 dnl	target/lib/Makefile	\
 dnl	target/target.test/Makefile	\
 dnl	target/tests/Makefile
-
 )
 dnl ==================================================
 
