@@ -1,0 +1,63 @@
+
+set datadir "tests"
+set errorOccured 0
+
+set dircases [glob $datadir/*-tests]
+
+foreach dircase $dircases {
+
+    set testPath [split $dircase "/"]
+    set testFilename [lindex $testPath [expr [llength $testPath]-1]]
+    set testFname [split $testFilename "."]
+    set testBase_name [lindex $testFname 0]
+
+    set xfails [list]
+    set xfailname "$dircase/xfail"
+    if { [file exists $xfailname] != 0 } {
+	set fp [open $xfailname r]
+	set xfails [read $fp]
+	close $fp
+    }
+
+    set testcases [glob $dircase/*.rb]
+
+    foreach testcase $testcases {
+
+	set testPath [split $testcase "/"]
+	set testPathLen [llength $testPath]
+	set testFilename [lindex $testPath [expr $testPathLen-1]]
+	set testDirname [lindex $testPath [expr $testPathLen-2]]
+
+	set expect_to_fail 0
+	if { [lsearch $xfails $testFilename] != -1 } {
+	    set expect_to_fail 1
+	}
+
+	set testFname [split $testFilename "."]
+	set testBase_name [lindex $testFname 0]
+	puts "Running $testDirname/$testFilename"
+
+	set tmpoutfile ./$testBase_name.tmp.out
+	set tmperrfile ./$testBase_name.tmp.err
+
+	# run the test
+	set command "cd $dircase ; ./$testFilename >$tmpoutfile 2>$tmperrfile"
+	set result ""
+	set oops [catch { set result [exec sh -c $command] } catched]
+
+	if {$oops != 0} {
+	    fail "test case failed for $testBase_name: $catched"
+	    set errorOccured 0
+	    continue
+	}
+
+	# ok, all is fine
+	pass $testBase_name
+    }
+}
+
+if { $errorOccured == 0 } {
+    return 0
+} else {
+    return -1
+}
