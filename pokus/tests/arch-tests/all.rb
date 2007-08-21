@@ -16,9 +16,6 @@ include ZYppTools
 require '../../src/testsuite'
 
 
-path = "/ARVIN/zypp/trunk/repotools/tmp"
-
-
 packages = Array.new()
 
 Arch.all_archs.each do | arch |
@@ -31,8 +28,7 @@ Arch.all_archs.each do | arch |
 end
 
 
-output = OutputFactory(:yum, path)
-output.write(packages)
+path = Testsuite.write_repo(:yum, packages)
 
 
 Arch.all_archs.each do | arch |
