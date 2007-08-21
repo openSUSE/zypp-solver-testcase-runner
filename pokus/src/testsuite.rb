@@ -15,6 +15,15 @@ class Testsuite
 
     end
 
+
+    def Testsuite.write_repo(type, packages)
+        t = '/tmp/no-fun' # FIXME
+        output = OutputFactory(type, t)
+        output.write(packages)
+        return t
+    end
+
+
     # reads a single repository and returns the pool
     def Testsuite.read_repo(url)
 
@@ -48,7 +57,7 @@ class Testsuite
             res_pool_manager.insert(store)
         end
 
-  pool = res_pool_manager.accessor()
+        pool = res_pool_manager.accessor()
         return pool
 
     end

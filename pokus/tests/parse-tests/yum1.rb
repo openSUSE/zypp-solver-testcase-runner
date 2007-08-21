@@ -12,9 +12,6 @@ include ZYppTools
 require '../../src/testsuite'
 
 
-path = "/ARVIN/zypp/trunk/repotools/tmp"
-
-
 packages = Array.new()
 
 pkg = Package.new("test")
@@ -25,8 +22,7 @@ pkg.release = 1
 pkg.summary = "A pure test package"
 packages.push(pkg)
 
-output = OutputFactory(:yum, path)
-output.write(packages)
+path = Testsuite.write_repo(:yum, packages)
 
 FileUtils.rm(path + "/repodata/primary.xml")
 
