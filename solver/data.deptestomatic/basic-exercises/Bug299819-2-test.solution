@@ -1,0 +1,46 @@
+>!> Requesting locale de
+>!> Requesting locale de_DE
+>!> Installing autoconf.i586 from channel 1
+>!> Installing automake.i586 from channel 1
+>!> Installing bzip2.i586 from channel 1
+>!> Installing yast2-devel.i586 from channel 1
+>!> Installing autoyast2.noarch from channel 1
+>!> Installing autoyast2-installation.noarch from channel 1
+>!> Installing bitstream-vera.noarch from channel 1
+>!> Installing yast2-cd-creator.noarch from channel 1
+>!> Installing yast2-iscsi-server.noarch from channel 1
+>!> Installing yast2-slp-server.noarch from channel 1
+>!> Calculating installation order ...
+>!> Solution #1:
+>!> install koffice-i18n-de-doc-1.6.0-4.noarch[1]
+>!> install language:de-.noarch
+>!> install language:de_DE-.noarch
+>!> upgrade autoconf-2.60-0.1.i586 => autoconf-2.60-21.i586[1]
+>!> upgrade automake-1.9.6-0.1.i586 => automake-1.9.6-35.i586[1]
+>!> upgrade autoyast2-2.13.74-1.4.noarch => autoyast2-2.14.15-9.noarch[1]
+>!> upgrade autoyast2-installation-2.13.74-1.4.noarch => autoyast2-installation-2.14.15-9.noarch[1]
+>!> upgrade bitstream-vera-1.10-180.4.noarch => bitstream-vera-1.10-199.noarch[1]
+>!> upgrade bzip2-1.0.3-17.6.i586 => bzip2-1.0.3-36.i586[1]
+>!> upgrade yast2-cd-creator-2.13.8-0.3.noarch => yast2-cd-creator-2.14.0-20.noarch[1]
+>!> upgrade yast2-devel-2.13.90-0.4.i586 => yast2-devel-2.14.15-3.i586[1]
+>!> upgrade yast2-iscsi-server-2.13.23-0.3.noarch => yast2-iscsi-server-2.14.0-15.noarch[1]
+>!> upgrade yast2-slp-server-2.13.9-0.4.noarch => yast2-slp-server-2.14.1-3.noarch[1]
+>!> installs=3, upgrades=10, uninstalls=0
+>!> Installation Order:
+>!> 
+>!> 1. set with 11 resolvables
+>!> language:de-.noarch
+>!> language:de_DE-.noarch
+>!> autoconf-2.60-21.i586[1]
+>!> automake-1.9.6-35.i586[1]
+>!> autoyast2-installation-2.14.15-9.noarch[1]
+>!> bitstream-vera-1.10-199.noarch[1]
+>!> bzip2-1.0.3-36.i586[1]
+>!> koffice-i18n-de-doc-1.6.0-4.noarch[1]
+>!> yast2-devel-2.14.15-3.i586[1]
+>!> yast2-iscsi-server-2.14.0-15.noarch[1]
+>!> yast2-slp-server-2.14.1-3.noarch[1]
+>!> 
+>!> 2. set with 2 resolvables
+>!> autoyast2-2.14.15-9.noarch[1]
+>!> yast2-cd-creator-2.14.0-20.noarch[1]
