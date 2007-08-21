@@ -17,7 +17,9 @@
 <install channel="1" kind="package" name="bitstream-vera" arch="noarch" version="1.10" release="199"/>
 <install channel="1" kind="package" name="yast2-cd-creator" arch="noarch" version="2.14.0" release="20"/>
 <install channel="1" kind="package" name="yast2-iscsi-server" arch="noarch" version="2.14.0" release="15"/>
-<install channel="1" kind="package" name="yast2-slp-server" arch="noarch" version="2.14.1" release="3"/>
-<instorder/>
+<install channel="1" kind="package" name="yast2-slp-server" arch="noarch"
+version="2.14.1" release="3"/>
+<reportproblems/>
+<showpool all="yes" prefix=">!> pool:"/>
 </trial>
 </test>
