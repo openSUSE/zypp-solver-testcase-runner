@@ -67,6 +67,8 @@ CXXFLAGS="$RPM_OPT_FLAGS" \
 make %{?jobs:-j %jobs}
 %ifarch %ix86
 make check
+%else
+cd pokus ; make check
 %endif
 
 %install
