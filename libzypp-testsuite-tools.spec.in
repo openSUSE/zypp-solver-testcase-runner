@@ -63,7 +63,7 @@ grep -v devel/ x > configure.ac
 autoreconf --force --install --symlink --verbose
 %{?suse_update_config:%{suse_update_config -f}}
 CXXFLAGS="$RPM_OPT_FLAGS" \
-./configure --prefix=%{prefix} --libdir=%{_libdir} --mandir=%{_mandir} --disable-static
+./configure --prefix=%{prefix} --libdir=%{_libdir} --with-qt-dir=/usr/lib/qt3 --with-qt-libdir=/usr/lib/qt3/%{_lib} --mandir=%{_mandir} --disable-static
 make %{?jobs:-j %jobs}
 %ifarch %ix86
 make check
