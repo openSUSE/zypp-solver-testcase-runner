@@ -17,10 +17,16 @@ class Testsuite
 
 
     def Testsuite.write_repo(type, packages)
-        t = '/tmp/no-fun' # FIXME
-        output = OutputFactory(type, t)
+
+        # ruby does *not* have a mkdtemp function!
+        path = '/tmp/no-fun'
+        IO.popen('mktemp -d') {|pipe| path = pipe.gets.chomp }
+
+        output = OutputFactory(type, path)
         output.write(packages)
-        return t
+
+        return path
+
     end
 
 
