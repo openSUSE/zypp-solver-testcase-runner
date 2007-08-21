@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Aug 21 10:06:28 CEST 2007 - schubi@suse.de
+
+- Bugfix for 64 bit architecture 
+
+-------------------------------------------------------------------
 Mon Aug 20 21:07:59 CEST 2007 - aschnell@suse.de
 
 - added another testsuite
