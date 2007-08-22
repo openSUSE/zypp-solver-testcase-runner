@@ -1,15 +1,15 @@
 
 # aschnell@suse.de
 
-require 'rzypp'
-include Rzypp
+require 'zypp'
+include Zypp
 
 
-class Testsuite
+module Testsuite
 
     def Testsuite.set_arch(arch)
 
-        arch = Rzypp::Arch.new(arch.to_s)
+        arch = Zypp::Arch.new(arch.to_s)
         zypp = ZYppFactory::instance.get_zypp()
         zypp.set_architecture(arch)
 
