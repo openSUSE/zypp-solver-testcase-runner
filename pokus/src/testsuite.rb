@@ -69,17 +69,9 @@ module Testsuite
     end
 
 
-    # TODO: can't this be done more elegant?
-    # Maybe define to_a functions.
-    def Testsuite.haha1(x)
-        y = Array.new
-        x.each {|z| y << z}
-        return y.sort
-    end
-
+    # TODO: better name
     def Testsuite.haha2(x)
-        y = Array.new
-        x.each {|z| y << z}
+        y = x.to_a
         y.map! {|a| a.resolvable}
         return y.sort
     end
@@ -87,7 +79,7 @@ module Testsuite
 
     def Testsuite.dump_deps(res, kind)
         deps = res.dep(kind)
-        Testsuite.haha1(deps).each do |dep|
+        deps.to_a.sort.each do |dep|
             case kind.in_switch
                 when Dep.PROVIDES.in_switch : puts "  Provides: #{dep.to_s}"
                 when Dep.PREREQUIRES.in_switch : puts "  Prerequires: #{dep.to_s}"
