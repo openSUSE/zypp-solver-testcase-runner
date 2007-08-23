@@ -70,19 +70,16 @@ module Testsuite
 
 
     # TODO: can't this be done more elegant?
+    # Maybe define to_a functions.
     def Testsuite.haha1(x)
         y = Array.new
-        x.each do |z|
-            y << z
-        end
+        x.each {|z| y << z}
         return y.sort
     end
 
     def Testsuite.haha2(x)
         y = Array.new
-        x.each do |z|
-           y << z
-        end
+        x.each {|z| y << z}
         y.map! {|a| a.resolvable}
         return y.sort
     end
