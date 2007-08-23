@@ -37,6 +37,9 @@ foreach dircase $dircases {
 	set testBase_name [lindex $testFname 0]
 	puts "Running $testDirname/$testFilename"
 
+	set refoutfile ./$testBase_name.ref.out
+	set referrfile ./$testBase_name.ref.err
+
 	set tmpoutfile ./$testBase_name.tmp.out
 	set tmperrfile ./$testBase_name.tmp.err
 
@@ -49,6 +52,30 @@ foreach dircase $dircases {
 	    fail "test case failed for $testBase_name: $catched"
 	    set errorOccured 0
 	    continue
+	}
+
+	# check optional referr
+	if { [ file exists $dircase/$referrfile ] != 0 } {
+	    if { [ diff $dircase/$referrfile $dircase/$tmperrfile ] != 1 } {
+		puts "Output doesn't match expected data:"
+		puts [ exec sh -c "cd $dircase ; diff -u $referrfile $tmperrfile || true" ]
+		fail $testBase_name
+		set errorOccured 0
+		continue
+	    }
+	}
+
+	# check required refout
+	if { [ file exists $dircase/$refoutfile ] == 0 } {
+	    perror "Missing file $dircase/$refoutfile" 0
+	} else {
+	    if { [ diff $dircase/$refoutfile $dircase/$tmpoutfile ] != 1 } {
+		puts "Output doesn't match expected data:"
+		puts [ exec sh -c "cd $dircase ; diff -u $refoutfile $tmpoutfile || true" ]
+		fail $testBase_name
+		set errorOccured 0
+		continue
+	    }
 	}
 
 	# ok, all is fine
