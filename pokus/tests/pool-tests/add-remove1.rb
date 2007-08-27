@@ -37,6 +37,9 @@ packages2.push(pkg)
 path2 = Testsuite::write_repo(:yum, packages2)
 
 
+Testsuite.set_arch("i586")
+
+
 tmp_cache_path = Zypp::TmpDir.new()
 tmp_raw_cache_path = Zypp::TmpDir.new()
 tmp_known_repos_path = Zypp::TmpDir.new()
