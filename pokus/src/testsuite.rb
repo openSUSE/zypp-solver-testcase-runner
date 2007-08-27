@@ -98,5 +98,14 @@ module Testsuite
     end
 
 
+    def Testsuite.dump_all_deps(res)
+        [Dep.PROVIDES, Dep.PREREQUIRES, Dep.REQUIRES, Dep.CONFLICTS,
+         Dep.OBSOLETES, Dep.RECOMMENDS, Dep.SUGGESTS, Dep.FRESHENS,
+         Dep.ENHANCES, Dep.SUPPLEMENTS].each do |kind|
+            Testsuite::dump_deps(res, kind)
+        end
+    end
+
+
 end
 

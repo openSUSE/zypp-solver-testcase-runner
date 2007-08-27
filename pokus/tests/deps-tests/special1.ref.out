@@ -1,0 +1,13 @@
+package test 1.2-1 i586
+  Summary: A pure test package
+  Provides: hello < 2.0
+  Provides: ksym(zt_dtmf_tone) == 150c20a4
+  Provides: perl(Automake::Options) == 0.31
+  Provides: test == 1.2-1
+  Provides: world >= 2.0
+  Provides: xorg-x11-libs:/usr/X11R6/lib/libXt.so.6
+  Freshens: csb
+  Freshens: modalias(kernel-default:pci:v00008086d00002580sv*sd*bc*sc*i*)
+  Supplements: aspell
+  Supplements: kernel-default
+
