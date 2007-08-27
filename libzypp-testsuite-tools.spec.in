@@ -65,11 +65,7 @@ autoreconf --force --install --symlink --verbose
 CXXFLAGS="$RPM_OPT_FLAGS" \
 ./configure --prefix=%{prefix} --libdir=%{_libdir} --with-qt-dir=/usr/lib/qt3 --with-qt-libdir=/usr/lib/qt3/%{_lib} --mandir=%{_mandir} --disable-static
 make %{?jobs:-j %jobs}
-%ifarch %ix86
-make check
-%else
 cd pokus ; make check
-%endif
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
