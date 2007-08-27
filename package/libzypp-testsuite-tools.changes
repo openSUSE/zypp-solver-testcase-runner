@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Mon Aug 27 10:50:07 CEST 2007 - schubi@suse.de
+
+- Disabled make check for solver 
+
+-------------------------------------------------------------------
 Tue Aug 21 10:06:28 CEST 2007 - schubi@suse.de
 
 - Bugfix for 64 bit architecture 
