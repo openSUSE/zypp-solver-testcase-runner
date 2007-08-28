@@ -9,5 +9,6 @@ package test 1.2-1 i586
   Freshens: csb
   Freshens: modalias(kernel-default:pci:v00008086d00002580sv*sd*bc*sc*i*)
   Supplements: aspell
+  Supplements: filesystem(xfs)
   Supplements: kernel-default
 

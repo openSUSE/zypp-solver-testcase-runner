@@ -25,6 +25,7 @@ pkg.deps :provides, "locale(aspell:csb)"
 pkg.deps :provides, "perl(Automake::Options) = 0.31"
 pkg.deps :provides, "xorg-x11-libs:/usr/X11R6/lib/libXt.so.6"
 pkg.deps :provides, "ksym(zt_dtmf_tone) = 150c20a4"
+pkg.deps :supplements, "filesystem(xfs)"
 packages.push(pkg)
 
 
