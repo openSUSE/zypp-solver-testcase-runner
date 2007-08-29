@@ -4,9 +4,6 @@ set errorOccured 0
 
 set dircases [glob $datadir/*-tests]
 
-# FIXME: temporarily ignore signatures
-setenv ZYPP_KEYRING_DEFAULT_ACCEPT_ALL 1
-
 foreach dircase $dircases {
 
     set testPath [split $dircase "/"]
