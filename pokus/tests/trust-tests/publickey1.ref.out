@@ -1,0 +1,2 @@
+ZYppException caught
+Can't read public key from ./../../data/not-here.txt, file not found
