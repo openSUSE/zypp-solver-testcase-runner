@@ -22,8 +22,7 @@ module Testsuite
             when :yum  : file = "#{path}/repodata/repomd.xml"
             when :yast : file = "#{path}/content"
         else
-	    STDERR.puts "Unknown repository type"
-            exit 1
+            raise ArgumentError, "Unknown repository type: #{type}"
         end
 
         system("gpg -q --home #{path} --no-default-keyring --import ../../data/privkey.txt")
