@@ -113,6 +113,7 @@ AC_OUTPUT(
 	pokus/config/Makefile		\
 	pokus/pokus.test/Makefile	\
 	pokus/src/Makefile		\
+	pokus/data/Makefile		\
 dnl	source/Makefile	\
 dnl	parser/Makefile	\
 dnl	parser/lib/Makefile	\
