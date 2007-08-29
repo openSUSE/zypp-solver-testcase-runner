@@ -16,6 +16,26 @@ module Testsuite
     end
 
 
+    def Testsuite.sign_repo(type, path)
+
+        case type
+            when :yum  : file = "#{path}/repodata/repomd.xml"
+            when :yast : file = "#{path}/content"
+        else
+	    STDERR.puts "Unknown repository type"
+            exit 1
+        end
+
+        system("gpg -q --home #{path} --no-default-keyring --import ../../data/privkey.txt")
+        system("gpg -q --home #{path} --no-default-keyring --sign --detach-sign --armor #{file}")
+
+        keyring = ZYppFactory::instance.get_zypp.key_ring
+        publickey = PublicKey.new(Pathname.new("../../data/pubkey.txt"))
+        keyring.import_key(publickey, true)
+
+    end
+
+
     def Testsuite.write_repo(type, packages)
 
         # ruby does *not* have a mkdtemp function!
@@ -24,6 +44,8 @@ module Testsuite
 
         output = OutputFactory(type, path)
         output.write(packages)
+
+        sign_repo(type, path)
 
         return path
 
