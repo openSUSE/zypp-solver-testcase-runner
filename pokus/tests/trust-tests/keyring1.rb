@@ -22,6 +22,10 @@ keyring.import_key(publickey, false)
 
 puts "is_key_known/trusted #{keyring.is_key_known(id)} #{keyring.is_key_trusted(id)}"
 
+keyring.delete_key(id, false)
+
+puts "is_key_known/trusted #{keyring.is_key_known(id)} #{keyring.is_key_trusted(id)}"
+
 keyring.import_key(publickey, true)
 
 puts "is_key_known/trusted #{keyring.is_key_known(id)} #{keyring.is_key_trusted(id)}"
