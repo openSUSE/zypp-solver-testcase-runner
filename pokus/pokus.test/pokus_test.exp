@@ -4,6 +4,12 @@ set errorOccured 0
 
 set dircases [glob $datadir/*-tests]
 
+
+proc normalise_logfile {name} {
+    exec sed -i -e "s|/tmp/tmp\\.\[A-Za-z0-9\]\\{10\\}|/tmp/tmp.abcdefghij|g" $name
+}
+
+
 foreach dircase $dircases {
 
     set testPath [split $dircase "/"]
@@ -53,6 +59,9 @@ foreach dircase $dircases {
 	    set errorOccured 0
 	    continue
 	}
+
+	normalise_logfile $dircase/$tmperrfile
+	normalise_logfile $dircase/$tmpoutfile
 
 	# check optional referr
 	if { [ file exists $dircase/$referrfile ] != 0 } {

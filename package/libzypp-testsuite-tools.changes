@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Aug 30 21:20:11 CEST 2007 - aschnell@suse.de
+
+- adopted to new exception logging
+
+-------------------------------------------------------------------
 Wed Aug 29 11:22:23 CEST 2007 - aschnell@suse.de
 
 - added more tests
