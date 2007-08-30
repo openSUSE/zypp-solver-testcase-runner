@@ -1,2 +1,4 @@
 ZYppException caught
+History:
+ - Signature verification failed for repomd.xml
 Valid metadata not found at specified URL(s)
