@@ -1,5 +1,6 @@
 [1D5F7D707936F65B] [ZYpp Testsuite <none@opensuse.org>] [8F041E3F4CE465AC0D5A37001D5F7D707936F65B]
 is_key_known/trusted false false
 is_key_known/trusted true false
+is_key_known/trusted false false
 is_key_known/trusted true true
-is_key_known/trusted true false
+is_key_known/trusted false false
