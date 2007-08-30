@@ -39,11 +39,9 @@ module Testsuite
 
         # ruby does *not* have a mkdtemp function!
         path = '/tmp/no-fun'
-        IO.popen('mktemp -d') {|pipe| path = pipe.gets.chomp }
+        IO.popen('mktemp -d') {|pipe| path = pipe.gets.chomp}
 
-        output = OutputFactory(type, path)
-        output.write(packages)
-
+        OutputFactory(type, path).write(packages)
         sign_repo(type, path)
 
         return path
