@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
 
-# Generate a YUM repository and remove the file 'primary.xml'.
+# Generate a YaST repository and remove the file 'packages'.
 
 # TODO: remove all files one at a time.
 
@@ -24,9 +24,9 @@ pkg.release = 1
 pkg.summary = "A pure test package"
 packages.push(pkg)
 
-path = Testsuite.write_repo(:yum, packages)
+path = Testsuite.write_repo(:yast, packages)
 
-FileUtils.rm(path + "/repodata/primary.xml")
+FileUtils.rm(path + "/suse/setup/descr/packages")
 
 
 Testsuite.set_arch("ia64")
