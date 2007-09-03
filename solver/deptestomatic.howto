@@ -50,7 +50,7 @@ Short instruction of all possible options to write a <description>-test.xml file
    </setup>
    
    <!-- Any trials must be preceeded by the setup! -->
-   <!-- There has to be exactly one setup-section and at least on trial-section -->
+   <!-- There has to be exactly one setup-section and at least one trial-section -->
    <trial>
    
 	<note/> <!-- -->
