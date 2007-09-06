@@ -8,7 +8,5 @@
   <addRequire kind="package" name="notavailable"/>
   <addRequire kind="package" name="A"/>
   <reportproblems/>
-  <takesolution problem="1" solution="0"/>
-  <reportproblems/>
 </trial>
 </test>
