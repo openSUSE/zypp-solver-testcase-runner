@@ -9196,6 +9196,5 @@
 >!> upgrade zvbi-0.2.16-81.i586 => zvbi-0.2.16-89.i586[1]
 >!> upgrade zypper-0.8.10-2.i586 => zypper-0.8.19-2.i586[1]
 >!> |unflag cracklib-dict-full-2.8.10-28.i586[1]
->!> |unflag pattern:sw_management_gnome-10.3-133.i586[1]
 >!> |unflag sendmail-8.14.1-46.i586[1]
 >!> installs=113, upgrades=677, uninstalls=4
