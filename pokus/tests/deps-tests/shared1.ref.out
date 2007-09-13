@@ -2,7 +2,11 @@ package black-cat 1.2-1 i586
   Provides: black-cat == 1.2-1
   Summary: Comet 460
 
-product SUSE_LINUX 10.3 i586
+package black-cat 1.2-1 i686
+  Provides: black-cat == 1.2-1
+  Summary: Comet 460
+
+product SUSE_LINUX 10.3 i686
   Provides: SUSE_LINUX == 10.3
   Provides: openSUSE-10.3 == 10.3
   Summary: openSUSE 10.3

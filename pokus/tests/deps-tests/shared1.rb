@@ -31,7 +31,7 @@ packages.push(pkg)
 path = Testsuite::write_repo(:yast, packages)
 
 
-Testsuite::set_arch("i586")
+Testsuite::set_arch("i686")
 pool = Testsuite::read_repo("file://" + path)
 
 Testsuite::haha2(pool).each do |res|
