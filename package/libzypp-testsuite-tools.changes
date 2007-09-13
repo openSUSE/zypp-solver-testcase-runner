@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Sep 13 15:04:38 CEST 2007 - aschnell@suse.de
+
+- added tests for shared tag
+
+-------------------------------------------------------------------
 Thu Aug 30 21:20:11 CEST 2007 - aschnell@suse.de
 
 - adopted to new exception logging
