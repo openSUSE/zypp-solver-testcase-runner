@@ -63,6 +63,11 @@ foreach dircase $dircases {
 	normalise_logfile $dircase/$tmperrfile
 	normalise_logfile $dircase/$tmpoutfile
 
+	if { $expect_to_fail == 1 } {
+	    xfail $testBase_name
+	    continue
+	}
+
 	# check optional referr
 	if { [ file exists $dircase/$referrfile ] != 0 } {
 	    if { [ diff $dircase/$referrfile $dircase/$tmperrfile ] != 1 } {
