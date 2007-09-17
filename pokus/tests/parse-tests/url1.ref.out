@@ -1,0 +1,4 @@
+ZYppException caught
+History:
+ - Unsupported URL scheme in URL: htp://site/repo/
+Error trying to read from htp://site/repo/

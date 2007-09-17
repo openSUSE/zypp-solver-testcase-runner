@@ -69,7 +69,7 @@ module Testsuite
         repo_info.set_name("Testsuite Repo")
         repo_info.set_enabled(true)
         repo_info.set_autorefresh(false)
-        repo_info.add_base_url(url)
+        repo_info.add_base_url(Url.new(url))
 
         repo_manager.add_repository(repo_info)
 
