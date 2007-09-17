@@ -54,6 +54,11 @@ foreach dircase $dircases {
 	set result ""
 	set oops [catch { set result [exec sh -c $command] } catched]
 
+	if { $expect_to_fail == 1 } {
+	    xfail $testBase_name
+	    continue
+	}
+
 	if {$oops != 0} {
 	    fail "test case failed for $testBase_name: $catched"
 	    set errorOccured 0
@@ -62,11 +67,6 @@ foreach dircase $dircases {
 
 	normalise_logfile $dircase/$tmperrfile
 	normalise_logfile $dircase/$tmpoutfile
-
-	if { $expect_to_fail == 1 } {
-	    xfail $testBase_name
-	    continue
-	}
 
 	# check optional referr
 	if { [ file exists $dircase/$referrfile ] != 0 } {
