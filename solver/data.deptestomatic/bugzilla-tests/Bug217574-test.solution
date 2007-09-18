@@ -1604,8 +1604,8 @@
 >!> 1603: U__s_[S2:0][package]lacheck-1.26-42.i586
 >!> 1604: U__s_[S2:0][package]ladspa-1.12.code10-61.i586
 >!> 1605: I_Th_[S1:0][package]lame-3.96.1-2.i586
->!> 1606: I_Th_[S0:0][language]de-.noarch
->!> 1607: I_Th_[S0:0][language]de_DE-.noarch
+>!> 1606: I__s_[S0:0][language]de-.noarch
+>!> 1607: I__s_[S0:0][language]de_DE-.noarch
 >!> 1608: U__s_[S2:0][package]lash-0.5.0-51.i586
 >!> 1609: U__s_[S2:0][package]lash-devel-0.5.0-51.i586
 >!> 1610: U__s_[S2:0][package]lash-libs-0.5.0-51.i586
@@ -2814,7 +2814,7 @@
 >!> 2813: U_Th_[S2:0][package]procps-3.2.7-30.i586
 >!> 2814: U__s_[S3:0][product]SUSE-Linux-Enterprise-Server-SP1-migration-10-0.noarch
 >!> 2815: U__s_[S2:0][product]openSUSE-DVD5-download-10.3.i686
->!> 2816: I_Th_[S1:0][product]openSUSE-DVD9-retail-10.2.i686
+>!> 2816: I__s_[S1:0][product]openSUSE-DVD9-retail-10.2.i686
 >!> 2817: U_Th_[S2:0][package]providers-2006.11.21-10.noarch
 >!> 2818: I__s_[S1:0][package]providers-2006.11.21-3.noarch
 >!> 2819: U__s_[S2:0][package]psgml-1.3.2-47.noarch
@@ -3867,7 +3867,19 @@
 >!> 3866: U_Th_[S2:0][package]zvbi-0.2.16-50.i586
 >!> 3867: I__s_[S1:0][package]zypper-0.6.13-6.i586
 >!> 3868: U_Th_[S2:0][package]zypper-0.7.0-7.i586
->!> 2 problems found:
+>!> 3 problems found:
+>!> Problem:
+>!> Can't satisfy requirement openSUSE-release == 10.2 for product:openSUSE-DVD9-retail-10.2.i686
+>!> === product:openSUSE-DVD9-retail-10.2.i686 ===
+>!>    Solution:
+>!>       delete openSUSE-DVD9-retail
+>!>       delete product:openSUSE-DVD9-retail-10.2.i686
+>!>    Solution:
+>!>       Ignore this requirement just here
+>!>       
+>!>    Solution:
+>!>       Generally ignore this requirement
+>!>       
 >!> Problem:
 >!> Can't satisfy requirement yast2-storage == 2.15.4-2 for yast2-storage-debuginfo-2.15.4-2.i586
 >!> === yast2-storage-debuginfo-2.15.4-2.i586 ===
