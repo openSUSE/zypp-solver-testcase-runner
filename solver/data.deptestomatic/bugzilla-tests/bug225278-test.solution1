@@ -9741,7 +9741,13 @@
 >!> Uninstalling smlnj-debuginfo
 >!> Uninstalling sauerbraten
 >!> Uninstalling y2pmsh
->!> 1 problems found:
+>!> 2 problems found:
+>!> Problem:
+>!> No valid solution found with just resolvables of best architecture.
+>!> With this run only resolvables with the best architecture have been regarded.
+>!>    Solution:
+>!>       Make a solver run with ALL possibilities.
+>!>       Regarding all resolvables with a compatible architecture.
 >!> Problem:
 >!> selection:Kde-Desktop has missing dependencies
 >!> There are no alternative providers of Basis-Sound installed for selection:Kde-Desktop-.noarch
