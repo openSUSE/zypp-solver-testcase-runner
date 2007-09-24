@@ -22,4 +22,4 @@
     <dep name="b" op="=" version="2.0"/>
   </provides>
 </package>
-</channel></subchannel>
+</subchannel></channel>
