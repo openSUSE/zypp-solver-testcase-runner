@@ -48,4 +48,4 @@
     <dep name="b" op="=" version="1.0"/>
   </provides>
 </package>
-</channel></subchannel>
+</subchannel></channel>
