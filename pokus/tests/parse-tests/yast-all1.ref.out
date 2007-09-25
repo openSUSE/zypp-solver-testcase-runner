@@ -1,0 +1,12 @@
+package test 1.2-1 i586
+  Summary: A pure test package
+  Size: 82.0 K / 41.0 K
+  Provides: test == 1.2-1
+
+product SUSE_LINUX 10.3 i586
+  Summary: openSUSE 10.3
+  Size: 0 B / 0 B
+  Provides: SUSE_LINUX == 10.3
+  Provides: openSUSE-10.3 == 10.3
+  Requires: openSUSE-release-10.3
+
