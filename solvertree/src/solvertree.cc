@@ -2359,8 +2359,9 @@ main (int argc, char *argv[])
     DBG << "init_libzypp() done" << endl;
 
     process_xml_test_file (string (argv[1]), God->pool());
-    
-    QApplication app(argc, argv);
+
+    QApplication app(0, NULL);    
+//    QApplication app(argc, argv);
 
     QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
     app.setMainWidget( dialog );
