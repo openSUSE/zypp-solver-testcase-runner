@@ -106,5 +106,7 @@ Short instruction of all possible options to write a <description>-test.xml file
 	<transact name="..." package="..." kind="..." channel="..."/> <!-- if channel is not set package will be removed from system else package will be installed -->
 									<!-- transact either takes 'name' or 'kind', but not both -->
 
+	<graphic/> <!-- shows the solver result in gaphic mode -->
+
    </trial>
 </test>

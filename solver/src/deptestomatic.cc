@@ -28,6 +28,11 @@
 #include <iostream>
 #include <map>
 #include <set>
+#include <qapplication.h>
+#include <qdialog.h>
+#include <qfiledialog.h>     
+#include <qpushbutton.h>
+#include <qfont.h>
 
 #include <cstdlib>
 #include <cstring>
@@ -78,6 +83,7 @@
 #include "zypp/solver/detail/InstallOrder.h"
 #include "zypp/solver/detail/Testcase.h"
 #include "KeyRingCallbacks.h"
+#include "zypp/QZyppSolverDialog.h"
 
 using namespace std;
 using namespace zypp;
@@ -1633,6 +1639,15 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
             string get_licence = node->getProp ("getlicence");
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
+	} else if (node->equals ("graphic")) {
+            resolver->resolvePool();
+            QApplication app(0, NULL);    
+            QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
+            app.setMainWidget( dialog );
+            dialog->setCaption("Solvertree");
+            dialog->setMinimumSize ( 700, 700 );
+            dialog->show();
+            app.exec();                
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");
@@ -2136,6 +2151,15 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
             string get_licence = node->getProp ("getlicence");
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
+	} else if (node->equals ("graphic")) {
+            resolver->resolvePool();            
+            QApplication app(0, NULL);    
+            QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
+            app.setMainWidget( dialog );
+            dialog->setCaption("Solvertree");
+            dialog->setMinimumSize ( 700, 700 );
+            dialog->show();
+            app.exec();    
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("package");

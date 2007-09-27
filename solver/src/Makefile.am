@@ -4,9 +4,10 @@
 
 INCLUDES = -I/usr/include/libxml2	\
 	-Ihelix				\
+	-I/usr/lib/qt3/include		\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
-LDADD =	$(libdir)/libzypp.so $(top_srcdir)/src/helix/lib@PACKAGE@_helix.la
+LDADD =	$(libdir)/libzypp.so $(top_srcdir)/src/helix/lib@PACKAGE@_helix.la -L$(QTLIBDIR) -lqt-mt -lqdialogsolver
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
