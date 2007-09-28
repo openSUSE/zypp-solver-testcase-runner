@@ -99,7 +99,9 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<showpool prefix="..." all="..." getlicence="..."/> <!-- collect all objects in pool. With no given all only changing obejcts will be shown otherwise all. If getlicence is true, the licencebit will be shown  -->
 	
-	<lock channel="..." package="..." kind="..."/> <!-- locks the package from channel -->
+	<lock channel="..." name="..." kind="..."/> <!-- locks the package from channel -->
+
+	<keep channel="..." name="..." kind="..."/> <!-- locks the package from channel -->
 
 	<availablelocales/> <!-- lists the available locales -->
 
