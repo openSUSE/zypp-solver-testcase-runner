@@ -31,6 +31,7 @@ namespace zypp
 */
 HelixMessageImpl::HelixMessageImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
+    , _vendor(parsed.vendor)    
 {
 }
 
@@ -49,6 +50,14 @@ HelixMessageImpl::type () const
 ByteCount
 HelixMessageImpl::size() const
 { return _size_installed; }
+
+Vendor HelixMessageImpl::vendor() const
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
+
 
   /////////////////////////////////////////////////////////////////
 } // namespace zypp

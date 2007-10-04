@@ -32,6 +32,7 @@ namespace zypp
 HelixScriptImpl::HelixScriptImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
     , _size_installed(parsed.installedSize)
+    , _vendor(parsed.vendor)    
 {
 }
 
@@ -41,6 +42,14 @@ HelixScriptImpl::repository() const
 
 ByteCount HelixScriptImpl::size() const
 { return _size_installed; }
+
+Vendor HelixScriptImpl::vendor() const
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
+
 
   /////////////////////////////////////////////////////////////////
 } // namespace zypp

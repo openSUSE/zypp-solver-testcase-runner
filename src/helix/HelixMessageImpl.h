@@ -38,13 +38,16 @@ public:
 	std::string type () const;
 	virtual ByteCount size() const;
 	/** */
-	virtual Repository repository() const;
+ 	virtual Repository repository() const;
+        /** */
+        virtual Vendor vendor() const;
 
 protected:
 	Repository _source;
 	TranslatedText _text;
 	std::string _type;
 	ByteCount _size_installed;
+        Vendor _vendor;    
 
 
  };

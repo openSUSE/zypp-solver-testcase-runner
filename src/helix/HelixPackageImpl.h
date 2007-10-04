@@ -59,12 +59,10 @@ protected:
 	TranslatedText _description;
 	PackageGroup _group;
 	bool _install_only;
-   Vendor _vendor;
-
 	ByteCount _size_installed;
 	ByteCount _size_archive;
-
 	unsigned int _mediaid;
+        Vendor _vendor;
 
  };
   /////////////////////////////////////////////////////////////////

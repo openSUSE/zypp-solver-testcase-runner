@@ -37,6 +37,7 @@ HelixProductImpl::HelixProductImpl (Repository source_r, const zypp::HelixParser
     , _install_only(parsed.installOnly)
     , _size_installed(parsed.installedSize)
     , _size_archive(parsed.fileSize)
+    , _vendor(parsed.vendor)    
 {
 }
 
@@ -64,6 +65,14 @@ ByteCount HelixProductImpl::archivesize() const
 
 bool HelixProductImpl::installOnly() const
 { return _install_only; }
+
+Vendor HelixProductImpl::vendor() const
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
+
 
 
   /////////////////////////////////////////////////////////////////

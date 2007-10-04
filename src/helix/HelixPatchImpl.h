@@ -51,10 +51,14 @@ public:
       virtual AtomList all_atoms() const;
       /** */
       virtual Repository repository() const;
+      /** */
+      virtual Vendor vendor() const;
+    
 
 protected:
 	Repository _source;
 	ByteCount _size_installed;
+        Vendor _vendor;    
  };
   /////////////////////////////////////////////////////////////////
 } // namespace zypp

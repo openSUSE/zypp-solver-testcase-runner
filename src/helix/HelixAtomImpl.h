@@ -37,8 +37,13 @@ public:
 	/** */
 	virtual Repository repository() const;
 
+        /** */
+        virtual Vendor vendor() const;
+    
+
 protected:
 	Repository _source;
+        Vendor _vendor;
 
 
  };
