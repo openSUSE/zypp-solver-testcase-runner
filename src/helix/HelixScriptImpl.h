@@ -40,9 +40,14 @@ public:
 	/** */
 	virtual Repository repository() const;
 
+        /** */
+        virtual Vendor vendor() const;
+    
+
 protected:
 	Repository _source;
 	ByteCount _size_installed;
+        Vendor _vendor;
 
 
  };

@@ -46,9 +46,10 @@ public:
 	/** */
 	virtual bool installOnly() const;
 	/** */
-
-	/** */
 	virtual Repository repository() const;
+        /** */
+        virtual Vendor vendor() const;
+    
 protected:
 	Repository _source;
 	TranslatedText _summary;
@@ -58,7 +59,7 @@ protected:
 
 	ByteCount _size_installed;
 	ByteCount _size_archive;
-
+        Vendor _vendor;
 
  };
   /////////////////////////////////////////////////////////////////

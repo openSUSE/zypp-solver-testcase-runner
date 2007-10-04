@@ -31,12 +31,21 @@ namespace zypp
 */
 HelixAtomImpl::HelixAtomImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
+    , _vendor(parsed.vendor)    
 {
 }
 
 Repository
 HelixAtomImpl::repository() const
 { return _source; }
+
+Vendor HelixAtomImpl::vendor() const
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
+
 
   /////////////////////////////////////////////////////////////////
 } // namespace zypp

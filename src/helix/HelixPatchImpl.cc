@@ -32,6 +32,7 @@ namespace zypp
 HelixPatchImpl::HelixPatchImpl (Repository source_r, const zypp::HelixParser & parsed)
     : _source (source_r)
     , _size_installed(parsed.installedSize)
+    , _vendor(parsed.vendor)
 {
 }
 
@@ -65,6 +66,14 @@ bool HelixPatchImpl::affects_pkg_manager() const
       /** The list of all atoms building the patch */
 PatchImplIf::AtomList HelixPatchImpl::all_atoms() const
 { return AtomList(); }
+
+Vendor HelixPatchImpl::vendor() const
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
+
 
 
   /////////////////////////////////////////////////////////////////

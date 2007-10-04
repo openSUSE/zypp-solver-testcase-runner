@@ -37,6 +37,7 @@ HelixPatternImpl::HelixPatternImpl (Repository source_r, const zypp::HelixParser
     , _install_only(parsed.installOnly)
     , _size_installed(parsed.installedSize)
     , _size_archive(parsed.fileSize)
+    , _vendor(parsed.vendor)    
 {
 }
 
@@ -65,6 +66,12 @@ ByteCount HelixPatternImpl::archivesize() const
 bool HelixPatternImpl::installOnly() const
 { return _install_only; }
 
+Vendor HelixPatternImpl::vendor() const
+{ 
+   if ( _vendor == "")
+      return "SUSE LINUX Products GmbH, Nuernberg, Germany";
+   return _vendor;
+}
 
   /////////////////////////////////////////////////////////////////
 } // namespace zypp
