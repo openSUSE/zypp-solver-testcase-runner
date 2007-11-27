@@ -843,8 +843,8 @@
 >!> Installing zypper.i586 from channel 4
 >!> 2 problems found:
 >!> Problem:
->!> No valid solution found with just resolvables of best architecture.
->!> With this run only resolvables with the best architecture have been regarded.
+>!> No valid solution found with just resolvables which suitalbe best suitable for your system.
+>!> With this run only resolvables with the best fit have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
@@ -874,8 +874,8 @@
 >!>       Generally ignore this requirement
 >!>       
 >!> Problem:
->!> No valid solution found with just resolvables of best architecture.
->!> With this run only resolvables with the best architecture have been regarded.
+>!> No valid solution found with just resolvables which suitalbe best suitable for your system.
+>!> With this run only resolvables with the best fit have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
@@ -884,8 +884,8 @@
 >!> 5 problems found:
 >!> 5 problems found:
 >!> Problem:
->!> No valid solution found with just resolvables of best architecture.
->!> With this run only resolvables with the best architecture have been regarded.
+>!> No valid solution found with just resolvables which suitalbe best suitable for your system.
+>!> With this run only resolvables with the best fit have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
 >!>       Regarding all resolvables with a compatible architecture.
