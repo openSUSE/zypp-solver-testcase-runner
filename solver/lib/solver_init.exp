@@ -266,8 +266,8 @@ proc multi-run { src } {
 			  }
 		  }
 	      if { $oops != "0" } {
-#		  puts "Output doesn't match expected data:"
-#		  puts [ exec sh -c "cat $difffile" ]
+		  puts "Output doesn't match expected data:"
+		  puts [ exec sh -c "cat $dircase/$difffile" ]
 		  if { $expect_to_fail == 1 } {
 		    xfail $testBase_name
 		    continue
