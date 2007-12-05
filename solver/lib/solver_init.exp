@@ -271,7 +271,7 @@ proc multi-run { src } {
 		    continue
 		  }
                   puts "Output doesn't match expected data:"
-                  puts [ exec sh -c "cat $difffile" ]
+                  puts [ exec sh -c "cat $dircase/$difffile" ]
 		  fail $testBase_name
 		  set errorOccured 0
 		  continue
