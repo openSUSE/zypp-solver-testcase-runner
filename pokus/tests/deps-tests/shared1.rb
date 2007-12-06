@@ -35,7 +35,7 @@ Testsuite::set_arch("i686")
 pool = Testsuite::read_repo("file://" + path)
 
 Testsuite::haha2(pool).each do |res|
-    puts "#{res.kind_to_s} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
+    puts "#{res.kind} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
     Testsuite::dump_deps(res, Dep.PROVIDES)
     puts "  Summary: #{res.summary}"
     puts

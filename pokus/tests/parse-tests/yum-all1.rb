@@ -31,7 +31,7 @@ pool = Testsuite.read_repo("file://" + path)
 
 
 Testsuite::haha2(pool).each do |res|
-    puts "#{res.kind_to_s} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
+    puts "#{res.kind} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
     puts "  Summary: #{res.summary}"
     puts "  Size: #{res.size} / #{res.download_size}"
     Testsuite::dump_all_deps(res)
