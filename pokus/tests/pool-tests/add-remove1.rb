@@ -80,7 +80,7 @@ pool = z.pool()
 
 def dump(pool)
     Testsuite::haha2(pool).each do |res|
-        puts "#{res.kind_to_s} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
+        puts "#{res.kind} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
 	Testsuite::dump_deps(res, Zypp::Dep.PROVIDES)
         puts
     end

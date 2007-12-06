@@ -43,7 +43,7 @@ Arch.all_archs.map{|x|x.to_s}.sort.each do |arch|
 
     pool = Testsuite.read_repo("file://" + path)
     Testsuite::haha2(pool).each do |res|
-        puts "#{res.kind_to_s} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
+        puts "#{res.kind} #{res.name} #{res.edition.to_s} #{res.arch.to_s}"
         t.push(res.arch.to_s)
     end
 

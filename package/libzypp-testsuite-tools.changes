@@ -1,13 +1,18 @@
 -------------------------------------------------------------------
+Thu Dec 06 12:18:46 CET 2007 - aschnell@suse.de
+
+- adapted to changes in libzypp bindings
+
+-------------------------------------------------------------------
 Thu Oct  4 15:52:51 CEST 2007 - schubi@suse.de
 
 - other valid solutions.
-- added vendor to patterns, patches,.... 
+- added vendor to patterns, patches,....
 
 -------------------------------------------------------------------
 Thu Sep 27 13:35:01 CEST 2007 - schubi@suse.de
 
-- added graphical interface to deptestomatic 
+- added graphical interface to deptestomatic
 
 -------------------------------------------------------------------
 Mon Sep 17 19:23:54 CEST 2007 - aschnell@suse.de
