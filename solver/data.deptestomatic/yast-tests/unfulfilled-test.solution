@@ -4,7 +4,7 @@
 >!> Installing yast2-installation from channel sles_packages
 >!> 2 problems found:
 >!> Problem:
->!> No valid solution found with just resolvables which suitalbe best suitable for your system.
+>!> No valid solution found with just resolvables which is best suitable for your system.
 >!> With this run only resolvables with the best fit have been regarded.
 >!>    Solution:
 >!>       Make a solver run with ALL possibilities.
