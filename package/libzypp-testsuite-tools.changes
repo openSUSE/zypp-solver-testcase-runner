@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Jan 10 17:45:43 CET 2008 - schubi@suse.de
+
+- version 3.14.14 
+
+-------------------------------------------------------------------
 Thu Dec 06 12:18:46 CET 2007 - aschnell@suse.de
 
 - adapted to changes in libzypp bindings
