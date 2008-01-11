@@ -105,6 +105,7 @@ static ZYpp::LocaleSet locales;
 static ZYpp::Ptr God;
 static RepoManager manager;
 static bool forceResolve;
+static bool validSolverResult;
 static int maxSolverPasses = 0;
 
 static int sys_res_install = 0;
@@ -1044,9 +1045,59 @@ parse_xml_setup (XmlNode_Ptr node)
 //---------------------------------------------------------------------------------------------------------------------
 // trial related functions
 
+// reporting the solution IN THE POOL cause the resolver context is empty ( solving has been done by SAT-solver)
+class PrintItem : public resfilter::PoolItemFilterFunctor
+{
+  public:
+    PrintItem()
+    {}
+
+    // check this item will be installed
+
+    bool operator()( PoolItem_Ref item )
+    {
+	if (item.status().isToBeInstalled())	
+	{
+	    cout << MARKER << "install " << item << endl;
+	} else if (item.status() == ResStatus::toBeUninstalledDueToUpgrade) {
+            cout << MARKER << "upgrade " << item << endl;
+        } else if (item.status() == ResStatus::toBeUninstalled) {
+            cout << MARKER << "delete " << item << endl;
+        } else {
+            cout << MARKER << "undefined " << item << endl;
+        }
+	return true;
+    }
+};
+
+static void
+report_pool_solutions ( solver::detail::Resolver_Ptr resolver, bool instorder, bool mediaorder)
+{
+    cout << endl;
+    if (!validSolverResult) {
+        cout << "No valid solution found." << endl;
+        return;
+    }
+    cout << MARKER << "Solution: " << endl;
+    PrintItem info;	      
+    invokeOnEach( God->pool().begin( ),
+		  God->pool().end ( ),
+                  resfilter::ByTransact (),
+		  functor::functorRef<bool,PoolItem> (info) );
+    
+    fflush (stdout);
+}
+
+
 static void
 report_solutions ( solver::detail::Resolver_Ptr resolver, bool instorder, bool mediaorder)
 {
+
+    if (!getenv ("ZYPP_RC_SOLVER")) {
+        report_pool_solutions ( resolver, instorder, mediaorder);
+        return;
+    }
+    
     int count = 1;
     ChecksumList checksum_list;
 
@@ -1556,6 +1607,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	} else if (node->equals ("reportproblems")) {
 	    if (resolver->resolvePool() == true
                 && node->getProp ("ignoreValidSolution").empty()) {
+                validSolverResult = true;
 		RESULT << "No problems so far" << endl;
 	    }
 	    else {
@@ -1623,6 +1675,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    } else {
 		// resolve and check it again
 		if (resolver->resolvePool() == true) {
+                    validSolverResult = true;
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
@@ -1640,7 +1693,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("graphic")) {
-            resolver->resolvePool();
+            validSolverResult = resolver->resolvePool();
             QApplication app(0, NULL);    
             QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
             app.setMainWidget( dialog );
@@ -1782,12 +1835,12 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	resolver->verifySystem ();
 #if 0
     else if (distupgrade)
-	resolver->resolvePool();
+	validSolverResult = resolver->resolvePool();
     else
 	resolver->resolveDependencies (established);
 #else
     else
-	resolver->resolvePool();
+	validSolverResult = resolver->resolvePool();
 
 #endif
 
@@ -2068,6 +2121,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 
 	} else if (node->equals ("reportproblems")) {
 	    if (resolver->resolvePool() == true) {
+                validSolverResult = true;
 		RESULT << "No problems so far" << endl;
 	    }
 	    else {
@@ -2135,6 +2189,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
 	    } else {
 		// resolve and check it again
 		if (resolver->resolvePool() == true) {
+                    validSolverResult = true;
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
@@ -2152,7 +2207,7 @@ parse_xml_transact (XmlNode_Ptr node, const ResPool & pool)
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 	} else if (node->equals ("graphic")) {
-            resolver->resolvePool();            
+            validSolverResult = resolver->resolvePool();            
             QApplication app(0, NULL);    
             QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
             app.setMainWidget( dialog );
@@ -2343,6 +2398,7 @@ main (int argc, char *argv[])
     zypp::base::LogControl::instance().logfile( "-" );
 
     forceResolve = false;
+    validSolverResult = false;
 
     manager = makeRepoManager( "/tmp/myrepos" );
 
