@@ -99,13 +99,7 @@ static ZYpp::Ptr God;
 static RepoManager manager;
 static bool forceResolve;
 
-static int sys_res_install = 0;
-
-typedef list<unsigned int> ChecksumList;
 typedef set<PoolItem> PoolItemSet;
-
-enum DepKind { PROVIDE, CONFLICT, REQUIRE };
-
 
 #define MARKER ">!> "
 #define RESULT cout << MARKER
@@ -201,107 +195,6 @@ string2kind (const std::string & str)
 //---------------------------------------------------------------------------------------------------------------------
 // helper functions
 
-typedef list<string> StringList;
-
-static void
-assemble_install_cb (PoolItem poolItem, const ResStatus & status, void *data)
-{
-    StringList *slist = (StringList *)data;
-    ostringstream s;
-    s << str::form ("%-7s ", poolItem.status().staysInstalled() ? "|flag" : "install");
-    printRes (s, poolItem.resolvable());
-
-    slist->push_back (s.str());
-}
-
-
-static void
-assemble_uninstall_cb (PoolItem poolItem, const ResStatus & status, void *data)
-{
-    StringList *slist = (StringList *)data;
-    ostringstream s;
-//MIL << "assemble_uninstall_cb(" << poolItem << "):" << status << endl;
-    s << str::form ("%-7s ", poolItem.status().isImpossible () ? "|unflag" : "remove");
-    printRes (s, poolItem.resolvable());
-
-    slist->push_back (s.str());
-}
-
-
-static void
-assemble_impossible_cb (PoolItem poolItem, const ResStatus & status, void *data)
-{
-    StringList *slist = (StringList *)data;
-    ostringstream s;
-//MIL << "assemble_impossible_cb(" << poolItem << "):" << status << endl;
-    s << str::form ("%-7s ", "|unflag");
-    printRes (s, poolItem.resolvable());
-
-    slist->push_back (s.str());
-}
-
-
-static void
-assemble_upgrade_cb (PoolItem res1, const ResStatus & status, PoolItem res2, const ResStatus & status2, void *data)
-{
-    StringList *slist = (StringList *)data;
-    ostringstream s;
-
-    s << "upgrade ";
-
-    printRes (s, res2.resolvable());
-    s << " => ";
-    printRes (s, res1.resolvable());
-
-    slist->push_back (s.str());
-}
-
-
-static void
-assemble_incomplete_cb (PoolItem poolItem, const ResStatus & status,void *data)
-{
-    StringList *slist = (StringList *)data;
-    ostringstream s;
-    s << str::form ("%-11s ", poolItem.status().wasInstalled() ? "incomplete" : "|needed");
-    printRes (s, poolItem.resolvable());
-
-    slist->push_back (s.str());
-}
-
-
-static void
-assemble_satisfy_cb (PoolItem poolItem, const ResStatus & status, void *data)
-{
-    StringList *slist = (StringList *)data;
-    ostringstream s;
-    s << str::form ("%-10s ", poolItem.status().wasInstalled() ? "complete" : "|satisfied");
-    printRes (s, poolItem.resolvable());
-
-    slist->push_back (s.str());
-}
-
-static void
-print_sep (void)
-{
-    cout << endl << "------------------------------------------------" << endl << endl;
-}
-
-static void
-print_important (const string & str)
-{
-    RESULT << str.c_str() << endl;
-}
-
-static void
-print_items (StringList & items)
-{
-    items.sort();
-    for (StringList::const_iterator iter = items.begin(); iter != items.end(); iter++) {
-        RESULT << (*iter).c_str() << endl;
-    }
-}
-
-
 /** Order on PoolItem.
  * \li kind
  * \li name
@@ -343,91 +236,71 @@ struct KNEAOrder : public std::binary_function<PoolItem,PoolItem,bool>
 
 typedef std::set<PoolItem, KNEAOrder> PoolItemOrderSet;
 
-static void
-print_solution ( int *count, ChecksumList & checksum_list, bool instorder, bool mediaorder)
+struct Unique : public resfilter::PoolItemFilterFunctor
 {
-#if 0 // FIXME
-    if (context->isValid ()) {
+    PoolItemOrderSet itemset;
 
-	StringList items;
-	items.clear();
-
-	unsigned int checksum = 0;
-	bool is_dup = false;
-
-	RESULT << "Solution #" << *count << ":" << endl;
-	++*count;
-
-	context->foreachInstall (assemble_install_cb, &items);
-
-	context->foreachUninstall (assemble_uninstall_cb, &items);
-
-	context->foreachImpossible (assemble_impossible_cb, &items);
-
-	context->foreachUpgrade (assemble_upgrade_cb, &items);
-
-	context->foreachIncomplete (assemble_incomplete_cb, &items);
-
-	context->foreachSatisfy (assemble_satisfy_cb, &items);
-
-	items.sort ();
-
-	for (StringList::const_iterator iter = items.begin(); iter != items.end(); iter++) {
-	    const char *c = (*iter).c_str();
-	    while (*c) {
-		checksum = 17 * checksum + (unsigned int)*c;
-		++c;
-	    }
-	}
-	cout << str::form ("Checksum = %x", checksum) << endl;
-
-	for (ChecksumList::const_iterator iter = checksum_list.begin(); iter != checksum_list.end() && !is_dup; iter++) {
-	    if (*iter == checksum) {
-		is_dup = true;
-	    }
-	}
-
-	if (! is_dup) {
-	    for (StringList::const_iterator iter = items.begin(); iter != items.end(); iter++) {
-		print_important (*iter);
-	    }
-	    checksum_list.push_back (checksum);
-	} else {
-	    RESULT << "This solution is a duplicate." << endl;
-	}
-
-	items.clear();
-
-    } else {
-	RESULT << "Failed Attempt:" << endl;
+    bool operator()( PoolItem poolItem )
+    {
+	itemset.insert (poolItem);
+	return true;
     }
+};
 
-    RESULT << "installs=" << context->installCount()-sys_res_install << ", upgrades=" << context->upgradeCount() << ", uninstalls=" << context->uninstallCount();
-    int satisfied = context->satisfyCount();
-    if (satisfied > 0) cout << ", satisfied=" << satisfied;
-    cout << endl;
-    cout << str::form ("download size=%.1fk, install size=%.1fk\n", context->downloadSize() / 1024.0, context->installSize() / 1024.0);
-    cout << str::form ("total priority=%d, min priority=%d, max priority=%d\n", context->totalPriority(), context->minPriority(), context->maxPriority());
-    cout << str::form ("other penalties=%d\n",  context->otherPenalties());
+// collect all installed items in a set
+
+PoolItemOrderSet
+uniquelyInstalled (const ResPool & pool)
+{
+    Unique info;
+
+    invokeOnEach( pool.begin( ),
+		  pool.end ( ),
+                  functor::chain( resfilter::ByUninstalled (), resfilter::ByTransact() ), 
+		  functor::functorRef<bool,PoolItem> (info) );
+    return info.itemset;
+}
+
+// collect all uninstalled items in a set
+
+PoolItemOrderSet
+uniquelyUninstalled (const ResPool & pool)
+{
+    Unique info;
+
+    invokeOnEach( pool.begin( ),
+		  pool.end ( ),
+                  functor::chain( resfilter::ByInstalled (), resfilter::ByTransact() ),                   
+		  functor::functorRef<bool,PoolItem> (info) );
+    return info.itemset;
+}
+
+static void
+print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
+{
+    PoolItemOrderSet install = uniquelyInstalled(pool);
+    PoolItemOrderSet uninstall = uniquelyUninstalled(pool);    
+
+    RESULT << "Solution :" << endl;
+
+    for (PoolItemOrderSet::const_iterator iter = install.begin(); iter != install.end(); iter++) {
+        RESULT << "install "; printRes( cout,  *iter); cout << endl;
+    }
+    for (PoolItemOrderSet::const_iterator iter = uninstall.begin(); iter != uninstall.end(); iter++) {
+        RESULT << "delete "; printRes( cout,  *iter); cout << endl;
+    }
+    
     cout << "- - - - - - - - - -" << endl;
 
     if (instorder) {
 	cout << endl;
 	RESULT << "Installation Order:" << endl << endl;
-	solver::detail::PoolItemList inslist = context->getMarked(1);
 	solver::detail::PoolItemSet dummy;
 
-	solver::detail::PoolItemSet insset( inslist.begin(), inslist.end() );
-#if 0
-	InstallOrder order( context->pool(), insset, dummy );		 // sort according to prereq
-	order.init();
-	const solver::detail::PoolItemList & installorder ( order.getTopSorted() );
-	for (solver::detail::PoolItemList::const_iterator iter = installorder.begin(); iter != installorder.end(); iter++) {
-		RESULT; printRes (cout, (*iter)); cout << endl;
-	}
-#else
+	solver::detail::PoolItemSet insset( install.begin(), install.end() );
+
 	int counter = 1;
-	InstallOrder order( context->pool(), insset, dummy );		 // sort according to prereq
+	InstallOrder order( pool, insset, dummy );		 // sort according to prereq
 	order.init();
 	for ( solver::detail::PoolItemList items = order.computeNextSet(); ! items.empty(); items = order.computeNextSet() )
 	{
@@ -445,7 +318,7 @@ print_solution ( int *count, ChecksumList & checksum_list, bool instorder, bool 
 	    counter++;
 	    order.setInstalled( items );
 	}
-#endif
+
 
 	cout << "- - - - - - - - - -" << endl;
     }
@@ -457,7 +330,7 @@ print_solution ( int *count, ChecksumList & checksum_list, bool instorder, bool 
 	Target::PoolItemList dellist;
 	Target::PoolItemList inslist;
 	Target::PoolItemList srclist;
-        pool::GetResolvablesToInsDel collect( context->pool() );
+        pool::GetResolvablesToInsDel collect( pool );
         dellist.swap(collect._toDelete);
         inslist.swap(collect._toInstall);
         srclist.swap(collect._toSrcinstall);
@@ -475,12 +348,6 @@ print_solution ( int *count, ChecksumList & checksum_list, bool instorder, bool 
 
     cout.flush();
 
-    cout << "Context Info:" << endl;
-    context->spewInfo ();
-
-//    cout << "Context Context:" << endl;
-//    cout << *context << endl;
-#endif
     return;
 }
 
@@ -820,6 +687,7 @@ load_source (const string & alias, const string & filename, const string & type,
               return -1;
           }
           repo_add_helix(intSatRepo, fpHelix);
+          count = satRepo.solvablesSize();
           cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;        
           fclose( fpHelix );	          
 	}
@@ -835,16 +703,6 @@ load_source (const string & alias, const string & filename, const string & type,
 
     return count;
 }
-
-
-static int
-undump (const std::string & filename)
-{
-    cerr << "undump not really supported" << endl;
-
-    return load_source ("undump", filename, "undump", false);
-}
-
 
 static bool done_setup = false;
 
@@ -874,7 +732,6 @@ parse_xml_setup (XmlNode_Ptr node)
 	    return;
 	}
     }
-
 
     node = node->children();
     while (node != NULL) {
@@ -964,97 +821,6 @@ parse_xml_setup (XmlNode_Ptr node)
     }
 }
 
-//---------------------------------------------------------------------------------------------------------------------
-// trial related functions
-
-static void
-report_solutions ( solver::detail::Resolver_Ptr resolver, bool instorder, bool mediaorder)
-{
-#if 0
-    int count = 1;
-    ChecksumList checksum_list;
-
-    cout << endl;
-
-    if (!resolver->completeQueues().empty()) {
-	cout << "Completed solutions: " << (long) resolver->completeQueues().size() << endl;
-    }
-
-    if (resolver->prunedQueues().empty()) {
-	cout << "Pruned solutions: " << (long) resolver->prunedQueues().size() << endl;
-    }
-
-    if (resolver->deferredQueues().empty()) {
-	cout << "Deferred solutions: " << (long) resolver->deferredQueues().size() << endl;
-    }
-
-    if (resolver->invalidQueues().empty()) {
-	cout << "Invalid solutions: " << (long) resolver->invalidQueues().size() << endl;
-    }
-
-    if (resolver->bestContext()) {
-	cout << endl << "Best Solution:" << endl;
-	print_solution (resolver->bestContext(), &count, checksum_list, instorder, mediaorder);
-
-	ResolverQueueList complete = resolver->completeQueues();
-	if (complete.size() > 1)
-	    cout << endl << "Other Valid Solutions:" << endl;
-
-	if (complete.size() < 20) {
-	    for (ResolverQueueList::const_iterator iter = complete.begin(); iter != complete.end(); iter++) {
-		ResolverQueue_Ptr queue = (*iter);
-		if (queue->context() != resolver->bestContext())
-		    print_solution (queue->context(), &count, checksum_list, instorder, mediaorder);
-	    }
-	}
-    }
-
-    ResolverQueueList invalid = resolver->invalidQueues();
-    if (invalid.size() < 20) {
-	cout << endl;
-
-	for (ResolverQueueList::const_iterator iter = invalid.begin(); iter != invalid.end(); iter++) {
-	    ResolverQueue_Ptr queue = (*iter);
-	    cout << "Failed Solution: " << endl << *queue->context() << endl;
-	    cout << "- - - - - - - - - -" << endl;
-	    queue->context()->spewInfo ();
-	    fflush (stdout);
-	}
-    } else {
-	cout << "(Not displaying more than 20 invalid solutions)" << endl;
-    }
-    fflush (stdout);
-#endif
-}
-
-//-----------------------------------------------------------------------------
-// system Upgrade
-
-struct Unique : public resfilter::PoolItemFilterFunctor
-{
-    PoolItemSet itemset;
-
-    bool operator()( PoolItem poolItem )
-    {
-	itemset.insert (poolItem);
-	return true;
-    }
-};
-
-
-// collect all installed items in a set
-
-PoolItemSet
-uniquelyInstalled (void)
-{
-    Unique info;
-
-    invokeOnEach( God->pool().begin( ),
-		  God->pool().end ( ),
-		  resfilter::ByInstalled (),
-		  functor::functorRef<bool,PoolItem> (info) );
-    return info.itemset;
-}
 
 
 //-------------
@@ -1089,8 +855,6 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	cerr << "Any trials must be preceeded by the setup!" << endl;
 	exit (0);
     }
-
-    print_sep ();
 
     solver::detail::Resolver_Ptr resolver = new solver::detail::Resolver( pool );
     resolver->setTesting ( true );			// continue despite missing target
@@ -1446,12 +1210,18 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	node = node->next();
     }
 
+    bool success = false;
+    
     if (verify)
-	resolver->verifySystem ();
+	success = resolver->verifySystem ();
     else
-	resolver->resolvePool();
-
-    report_solutions (resolver, instorder, mediaorder);
+	success = resolver->resolvePool();
+    if (success) {
+        print_solution (pool, instorder, mediaorder);
+    } else {
+        RESULT << "No valid solution found." << endl;
+    }
+        
 }
 
 
