@@ -3,24 +3,19 @@
 #
 
 INCLUDES = -I/usr/include/libxml2	\
-	-Ihelix				\
-	-I/usr/lib/qt3/include		\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
-LDADD =	$(libdir)/libzypp.so $(top_srcdir)/src/helix/lib@PACKAGE@_helix.la -L$(QTLIBDIR) -lqt-mt -lqdialogsolver
+LDADD =	$(libdir)/libzypp.so $(libdir)/libsatsolver.a $(libdir)/libexpat.so
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
-noinst_PROGRAMS = deptestomatic.multi			\
-		helixparse
+noinst_PROGRAMS = deptestomatic.multi
 
 testsuitesolversrcbindir = ${testsuitebindir}
-testsuitesolversrcbin_DATA = deptestomatic.multi			\
-		helixparse
- 
+testsuitesolversrcbin_DATA = deptestomatic.multi
 
 deptestomatic_multi_SOURCES =				\
-	deptestomatic.cc KeyRingCallbacks.h
-
-helixparse_SOURCES =					\
-	helixparse.cc
+	deptestomatic.cc 				\
+	KeyRingCallbacks.h				\
+	XmlNode.cc					\
+	XmlNode.h
