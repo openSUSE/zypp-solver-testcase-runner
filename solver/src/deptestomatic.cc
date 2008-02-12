@@ -669,7 +669,13 @@ load_source (const string & alias, const string & filename, const string & type,
 	try {
           cout << "Load from File '" << pathname << "'" << endl;
           MIL << "Load from File '" << pathname << "'" << endl;
-          zypp::sat::Repo satRepo = zypp::sat::Pool::instance().reposInsert(alias);
+          zypp::sat::Repo satRepo;
+
+          if (alias == "@System") {
+              satRepo = zypp::sat::Pool::instance().systemRepo();
+          } else {
+              satRepo = zypp::sat::Pool::instance().reposInsert(alias);              
+          }
           
           RepoInfo nrepo;
           nrepo
@@ -745,7 +751,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	} else if (node->equals ("system")) {
 
 	    string file = node->getProp ("file");
-	    if (load_source ("@system", file, "helix", true) <= 0) {
+	    if (load_source ("@System", file, "helix", true) <= 0) {
 		cerr << "Can't setup 'system'" << endl;
 		exit( 1 );
 	    }
