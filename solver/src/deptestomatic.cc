@@ -689,9 +689,17 @@ load_source (const string & alias, const string & filename, const string & type,
               .setEnabled    ( true )
               .setAutorefresh( false )
               .addBaseUrl    ( pathname.asUrl() );
+          
           satRepo.setInfo (nrepo);
           _Repo *intSatRepo = satRepo.get();
-          FILE *fpHelix = fopen( filename.c_str(), "r" );
+          string command;
+          
+          if (str::endsWith(filename, ".gz")) {
+              command = "zcat " + filename;
+          } else {
+              command = "cat " + filename;              
+          }
+          FILE *fpHelix = popen( command.c_str(), "r" );
           if (!fpHelix)
           {
               cout << "Couldn't load packages from XML file '" << filename << "'" << endl;  
@@ -700,7 +708,7 @@ load_source (const string & alias, const string & filename, const string & type,
           repo_add_helix(intSatRepo, fpHelix);
           count = satRepo.solvablesSize();
           cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;        
-          fclose( fpHelix );	          
+          pclose( fpHelix );	          
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
