@@ -105,10 +105,7 @@ AC_OUTPUT(
 	solver/lib/Makefile	\
 	solver/solver.test/Makefile	\
 	solver/src/Makefile	\
-	src/helix/Makefile	\
 	solver/single.out/Makefile
-	solvertree/Makefile	\
-	solvertree/src/Makefile	\
 	pokus/Makefile			\
 	pokus/config/Makefile		\
 	pokus/pokus.test/Makefile	\

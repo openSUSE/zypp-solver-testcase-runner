@@ -2,7 +2,7 @@
 # Makefile.am for libzypp/testsuite
 #
 #SUBDIRS = src target solver source parser pokus
-SUBDIRS = src solver solvertree pokus
+SUBDIRS = src solver pokus
 
 ## ##################################################
 
