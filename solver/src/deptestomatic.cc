@@ -287,7 +287,12 @@ print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
         RESULT << "install "; printRes( cout,  *iter); cout << endl;
     }
     for (PoolItemOrderSet::const_iterator iter = uninstall.begin(); iter != uninstall.end(); iter++) {
-        RESULT << "delete "; printRes( cout,  *iter); cout << endl;
+        PoolItem item = *iter;
+        if (item.status() == ResStatus::toBeUninstalledDueToUpgrade) {
+            RESULT << "update "; printRes( cout,  item); cout << endl;
+        } else {
+            RESULT << "delete "; printRes( cout,  item); cout << endl;            
+        }
     }
     
     cout << "- - - - - - - - - -" << endl;
