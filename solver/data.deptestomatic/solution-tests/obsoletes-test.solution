@@ -2,14 +2,12 @@
 >!> Installing foo from channel test
 >!> 1 problems found:
 >!> Problem:
->!> Cannot install foo, because it is conflicting with foonew
->!> A conflict over foo == 2.0-1 (foo) requires the removal of foo-2.0-1.noarch[test] which is scheduled for installation
+>!> foonew-2.0-1.noarch obsoletes foo provided by foo-2.0-1.noarch
+>!> 
 >!>    Solution:
->!>       do not install foo
->!>       do not install foo-2.0-1.noarch[test]
+>!>       Following actions will be done:
+>!>       do not install foo-2.0-1.noarch
 >!>    Solution:
->!>       do not install foonew
->!>       do not install foonew-2.0-1.noarch[test]
->!>    Solution:
->!>       Ignore this conflict of foo
+>!>       do not install foonew-2.0-1.noarch
 >!>       
+>!> No valid solution found.

@@ -1,7 +1,6 @@
 >!> Installing B from channel test
 >!> Uninstalling A
 >!> No problems so far
->!> Solution #1:
+>!> Solution :
 >!> install B-1.0-1.noarch[test]
->!> remove  A-1.0-1.noarch
->!> installs=1, upgrades=0, uninstalls=1
+>!> delete A-1.0-1.noarch[@System]

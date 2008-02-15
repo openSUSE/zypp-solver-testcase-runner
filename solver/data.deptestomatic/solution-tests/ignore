@@ -3,3 +3,7 @@ conflict-postfix-sendmail-test.xml
 unfulfilled-3-test.xml
 # works correctly but can not compare solution (order)
 parallel-test.xml
+# having no ignore solution
+conflict3-test.xml
+remove-still-needed1-test.xml
+require-test.xml
