@@ -1,10 +1,10 @@
 >!> Doing distribution upgrade ...
->!> 1: I__s_[S17:1]sat::solvable(2|A-1.0-1.noarch){@System}
->!> 2: U_Th_[S18:1]sat::solvable(5|A-2.0-2.noarch){3rd}
->!> 3: I__s_[S19:1]sat::solvable(3|B-1.0-1.noarch){@System}
->!> 4: U__s_[S20:1]sat::solvable(6|B-2.0-3.noarch){3rd}
->!> 5: I__s_[S21:1]sat::solvable(4|C-1.0-1.noarch){@System}
->!> 6: U__s_[S22:1]sat::solvable(7|C-2.0-3.noarch){3rd}
+>!> 1: I__s_(2)A-1.0-1.noarch(@System)
+>!> 2: U_Th_(5)A-2.0-2.noarch(3rd)
+>!> 3: I__s_(3)B-1.0-1.noarch(@System)
+>!> 4: U__s_(6)B-2.0-3.noarch(3rd)
+>!> 5: I__s_(4)C-1.0-1.noarch(@System)
+>!> 6: U__s_(7)C-2.0-3.noarch(3rd)
 >!> 1 problems found:
 >!> Problem:
 >!> A-2.0-2.noarch requires B = 2.0, but none of the providers can be installed
