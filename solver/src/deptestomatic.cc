@@ -60,6 +60,7 @@
 #include "zypp/ResFilters.h"
 #include "zypp/CapFilters.h"
 #include "zypp/ResolverProblem.h"
+#include "zypp/Locale.h"
 
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
@@ -93,7 +94,7 @@ using zypp::solver::detail::XmlNode_Ptr;
 
 static bool show_mediaid = false;
 static string globalPath;
-static ZYpp::LocaleSet locales;
+static LocaleSet locales;
 
 static ZYpp::Ptr God;
 static RepoManager manager;
@@ -1174,8 +1175,8 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    }
 	} else if (node->equals ("availablelocales")) {
 	    RESULT << "Available locales: ";
-	    ZYpp::LocaleSet locales = God->getAvailableLocales();
-	    for (ZYpp::LocaleSet::const_iterator it = locales.begin(); it != locales.end(); ++it) {
+	    LocaleSet locales = God->getAvailableLocales();
+	    for (LocaleSet::const_iterator it = locales.begin(); it != locales.end(); ++it) {
 		if (it != locales.begin()) std::cout << ", ";
 		std::cout << it->code();
 	    }
