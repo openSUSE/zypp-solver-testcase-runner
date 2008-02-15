@@ -1,9 +1,9 @@
 >!> Doing distribution upgrade ...
->!> 1: I_Th_[S18:1]sat::solvable(2|A-1.0-1.noarch){@System}
->!> 2: U_Th_[S19:1]sat::solvable(4|A_new-2.0-1.noarch){upgrade}
->!> 3: I_Th_[S20:1]sat::solvable(3|B-1.0-1.noarch){@System}
->!> 4: U_Th_[S21:1]sat::solvable(5|B_new-2.0-1.noarch){upgrade}
->!> 5: U__s_[S22:1]sat::solvable(6|C_new-2.0-1.noarch){upgrade}
+>!> 1: I_Th_(2)A-1.0-1.noarch(@System)
+>!> 2: U_Th_(4)A_new-2.0-1.noarch(upgrade)
+>!> 3: I_Th_(3)B-1.0-1.noarch(@System)
+>!> 4: U_Th_(5)B_new-2.0-1.noarch(upgrade)
+>!> 5: U__s_(6)C_new-2.0-1.noarch(upgrade)
 >!> Solution :
 >!> install A_new-2.0-1.noarch[upgrade]
 >!> install B_new-2.0-1.noarch[upgrade]
