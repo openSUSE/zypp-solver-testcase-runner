@@ -10,12 +10,6 @@
   <mediaid/>
 </setup>
 <trial>
-  <install channel="selections" kind="selection" name="default"/>
-  <install channel="selections" kind="selection" name="apparmor"/>
-  <install channel="selections" kind="selection" name="base"/>
-  <install channel="selections" kind="selection" name="x11"/>
-  <install channel="selections" kind="selection" name="gnome"/>
-  <install channel="selections" kind="selection" name="print_server"/>
   <install channel="packages" package="sendmail"/>
   <install channel="packages" package="postfix"/>
   <install channel="packages" package="kernel-default"/>
