@@ -98,8 +98,6 @@ AC_OUTPUT(
 	Makefile			\
 	libzypp-testsuite-tools.spec			\
 	libzypp-testsuite-tools.pc			\
-	src/Makefile \
-	src/utils/Makefile	\
 	solver/Makefile	\
 	solver/config/Makefile	\
 	solver/lib/Makefile	\
@@ -110,18 +108,7 @@ AC_OUTPUT(
 	pokus/config/Makefile		\
 	pokus/pokus.test/Makefile	\
 	pokus/src/Makefile		\
-	pokus/data/Makefile		\
-dnl	source/Makefile	\
-dnl	parser/Makefile	\
-dnl	parser/lib/Makefile	\
-dnl	parser/config/Makefile	\
-dnl	parser/parser.test/Makefile	\
-dnl	parser/tests/Makefile	\
-dnl	target/Makefile	\
-dnl	target/config/Makefile	\
-dnl	target/lib/Makefile	\
-dnl	target/target.test/Makefile	\
-dnl	target/tests/Makefile
+	pokus/data/Makefile
 )
 dnl ==================================================
 
