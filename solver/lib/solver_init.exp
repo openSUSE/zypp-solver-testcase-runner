@@ -212,7 +212,6 @@ proc multi-run { src } {
 	  set mistakefile "$testBase_name.mistake"
 	  set difffile "$testBase_name.diff"
 	  set solutionfile "$testBase_name.solution"
-          set satsolutionfile "$testBase_name.satsolution"
 
 	  # run the test
 
@@ -241,8 +240,7 @@ proc multi-run { src } {
 
 	  set icount 1
 
-	  if { ( [ file exists $dircase/$solutionfile ] == 0 )  && ( [ file exists $dircase/$solutionfile$icount ] == 0 ) 
-               && ( [ file exists $dircase/$satsolutionfile ] == 0 )  && ( [ file exists $dircase/$satsolutionfile$icount ] == 0 ) } {
+	  if { ( [ file exists $dircase/$solutionfile ] == 0 )  && ( [ file exists $dircase/$solutionfile$icount ] == 0 ) } {
 	      if { $expect_to_fail == 1 } {
 		xfail $testBase_name
 		continue
@@ -251,7 +249,6 @@ proc multi-run { src } {
 	  } else {
 		  set ibool 1
 		  set command "(cd $dircase; /usr/bin/diff -u $solutionfile $mistakefile > $difffile)"
-		  set commandsat "(cd $dircase; /usr/bin/diff -u $satsolutionfile $mistakefile > $difffile)"
 		  while { $ibool == 1 } {
 		      set oops [catch { set result [exec sh -c $command] } catched]
 			  if { $oops == "0" } {
@@ -260,25 +257,12 @@ proc multi-run { src } {
 					puts "\tsolution $output was the right one"
 				}
 				break
-                          }
-                      set oops [catch { set result [exec sh -c $commandsat] } catched]
-			  if { $oops == "0" } {
-				if { $icount > 1 } {
-					set output [expr $icount - 1]
-					puts "\tsatsolution $output was the right one"
-				}
-				break
-                          }
+              }
 			  if { [ file exists $dircase/$solutionfile$icount ] == 1 } {
                                 set command "(cd $dircase; /usr/bin/diff -u $solutionfile$icount $mistakefile > $difffile)"
 			  	incr icount 
 			  } else {
-                                if { [ file exists $dircase/$satsolutionfile$icount ] == 1 } {
-                                      set commandsat "(cd $dircase; /usr/bin/diff -u $satsolutionfile$icount $mistakefile > $difffile)"
-			  	      incr icount
-                                } else {
-                	              set ibool 0
-                                }
+			    set ibool 0
 			  }
 		  }
 	      if { $oops != "0" } {
