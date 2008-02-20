@@ -54,13 +54,13 @@
 #include "zypp/Capabilities.h"
 #include "zypp/ResolverProblem.h"
 #include "zypp/ProblemSolution.h"
-#include "zypp/Repository.h"
 #include "zypp/RepoManager.h"
 #include "zypp/ResPool.h"
 #include "zypp/ResFilters.h"
 #include "zypp/CapFilters.h"
 #include "zypp/ResolverProblem.h"
 #include "zypp/Locale.h"
+#include "zypp/ZConfig.h"
 
 #include "zypp/base/String.h"
 #include "zypp/base/Logger.h"
@@ -139,7 +139,7 @@ printRes ( std::ostream & str, ResObject::constPtr r )
     if (r->arch() != "") {
 	str << '.' << r->arch();
     }
-    Repository s = r->repository();
+    sat::Repo s  = r->satSolvable().repo();    
     if (s) {
 	string alias = s.info().alias();
 	if (!alias.empty()
@@ -225,7 +225,7 @@ struct KNEAOrder : public std::binary_function<PoolItem,PoolItem,bool>
 	    res = lhs->arch().compare( rhs->arch() );
 	    if ( res )
 		return res < 0;
-	    res = lhs->repository().info().alias().compare( rhs->repository().info().alias() );
+	    res = lhs->satSolvable().repo().info().alias().compare( rhs->satSolvable().repo().info().alias() );
 	    if ( res )
 		return res < 0;
 	    // no more criteria, still equal:
@@ -381,7 +381,7 @@ struct FindPackage : public resfilter::ResObjectFilterFunctor
 	if (arch_set && arch != p->arch()) {				// if arch requested, force this arch
 	    return true;
 	}
-	if (!p->arch().compatibleWith( God->architecture() )) {
+	if (!p->arch().compatibleWith( ZConfig::instance().systemArchitecture() )) {
 	    return true;
 	}
 
@@ -414,17 +414,16 @@ get_poolItem (const string & source_alias, const string & package_name, const st
     try {
 	FindPackage info (kind, ver, rel, arch);
 
-	invokeOnEach( God->pool().byNameBegin( package_name ),
-		      God->pool().byNameEnd( package_name ),
-		      functor::chain( resfilter::ByRepository(source_alias), resfilter::ByKind (kind) ),
+	invokeOnEach( God->pool().byIdentBegin( kind,package_name ),
+		      God->pool().byIdentEnd( kind,package_name ),
+		      resfilter::ByRepository(source_alias), 
 		      functor::functorRef<bool,PoolItem> (info) );
 
 	poolItem = info.poolItem;
         if (!poolItem) {
             // try to find the resolvable over all channel. This is useful for e.g. languages
-            invokeOnEach( God->pool().byNameBegin( package_name ),
-                          God->pool().byNameEnd( package_name ),
-                          resfilter::ByKind (kind),
+            invokeOnEach( God->pool().byIdentBegin( kind,package_name ),
+                          God->pool().byIdentEnd( kind,package_name ),
                           functor::functorRef<bool,PoolItem> (info) );
             poolItem = info.poolItem;
         }
@@ -446,102 +445,19 @@ get_poolItem (const string & source_alias, const string & package_name, const st
 
 
 //---------------------------------------------------------------------------------------------------------------------
-// whatdependson
-
-
-struct RequiringPoolItem
-{
-    PoolItemSet itemset;
-    PoolItem provider;
-    Capability cap;
-    bool first;
-
-    RequiringPoolItem (PoolItem p)
-	: provider (p)
-    { }
-
-    bool operator()( const CapAndItem & cai )
-    {
-	PoolItem requirer( cai.item );
-	Capability cap( cai.cap );
-	if (itemset.insert (requirer).second) {
-	    if (first) {
-		cout << "\t" << provider.resolvable() << " provides " << cap << " required by" << endl;
-		first = false;
-	    }
-	    cout << "\t\t" << requirer.resolvable() << " for " << cap << endl;
-	}
-	return true;
-    }
-};
-
-
-static PoolItemSet
-whatdependson (PoolItem poolItem)
-{
-    cout << endl << endl << "What depends on '" << poolItem.resolvable() << "'" << endl;
-
-    RequiringPoolItem info (poolItem);
-
-    // loop over all provides and call foreachRequiringResItem
-
-    Capabilities caps = poolItem->dep (Dep::PROVIDES);
-    for (Capabilities::const_iterator cap_iter = caps.begin(); cap_iter != caps.end(); ++cap_iter) {
-
-	info.cap = *cap_iter;
-	info.first = true;
-
-	//world->foreachRequiringResItem (info.cap, requires_poolItem_cb, &info);
-
-	Dep dep( Dep::REQUIRES );
-	invokeOnEach( God->pool().byCapabilityIndexBegin( info.cap.index(), dep ),
-		      God->pool().byCapabilityIndexEnd( info.cap.index(), dep ),
-		      resfilter::ByCapMatch( info.cap ),
-		      functor::functorRef<bool,CapAndItem>(info) );
-
-    }
-
-    return info.itemset;
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
 // whatprovides
-
-
-struct ProvidingPoolItem
-{
-    PoolItemSet itemset;
-
-    bool operator()( const CapAndItem & cai )
-    {
-	itemset.insert( cai.item );
-	return true;
-    }
-};
-
 
 static PoolItemSet
 get_providing_poolItems (const string & prov_name, const string & kind_name = "")
 {
-    PoolItemSet rs;
-    Resolvable::Kind kind = string2kind (kind_name);
+    sat::WhatProvides possibleProviders(Capability(prov_name, string2kind (kind_name)));
+    PoolItemSet itemset;
 
-    Capability cap(prov_name, kind);
+    for_( iter, possibleProviders.begin(), possibleProviders.end() )
+        itemset.insert(ResPool::instance().find( *iter ));    
 
-    Dep dep( Dep::PROVIDES );
-    ProvidingPoolItem info;
-
-    // world->foreachProvidingResItem (cap, providing_poolItem_cb, &rs);
-
-    invokeOnEach( God->pool().byCapabilityIndexBegin( cap.index(), dep ),
-		  God->pool().byCapabilityIndexEnd( cap.index(), dep ),
-		  resfilter::ByCapMatch( cap ),
-		  functor::functorRef<bool,CapAndItem>(info) );
-
-    return info.itemset;
+    return itemset;
 }
-
 
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -743,7 +659,7 @@ parse_xml_setup (XmlNode_Ptr node)
     if (!architecture.empty()) {
 	MIL << "Setting architecture to '" << architecture << "'" << endl;
 	try {
-	    God->setArchitecture( Arch( architecture ) );
+            ZConfig::instance().setSystemArchitecture(Arch( architecture ));
             setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
 	}
 	catch( const Exception & excpt_r ) {
@@ -820,7 +736,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	    }
 	    else {
 		MIL << "Setting architecture to '" << architecture << "'" << endl;
-		God->setArchitecture( Arch( architecture ) );
+                ZConfig::instance().setSystemArchitecture(Arch( architecture ));                
                 setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
 	    }
 	} else if (node->equals ("locale")) {
@@ -845,7 +761,7 @@ parse_xml_setup (XmlNode_Ptr node)
 
 //-------------
 static void
-parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
+parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 {
     static bool first_trial = true;
 
@@ -881,7 +797,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
     resolver->setForceResolve( forceResolve );
 
     if (!locales.empty()) {
-	God->setRequestedLocales( locales );
+        pool.setRequestedLocales( locales );
     }
 
     node = node->children();
@@ -1014,40 +930,6 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 		    cout << (*iter) << endl;
 		}
 	    }
-
-	} else if (node->equals ("whatdependson")) {
-
-	    string source_alias = node->getProp ("channel");
-	    string package_name = node->getProp ("package");
-	    string kind_name = node->getProp ("kind");
-	    string prov_name = node->getProp ("provides");
-
-	    PoolItemSet poolItems;
-
-	    assert (!source_alias.empty());
-	    assert (!package_name.empty());
-
-	    if (!prov_name.empty()) {
-		if (!package_name.empty()) {
-		    cerr << "<whatdependson ...> can't have both package and provides." << endl;
-		    exit (1);
-		}
-		poolItems = get_providing_poolItems (prov_name, kind_name);
-	    }
-	    else {
-		PoolItem poolItem = get_poolItem (source_alias, package_name, kind_name);
-		if (poolItem) poolItems.insert (poolItem);
-	    }
-	    if (poolItems.empty()) {
-		cerr << "Can't find matching package" << endl;
-	    } else {
-		for (PoolItemSet::const_iterator iter = poolItems.begin(); iter != poolItems.end(); ++iter) {
-		    PoolItemSet dependants = whatdependson (*iter);
-		    for (PoolItemSet::const_iterator dep_iter = dependants.begin(); dep_iter != dependants.end(); ++dep_iter) {
-			cout << (*dep_iter) << endl;
-		    }
-		}
-	    }
 	} else if (node->equals ("addConflict")) {
             vector<string> names;
             str::split( node->getProp ("name"), back_inserter(names), "," );
@@ -1175,7 +1057,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 	    }
 	} else if (node->equals ("availablelocales")) {
 	    RESULT << "Available locales: ";
-	    LocaleSet locales = God->getAvailableLocales();
+	    LocaleSet locales = pool.getAvailableLocales();
 	    for (LocaleSet::const_iterator it = locales.begin(); it != locales.end(); ++it) {
 		if (it != locales.begin()) std::cout << ", ";
 		std::cout << it->code();
@@ -1248,7 +1130,7 @@ parse_xml_trial (XmlNode_Ptr node, const ResPool & pool)
 //---------------------------------------------------------------------------------------------------------------------
 
 static void
-parse_xml_test (XmlNode_Ptr node, const ResPool & pool)
+parse_xml_test (XmlNode_Ptr node, ResPool & pool)
 {
     if (!node->equals("test")) {
 	ZYPP_THROW (Exception("Node not 'test' in parse_xml_test():"+node->name()));
@@ -1273,7 +1155,7 @@ parse_xml_test (XmlNode_Ptr node, const ResPool & pool)
 
 
 static void
-process_xml_test_file (const string & filename, const ResPool & pool)
+process_xml_test_file (const string & filename, ResPool & pool)
 {
     xmlDocPtr xml_doc;
     XmlNode_Ptr root;
@@ -1327,7 +1209,8 @@ main (int argc, char *argv[])
 
     DBG << "init_libzypp() done" << endl;
 
-    process_xml_test_file (string (argv[1]), God->pool());
+    ResPool  pool = God->pool();    
+    process_xml_test_file (string (argv[1]), pool);
 
     return 0;
 }
