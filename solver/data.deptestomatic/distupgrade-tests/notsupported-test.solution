@@ -1,0 +1,10 @@
+>!> Doing distribution upgrade ...
+>!> 1: I_Tu_(2)A-1.0-1.noarch(@System)
+>!> 2: I_TsU(3)B-1.0-1.noarch(@System)
+>!> 3: U_Th_(5)B-2.0-1.noarch(upgrade)
+>!> 4: I__s_(4)C-1.0-1.noarch(@System)
+>!> No problems so far
+>!> Solution :
+>!> install B-2.0-1.noarch[upgrade]
+>!> delete A-1.0-1.noarch[@System]
+>!> update B-1.0-1.noarch[@System]
