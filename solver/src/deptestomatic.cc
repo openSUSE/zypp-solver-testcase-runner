@@ -888,13 +888,6 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    RESULT << "Doing distribution upgrade ..." << endl;
 	    UpgradeStatistics stats;
 
-	    string delete_unmaintained = node->getProp ("delete_unmaintained");
-	    if (delete_unmaintained == "false") {
-		stats.delete_unmaintained = false;
-	    } else {
-		stats.delete_unmaintained = true;
-            }
-
 	    resolver->doUpgrade(stats);
 
 	    print_pool( resolver, MARKER );
