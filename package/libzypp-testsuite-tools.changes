@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Feb 26 12:14:37 CET 2008 - schubi@suse.de
+
+- using SAT helix parser 
+- disables pokus (bindings does not work currently)
+
+-------------------------------------------------------------------
 Thu Dec 06 12:18:46 CET 2007 - aschnell@suse.de
 
 - adapted to changes in libzypp bindings
