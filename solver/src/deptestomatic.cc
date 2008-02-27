@@ -72,7 +72,7 @@
 
 #include "zypp/pool/GetResolvablesToInsDel.h"
 
-#include "zypp/sat/Repo.h"
+#include "zypp/Repo.h"
 
 #include "zypp/solver/detail/Resolver.h"
 #include "zypp/solver/detail/InstallOrder.h"
@@ -139,16 +139,13 @@ printRes ( std::ostream & str, ResObject::constPtr r )
     if (r->arch() != "") {
 	str << '.' << r->arch();
     }
-    sat::Repo s  = r->satSolvable().repo();    
-    if (s) {
-	string alias = s.info().alias();
-	if (!alias.empty()
-	    && alias != "@system")
-	{
-	    str << '[' << alias << ']';
-	}
-//	str << '[' << s << ']';
+    string alias = r->repoInfo().alias();
+    if (!alias.empty()
+        && alias != "@system")
+    {
+        str << '[' << alias << ']';
     }
+
     return str;
 }
 
@@ -591,7 +588,7 @@ load_source (const string & alias, const string & filename, const string & type,
 	try {
           cout << "Load from File '" << pathname << "'" << endl;
           MIL << "Load from File '" << pathname << "'" << endl;
-          zypp::sat::Repo satRepo;
+          zypp::Repo satRepo;
 
           if (alias == "@System") {
               satRepo = zypp::sat::Pool::instance().systemRepo();
