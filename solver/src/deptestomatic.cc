@@ -72,7 +72,7 @@
 
 #include "zypp/pool/GetResolvablesToInsDel.h"
 
-#include "zypp/Repo.h"
+#include "zypp/Repository.h"
 
 #include "zypp/solver/detail/Resolver.h"
 #include "zypp/solver/detail/InstallOrder.h"
@@ -222,7 +222,7 @@ struct KNEAOrder : public std::binary_function<PoolItem,PoolItem,bool>
 	    res = lhs->arch().compare( rhs->arch() );
 	    if ( res )
 		return res < 0;
-	    res = lhs->satSolvable().repo().info().alias().compare( rhs->satSolvable().repo().info().alias() );
+	    res = lhs->satSolvable().repository().info().alias().compare( rhs->satSolvable().repository().info().alias() );
 	    if ( res )
 		return res < 0;
 	    // no more criteria, still equal:
@@ -588,7 +588,7 @@ load_source (const string & alias, const string & filename, const string & type,
 	try {
           cout << "Load from File '" << pathname << "'" << endl;
           MIL << "Load from File '" << pathname << "'" << endl;
-          zypp::Repo satRepo;
+          zypp::Repository satRepo;
 
           if (alias == "@System") {
               satRepo = zypp::sat::Pool::instance().systemRepo();
