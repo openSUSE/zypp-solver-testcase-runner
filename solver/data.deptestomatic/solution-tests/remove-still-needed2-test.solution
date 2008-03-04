@@ -1,8 +1,8 @@
 >!> Uninstalling A
 >!> 1 problems found:
 >!> Problem:
->!> B-1.0-1.noarch requires A, but none of the providers can be installed
->!> 
+>!> B-1.0-1.noarch requires A, but this requirement cannot be provided
+>!> deleted providers: A-1.0-1.noarch[@System]
 >!>    Solution:
 >!>       deinstallation of B-1.0-1.noarch
 >!>       

@@ -7,10 +7,10 @@
 >!> 6: U__s_(7)C-2.0-3.noarch(3rd)
 >!> 1 problems found:
 >!> Problem:
->!> A-2.0-2.noarch requires B = 2.0, but none of the providers can be installed
->!> 
+>!> A-2.0-2.noarch requires B = 2.0, but this requirement cannot be provided
+>!> uninstallable providers: B-2.0-3.noarch[3rd]
 >!>    Solution:
->!>       vendor change of [SUSE]B-1.0-1.noarch to [NOTSUSE]B-2.0-3.noarch
+>!>       install B-2.0-3.noarch (with vendor change)
 >!>       
 >!>    Solution:
 >!>       do not install A-2.0-2.noarch
