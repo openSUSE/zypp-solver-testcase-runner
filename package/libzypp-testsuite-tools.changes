@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Mar  4 09:19:11 CET 2008 - coolo@suse.de
+
+- reducing build requires
+
+-------------------------------------------------------------------
 Mon Mar  3 19:51:52 CET 2008 - schubi@suse.de
 
 - adapt to latest libzypp API

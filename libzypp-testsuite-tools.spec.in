@@ -9,8 +9,8 @@
 #
 
 Name:		libzypp-testsuite-tools
-BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes dejagnu qt3-devel libqdialogsolver1-devel ruby ruby-zypp ruby-zypptools
-Requires:       libzypp qt3 libqdialogsolver1 ruby ruby-zypp ruby-zypptools
+BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes dejagnu ruby ruby-zypp ruby-zypptools libexpat-devel
+Requires:       ruby-zypp ruby-zypptools
 License:	GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Autoreqprov:	on
@@ -70,12 +70,6 @@ make %{?jobs:-j %jobs}
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
 %fdupes -s $RPM_BUILD_ROOT
-
-%post
-%run_ldconfig
-
-%postun
-%run_ldconfig
 
 %clean
 
