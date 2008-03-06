@@ -1120,7 +1120,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 //---------------------------------------------------------------------------------------------------------------------
 
 static void
-parse_xml_test (XmlNode_Ptr node, ResPool & pool)
+parse_xml_test (XmlNode_Ptr node)
 {
     if (!node->equals("test")) {
 	ZYPP_THROW (Exception("Node not 'test' in parse_xml_test():"+node->name()));
@@ -1133,6 +1133,7 @@ parse_xml_test (XmlNode_Ptr node, ResPool & pool)
 	    if (node->equals( "setup" )) {
 		parse_xml_setup( node );
 	    } else if (node->equals( "trial" )) {
+                ResPool pool = God->pool();
 		parse_xml_trial( node, pool );
 	    } else {
 		cerr << "Unknown tag '" << node->name() << "' in test" << endl;
@@ -1145,7 +1146,7 @@ parse_xml_test (XmlNode_Ptr node, ResPool & pool)
 
 
 static void
-process_xml_test_file (const string & filename, ResPool & pool)
+process_xml_test_file (const string & filename)
 {
     xmlDocPtr xml_doc;
     XmlNode_Ptr root;
@@ -1160,7 +1161,7 @@ process_xml_test_file (const string & filename, ResPool & pool)
 
     DBG << "Parsing file '" << filename << "'" << endl;
 
-    parse_xml_test (root, pool);
+    parse_xml_test (root);
 
     xmlFreeDoc (xml_doc);
 }
@@ -1171,7 +1172,8 @@ process_xml_test_file (const string & filename, ResPool & pool)
 int
 main (int argc, char *argv[])
 {
-
+//    ZConfig::instance().setSystemArchitecture(Arch( "x86_64" ));
+    
     if (argc != 2) {
 	cerr << "Usage: deptestomatic testfile.xml" << endl;
 	exit (0);
@@ -1198,9 +1200,7 @@ main (int argc, char *argv[])
     globalPath = globalPath.substr (0, globalPath.find_last_of ("/") +1);
 
     DBG << "init_libzypp() done" << endl;
-
-    ResPool  pool = God->pool();    
-    process_xml_test_file (string (argv[1]), pool);
+    process_xml_test_file (string (argv[1]));
 
     return 0;
 }
