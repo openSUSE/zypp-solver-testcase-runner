@@ -3,9 +3,10 @@
 #
 
 INCLUDES = -I/usr/include/libxml2	\
+	-I$(prefix)/include		\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
-LDADD =	$(libdir)/libzypp.so $(libdir)/libsatsolver.a $(libdir)/libexpat.so
+LDADD =	$(libdir)/libzypp.so $(libdir)/libsatsolver.a -lexpat
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
