@@ -31,7 +31,7 @@
 #if 0
 #include <qapplication.h>
 #include <qdialog.h>
-#include <qfiledialog.h>     
+#include <qfiledialog.h>
 #include <qpushbutton.h>
 #include <qfont.h>
 #endif
@@ -57,7 +57,6 @@
 #include "zypp/RepoManager.h"
 #include "zypp/ResPool.h"
 #include "zypp/ResFilters.h"
-#include "zypp/CapFilters.h"
 #include "zypp/ResolverProblem.h"
 #include "zypp/Locale.h"
 #include "zypp/ZConfig.h"
@@ -254,7 +253,7 @@ uniquelyInstalled (const ResPool & pool)
 
     invokeOnEach( pool.begin( ),
 		  pool.end ( ),
-                  functor::chain( resfilter::ByUninstalled (), resfilter::ByTransact() ), 
+                  functor::chain( resfilter::ByUninstalled (), resfilter::ByTransact() ),
 		  functor::functorRef<bool,PoolItem> (info) );
     return info.itemset;
 }
@@ -268,7 +267,7 @@ uniquelyUninstalled (const ResPool & pool)
 
     invokeOnEach( pool.begin( ),
 		  pool.end ( ),
-                  functor::chain( resfilter::ByInstalled (), resfilter::ByTransact() ),                   
+                  functor::chain( resfilter::ByInstalled (), resfilter::ByTransact() ),
 		  functor::functorRef<bool,PoolItem> (info) );
     return info.itemset;
 }
@@ -277,7 +276,7 @@ static void
 print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
 {
     PoolItemOrderSet install = uniquelyInstalled(pool);
-    PoolItemOrderSet uninstall = uniquelyUninstalled(pool);    
+    PoolItemOrderSet uninstall = uniquelyUninstalled(pool);
 
     RESULT << "Solution :" << endl;
 
@@ -289,10 +288,10 @@ print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
         if (item.status() == ResStatus::toBeUninstalledDueToUpgrade) {
             RESULT << "update "; printRes( cout,  item); cout << endl;
         } else {
-            RESULT << "delete "; printRes( cout,  item); cout << endl;            
+            RESULT << "delete "; printRes( cout,  item); cout << endl;
         }
     }
-    
+
     cout << "- - - - - - - - - -" << endl;
 
     if (instorder) {
@@ -413,7 +412,7 @@ get_poolItem (const string & source_alias, const string & package_name, const st
 
 	invokeOnEach( God->pool().byIdentBegin( kind,package_name ),
 		      God->pool().byIdentEnd( kind,package_name ),
-		      resfilter::ByRepository(source_alias), 
+		      resfilter::ByRepository(source_alias),
 		      functor::functorRef<bool,PoolItem> (info) );
 
 	poolItem = info.poolItem;
@@ -451,7 +450,7 @@ get_providing_poolItems (const string & prov_name, const string & kind_name = ""
     PoolItemSet itemset;
 
     for_( iter, possibleProviders.begin(), possibleProviders.end() )
-        itemset.insert(ResPool::instance().find( *iter ));    
+        itemset.insert(ResPool::instance().find( *iter ));
 
     return itemset;
 }
@@ -563,7 +562,7 @@ load_source (const string & alias, const string & filename, const string & type,
 	try {
           cout << "Load from Url '" << filename << "'" << endl;
           MIL << "Load from Url '" << filename << "'" << endl;
-          
+
           RepoInfo nrepo;
           nrepo
               .setAlias      ( alias )
@@ -593,9 +592,9 @@ load_source (const string & alias, const string & filename, const string & type,
           if (alias == "@System") {
               satRepo = zypp::sat::Pool::instance().systemRepo();
           } else {
-              satRepo = zypp::sat::Pool::instance().reposInsert(alias);              
+              satRepo = zypp::sat::Pool::instance().reposInsert(alias);
           }
-          
+
           RepoInfo nrepo;
           nrepo
               .setAlias      ( alias )
@@ -603,26 +602,26 @@ load_source (const string & alias, const string & filename, const string & type,
               .setEnabled    ( true )
               .setAutorefresh( false )
               .addBaseUrl    ( pathname.asUrl() );
-          
+
           satRepo.setInfo (nrepo);
           _Repo *intSatRepo = satRepo.get();
           string command;
-          
+
           if (str::endsWith(filename, ".gz")) {
               command = "zcat " + filename;
           } else {
-              command = "cat " + filename;              
+              command = "cat " + filename;
           }
           FILE *fpHelix = popen( command.c_str(), "r" );
           if (!fpHelix)
           {
-              cout << "Couldn't load packages from XML file '" << filename << "'" << endl;  
+              cout << "Couldn't load packages from XML file '" << filename << "'" << endl;
               return -1;
           }
           repo_add_helix(intSatRepo, fpHelix);
           count = satRepo.solvablesSize();
-          cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;        
-          pclose( fpHelix );	          
+          cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
+          pclose( fpHelix );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
@@ -733,7 +732,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	    }
 	    else {
 		MIL << "Setting architecture to '" << architecture << "'" << endl;
-                ZConfig::instance().setSystemArchitecture(Arch( architecture ));                
+                ZConfig::instance().setSystemArchitecture(Arch( architecture ));
                 setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
 	    }
 	} else if (node->equals ("locale")) {
@@ -877,7 +876,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		cerr << "Unknown system item " << name << endl;
 		exit( 1 );
 	    }
-            
+
 	} else if (node->equals ("distupgrade")) {
 
 	    distupgrade = true;
@@ -1021,7 +1020,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 #if 0
 	} else if (node->equals ("graphic")) {
             resolver->resolvePool();
-            QApplication app(0, NULL);    
+            QApplication app(0, NULL);
             QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
             app.setMainWidget( dialog );
             dialog->setCaption("Solvertree");
@@ -1033,7 +1032,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");
 	    if (package_name.empty())
-		package_name = node->getProp ("package");            
+		package_name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
 
 	    PoolItem poolItem;
@@ -1103,7 +1102,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     }
 
     bool success = false;
-    
+
     if (verify)
 	success = resolver->verifySystem ();
     else
@@ -1113,7 +1112,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     } else {
         RESULT << "No valid solution found." << endl;
     }
-        
+
 }
 
 
@@ -1173,7 +1172,7 @@ int
 main (int argc, char *argv[])
 {
 //    ZConfig::instance().setSystemArchitecture(Arch( "x86_64" ));
-    
+
     if (argc != 2) {
 	cerr << "Usage: deptestomatic testfile.xml" << endl;
 	exit (0);
