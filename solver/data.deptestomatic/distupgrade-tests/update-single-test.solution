@@ -1,0 +1,5 @@
+>!> Doing update ...
+>!> Solution :
+>!> install A-2.0-1.noarch[upgrade]
+>!> update A-1.0-1.noarch[@System]
+>!> Solution :

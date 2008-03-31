@@ -889,8 +889,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    RESULT << "Doing update ..." << endl;
 	    resolver->doUpdate();
-
-	    print_pool( resolver, MARKER );
+            print_solution (pool, instorder, mediaorder);
 
 	} else if (node->equals ("instorder")) {
 
