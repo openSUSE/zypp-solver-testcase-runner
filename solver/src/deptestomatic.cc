@@ -764,7 +764,6 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     bool verify = false;
     bool instorder = false;
     bool mediaorder = false;
-    bool distupgrade = false;
 
     if (!node->equals ("trial")) {
 	ZYPP_THROW (Exception ("Node not 'trial' in parse_xml_trial()"));
@@ -879,15 +878,19 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	} else if (node->equals ("distupgrade")) {
 
-	    distupgrade = true;
-
 	    RESULT << "Doing distribution upgrade ..." << endl;
 	    UpgradeStatistics stats;
 
 	    resolver->doUpgrade(stats);
 
 	    print_pool( resolver, MARKER );
+            
+	} else if (node->equals ("update")) {
 
+	    RESULT << "Doing update ..." << endl;
+	    resolver->doUpdate();
+
+	    print_pool( resolver, MARKER );
 
 	} else if (node->equals ("instorder")) {
 
