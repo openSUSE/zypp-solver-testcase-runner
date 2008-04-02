@@ -474,7 +474,7 @@ struct SortItem : public resfilter::PoolItemFilterFunctor
     {
 	ostringstream ostr;
 	if (_show_all
-	    || (!poolItem.status().isUndetermined()
+	    || (poolItem.isBroken()
 		|| poolItem.status().transacts()))
 	{
 	    printRes (ostr, poolItem);
