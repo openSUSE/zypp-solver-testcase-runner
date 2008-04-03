@@ -549,12 +549,11 @@ set_licence_Pool()
 	return;
 }
 
-static int
+static bool
 load_source (const string & alias, const string & filename, const string & type, bool system_packages)
 {
     Pathname pathname = globalPath + filename;
     MIL << "'" << pathname << "'" << endl;
-    int count = 0;
 
     Repository repo;
 
@@ -580,7 +579,7 @@ load_source (const string & alias, const string & filename, const string & type,
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
 	    cout << "Couldn't load packages from Url '" << filename << "'" << endl;
-	    return -1;
+	    return false;
 	}
     }
     else {
@@ -616,24 +615,23 @@ load_source (const string & alias, const string & filename, const string & type,
           if (!fpHelix)
           {
               cout << "Couldn't load packages from XML file '" << filename << "'" << endl;
-              return -1;
+              return false;
           }
           repo_add_helix(intSatRepo, fpHelix);
-          count = satRepo.solvablesSize();
           cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
           pclose( fpHelix );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
 	    cout << "Couldn't load packages from XML file '" << filename << "'" << endl;
-	    return -1;
+	    return false;
 	}
     }
 
     if(set_licence)
       set_licence_Pool();
 
-    return count;
+    return true;
 }
 
 static bool done_setup = false;
@@ -677,7 +675,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	} else if (node->equals ("system")) {
 
 	    string file = node->getProp ("file");
-	    if (load_source ("@System", file, "helix", true) <= 0) {
+	    if (!load_source ("@System", file, "helix", true)) {
 		cerr << "Can't setup 'system'" << endl;
 		exit( 1 );
 	    }
@@ -692,7 +690,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	    string name = node->getProp ("name");
 	    string file = node->getProp ("file");
 	    string type = node->getProp ("type");
-	    if (load_source (name, file, type, false) <= 0) {
+	    if (!load_source (name, file, type, false)) {
 		cerr << "Can't setup 'channel'" << endl;
 		exit( 1 );
 	    }
@@ -701,7 +699,7 @@ parse_xml_setup (XmlNode_Ptr node)
 
 	    string url = node->getProp ("url");
 	    string alias = node->getProp ("name");
-	    if (load_source( alias, url, "url", false ) <= 0) {
+	    if (!load_source( alias, url, "url", false )) {
 		cerr << "Can't setup 'source'" << endl;
 		exit( 1 );
 	    }
