@@ -1,6 +1,6 @@
 >!> Doing distribution upgrade ...
->!> 1: I_Th_(2)A-1.0-1.noarch(@System)
->!> 2: U_Th_(3)A_new-2.0-1.noarch(upgrade)
+>!> 1: ITh_(2)A-1.0-1.noarch(@System)
+>!> 2: UTh_(3)A_new-2.0-1.noarch(upgrade)
 >!> Solution :
 >!> install A_new-2.0-1.noarch[upgrade]
 >!> delete A-1.0-1.noarch[@System]
