@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Sat Apr  5 12:45:37 CEST 2008 - matz@suse.de
+
+- Fix testcases with URLs as sources
+
+-------------------------------------------------------------------
 Thu Apr  3 20:01:06 CEST 2008 - coolo@suse.de
 
 - adapt to new libzypp
