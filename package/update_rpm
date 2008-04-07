@@ -1,9 +1,0 @@
-set -e
-rm -f *.tar.bz2
-svn export http://svn.opensuse.org/svn/zypp/trunk/libzypp-testsuite
-cd libzypp-testsuite
-make -f Makefile.cvs
-make package-local
-cp package/*es package/*ec package/*tar.bz2 ..
-cd ..
-rm -rf libzypp-testsuite
