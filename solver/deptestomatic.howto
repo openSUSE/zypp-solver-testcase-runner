@@ -68,11 +68,7 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<upgrade/> <!-- Upgrades the System -->
 
-	<distupgrade delete_unmaintained="..."/> <!-- Distribution-Upgrade. delete_unmaintained: false: unmaintained packages will not be deleted -->
-
-	<establish freshen="..."/> <!-- Establish state of 'higher level' Resolvables in Pool. freshen: !empty >> like the following freshen-option -->
-	
-	<freshen/> <!-- go through all package 'freshen' dependencies and schedule matches for installation -->
+	<distupgrade/> <!-- Distribution-Upgrade. -->
 
 	<instorder/> <!-- calculates the installation order -->
 
@@ -102,6 +98,10 @@ Short instruction of all possible options to write a <description>-test.xml file
 	<lock channel="..." name="..." kind="..."/> <!-- locks the package from channel -->
 
 	<keep channel="..." name="..." kind="..."/> <!-- locks the package from channel -->
+
+	<isSatisfied channel="..." name="..." kind="..."/> <!-- check ONE resolvable if it is satisfied -->
+
+	<isSatisfied kind="..."/> <!-- check all resolvables of a specific kind if it is satisfied -->
 
 	<availablelocales/> <!-- lists the available locales -->
 

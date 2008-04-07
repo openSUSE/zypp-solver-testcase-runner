@@ -353,6 +353,46 @@ print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
     return;
 }
 
+
+//---------------------------------------------------------------------------------------------------------------------
+
+struct IsStatisfied : public resfilter::ResObjectFilterFunctor
+{
+    Resolvable::Kind kind;
+
+    IsStatisfied (Resolvable::Kind k)
+	: kind (k)
+    {
+    }
+
+    bool operator()( PoolItem p)
+    {
+        if (p.isSatisfied())
+            RESULT << p << " IS SATISFIED" << endl;
+        else
+            RESULT << p << " IS NOT SATISFIED" << endl;        
+	return true;
+    }
+};
+
+
+void isSatisfied (const string & kind_name) {
+    if (kind_name.empty()) {
+        IsStatisfied info (ResTraits<zypp::Package>::kind);
+        invokeOnEach( God->pool().begin( ),
+                      God->pool().end ( ),
+		      functor::functorRef<bool,PoolItem> (info) );                      
+    } else {
+        Resolvable::Kind kind = string2kind (kind_name);        
+	IsStatisfied info (kind);
+
+	invokeOnEach( God->pool().byKindBegin( kind ),
+		      God->pool().byKindEnd( kind ),
+		      functor::functorRef<bool,PoolItem> (info) );
+    }
+}
+
+
 //---------------------------------------------------------------------------------------------------------------------
 struct FindPackage : public resfilter::ResObjectFilterFunctor
 {
@@ -1051,17 +1091,21 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		package_name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
 
-	    PoolItem poolItem;
-
-	    poolItem = get_poolItem (source_alias, package_name, kind_name);
-	    if (poolItem) {
-                if (poolItem.isSatisfied())
-                    RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
-                else
-                    RESULT <<  package_name << " from channel " << source_alias << " IS NOT SATISFIED" << endl;
-	    } else {
-		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
-	    }            
+            if (!package_name.empty()) {
+                PoolItem poolItem;
+                poolItem = get_poolItem (source_alias, package_name, kind_name);
+                if (poolItem) {
+                    if (poolItem.isSatisfied())
+                        RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
+                    else
+                        RESULT <<  package_name << " from channel " << source_alias << " IS NOT SATISFIED" << endl;
+                } else {
+                    cerr << "Unknown package " << source_alias << "::" << package_name << endl;
+                }
+            } else {
+                // Checking all resolvables
+                isSatisfied (kind_name);
+            }
 	} else if (node->equals ("availablelocales")) {
 	    RESULT << "Available locales: ";
 	    LocaleSet locales = pool.getAvailableLocales();
