@@ -1044,6 +1044,24 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    } else {
 		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
 	    }
+	} else if (node->equals ("isSatisfied")) {
+	    string source_alias = node->getProp ("channel");
+	    string package_name = node->getProp ("name");
+	    if (package_name.empty())
+		package_name = node->getProp ("package");
+	    string kind_name = node->getProp ("kind");
+
+	    PoolItem poolItem;
+
+	    poolItem = get_poolItem (source_alias, package_name, kind_name);
+	    if (poolItem) {
+                if (poolItem.isSatisfied())
+                    RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
+                else
+                    RESULT <<  package_name << " from channel " << source_alias << " IS NOT SATISFIED" << endl;
+	    } else {
+		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
+	    }            
 	} else if (node->equals ("availablelocales")) {
 	    RESULT << "Available locales: ";
 	    LocaleSet locales = pool.getAvailableLocales();
