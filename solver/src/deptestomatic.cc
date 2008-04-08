@@ -140,7 +140,7 @@ printRes ( std::ostream & str, ResObject::constPtr r )
     }
     string alias = r->repoInfo().alias();
     if (!alias.empty()
-        && alias != "@system")
+        && alias != "@System")
     {
         str << '[' << alias << ']';
     }
@@ -899,7 +899,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    PoolItem poolItem;
 
-	    poolItem = get_poolItem ("@system", name, kind_name, version, release, architecture );
+	    poolItem = get_poolItem ("@System", name, kind_name, version, release, architecture );
 	    if (poolItem) {
 		RESULT << "Uninstalling " << name
 		    << (version.empty()?"":(string("-")+poolItem->edition().version()))
@@ -1123,7 +1123,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    string source_alias = node->getProp ("channel");
 	    if (source_alias.empty())
-		source_alias = "@system";
+		source_alias = "@System";
 
 	    if (name.empty())
 	    {
@@ -1137,7 +1137,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
             if (poolItem) {
                 // first: set anything
-                if (source_alias == "@system") {
+                if (source_alias == "@System") {
                     poolItem.status().setToBeUninstalled( ResStatus::USER );
                 }
                 else {
