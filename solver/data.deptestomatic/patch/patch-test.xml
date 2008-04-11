@@ -37,7 +37,9 @@
 	<channel file="patch-135979712-package.xml.gz" name="openSUSE-10.3-retail 10.3" />
 </setup>
 <trial>
-<isSatisfied channel="patch" kind="patch" name="rpm-2186-0"/>
-<isSatisfied kind="patch"/>
+<validate channel="patch" kind="patch" name="rpm-2186-0"/>
+<validate kind="patch"/>
+<showpool prefix="VALIDATE" all="yes"/>
+
 </trial>
 </test>

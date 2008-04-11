@@ -369,8 +369,10 @@ struct IsStatisfied : public resfilter::ResObjectFilterFunctor
     {
         if (p.isSatisfied())
             RESULT << p << " IS SATISFIED" << endl;
-        else
-            RESULT << p << " IS NOT SATISFIED" << endl;        
+        else if(p.isBroken())
+            RESULT << p << " IS BROKEN" << endl;
+        else if(p.isRelevant())
+            RESULT << p << " IS RELEVANT" << endl;            
 	return true;
     }
 };
@@ -1084,13 +1086,16 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    } else {
 		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
 	    }
-	} else if (node->equals ("isSatisfied")) {
+	} else if (node->equals ("validate")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");
 	    if (package_name.empty())
 		package_name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
 
+            // Solving is needed
+            resolver->resolvePool();
+            
             if (!package_name.empty()) {
                 PoolItem poolItem;
                 poolItem = get_poolItem (source_alias, package_name, kind_name);
