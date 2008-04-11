@@ -99,9 +99,9 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<keep channel="..." name="..." kind="..."/> <!-- locks the package from channel -->
 
-	<isSatisfied channel="..." name="..." kind="..."/> <!-- check ONE resolvable if it is satisfied -->
+	<validate channel="..." name="..." kind="..."/> <!-- check ONE resolvable if it is satisfied -->
 
-	<isSatisfied kind="..."/> <!-- check all resolvables of a specific kind if it is satisfied -->
+	<validate kind="..."/> <!-- check all resolvables of a specific kind if it is satisfied -->
 
 	<availablelocales/> <!-- lists the available locales -->
 
