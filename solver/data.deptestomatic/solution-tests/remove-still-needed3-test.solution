@@ -13,5 +13,5 @@
 >!> For problem:     0
 >!> No problems so far
 >!> Solution :
->!> delete A-1.0-1.noarch[@System]
->!> delete B-1.0-1.noarch[@System]
+>!> delete A-1.0-1.noarch
+>!> delete B-1.0-1.noarch

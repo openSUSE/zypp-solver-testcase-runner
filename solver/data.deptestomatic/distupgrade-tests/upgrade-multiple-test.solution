@@ -1,7 +1,7 @@
 >!> Doing distribution upgrade ...
->!> 1: ITsU(2)A-1.0-1.noarch(@System)
->!> 2: U_s_(3)A-2.0-1.noarch(upgrade1)
->!> 3: UTh_(4)A-2.0-2.noarch(upgrade2)
+>!> 1: I_TsU(2)A-1.0-1.noarch(@System)
+>!> 2: U__s_(3)A-2.0-1.noarch(upgrade1)
+>!> 3: U_Th_(4)A-2.0-2.noarch(upgrade2)
 >!> Solution :
 >!> install A-2.0-2.noarch[upgrade2]
->!> update A-1.0-1.noarch[@System]
+>!> update A-1.0-1.noarch
