@@ -1160,14 +1160,118 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             }
 	} else if (node->equals ("addQueueInstall")) {
 	    string name = node->getProp ("name");
+	    string soft = node->getProp ("soft");            
 
 	    if (name.empty())
 	    {
 		cerr << "addQueueInstall need 'name' parameter" << endl;
 		return;
 	    }
-            zypp::solver::detail::SolverQueueItemInstall_Ptr install = new zypp::solver::detail::SolverQueueItemInstall(pool, name);
+            zypp::solver::detail::SolverQueueItemInstall_Ptr install =
+                new zypp::solver::detail::SolverQueueItemInstall(pool, name, (soft.empty() ? false : true));
             solverQueue.push_back (install);
+	} else if (node->equals ("addQueueDelete")) {
+	    string name = node->getProp ("name");
+	    string soft = node->getProp ("soft");
+            
+	    if (name.empty())
+	    {
+		cerr << "addQueueDelete need 'name' parameter" << endl;
+		return;
+	    }
+            zypp::solver::detail::SolverQueueItemDelete_Ptr del =
+                new zypp::solver::detail::SolverQueueItemDelete(pool, name, (soft.empty() ? false : true));
+            solverQueue.push_back (del);
+	} else if (node->equals ("addQueueLock")) {
+	    string soft = node->getProp ("soft");            
+	    string kind_name = node->getProp ("kind");
+	    string name = node->getProp ("name");
+	    if (name.empty())
+		name = node->getProp ("package");
+
+	    string source_alias = node->getProp ("channel");
+	    if (source_alias.empty())
+		source_alias = "@System";
+
+	    if (name.empty())
+	    {
+		cerr << "transact need 'name' parameter" << endl;
+		return;
+	    }
+
+            PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
+            if (poolItem) {
+                zypp::solver::detail::SolverQueueItemLock_Ptr lock =
+                    new zypp::solver::detail::SolverQueueItemLock(pool, poolItem, (soft.empty() ? false : true));
+                solverQueue.push_back (lock);
+            }
+            else {
+                cerr << "Unknown item " << source_alias << "::" << name << endl;
+            }
+	} else if (node->equals ("addQueueUpdate")) {
+	    string kind_name = node->getProp ("kind");
+	    string name = node->getProp ("name");
+	    if (name.empty())
+		name = node->getProp ("package");
+
+	    string source_alias = node->getProp ("channel");
+	    if (source_alias.empty())
+		source_alias = "@System";
+
+	    if (name.empty())
+	    {
+		cerr << "transact need 'name' parameter" << endl;
+		return;
+	    }
+
+            PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
+            if (poolItem) {
+                zypp::solver::detail::SolverQueueItemUpdate_Ptr lock =
+                    new zypp::solver::detail::SolverQueueItemUpdate(pool, poolItem);
+                solverQueue.push_back (lock);
+            }
+            else {
+                cerr << "Unknown item " << source_alias << "::" << name << endl;
+            }
+	} else if (node->equals ("addQueueInstallOneOf")) {
+            XmlNode_Ptr requestNode = node->children();
+            zypp::solver::detail::PoolItemList poolItemList;
+            while (requestNode) {
+                if (requestNode->equals("item")) {
+                string kind_name = requestNode->getProp ("kind");
+                string name = requestNode->getProp ("name");
+                if (name.empty())
+                    name = requestNode->getProp ("package");
+
+                string source_alias = requestNode->getProp ("channel");
+                if (source_alias.empty())
+                    source_alias = "@System";
+
+                if (name.empty())
+                {
+                    cerr << "transact need 'name' parameter" << endl;
+                } else {
+                    PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
+                    if (poolItem) {
+                        poolItemList.push_back(poolItem);
+                    }
+                    else {
+                        cerr << "Unknown item " << source_alias << "::" << name << endl;
+                    }
+                }
+                } else {
+                    cerr << "addQueueInstallOneOf: cannot find flag 'item'" << endl;
+                }
+                requestNode = requestNode->next();
+            }
+            if (poolItemList.empty()) {
+                cerr << "addQueueInstallOneOf has an empty list" << endl;
+                return;
+            } else {
+                zypp::solver::detail::SolverQueueItemInstallOneOf_Ptr install =
+                    new zypp::solver::detail::SolverQueueItemInstallOneOf(pool, poolItemList);
+                solverQueue.push_back (install);
+            }
 	} else if (node->equals ("createTestcase")) {
 	    string path = node->getProp ("path");
             if (path.empty())
