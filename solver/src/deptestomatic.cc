@@ -76,6 +76,12 @@
 #include "zypp/solver/detail/Resolver.h"
 #include "zypp/solver/detail/InstallOrder.h"
 #include "zypp/solver/detail/Testcase.h"
+#include "zypp/solver/detail/SolverQueueItem.h"
+#include "zypp/solver/detail/SolverQueueItemDelete.h"
+#include "zypp/solver/detail/SolverQueueItemInstall.h"
+#include "zypp/solver/detail/SolverQueueItemInstallOneOf.h"
+#include "zypp/solver/detail/SolverQueueItemLock.h"
+#include "zypp/solver/detail/SolverQueueItemUpdate.h"
 
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
@@ -98,6 +104,7 @@ static LocaleSet locales;
 static ZYpp::Ptr God;
 static RepoManager manager;
 static bool forceResolve;
+static zypp::solver::detail::SolverQueueItemList solverQueue;
 
 typedef set<PoolItem> PoolItemSet;
 
@@ -297,20 +304,20 @@ print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
     if (instorder) {
 	cout << endl;
 	RESULT << "Installation Order:" << endl << endl;
-	solver::detail::PoolItemSet dummy;
+	zypp::solver::detail::PoolItemSet dummy;
 
-	solver::detail::PoolItemSet insset( install.begin(), install.end() );
+	zypp::solver::detail::PoolItemSet insset( install.begin(), install.end() );
 
 	int counter = 1;
 	InstallOrder order( pool, insset, dummy );		 // sort according to prereq
 	order.init();
-	for ( solver::detail::PoolItemList items = order.computeNextSet(); ! items.empty(); items = order.computeNextSet() )
+	for ( zypp::solver::detail::PoolItemList items = order.computeNextSet(); ! items.empty(); items = order.computeNextSet() )
 	{
 	    RESULT << endl;
 	    RESULT << counter << ". set with " << items.size() << " resolvables" << endl;
 	    PoolItemOrderSet orderedset;
 
-	    for ( solver::detail::PoolItemList::iterator iter = items.begin(); iter != items.end(); ++iter )
+	    for ( zypp::solver::detail::PoolItemList::iterator iter = items.begin(); iter != items.end(); ++iter )
 	    {
 		orderedset.insert( *iter );
 	    }
@@ -530,7 +537,7 @@ struct SortItem : public resfilter::PoolItemFilterFunctor
 // collect all installed items in a set
 
 void
-print_pool( solver::detail::Resolver_Ptr resolver, const string & prefix = "", bool show_all = true, string show_licence = "false", bool verbose = false )
+print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix = "", bool show_all = true, string show_licence = "false", bool verbose = false )
 {
     SortItem info( show_all );
     cout << "Current pool:" << endl;
@@ -827,7 +834,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	exit (0);
     }
 
-    solver::detail::Resolver_Ptr resolver = new solver::detail::Resolver( pool );
+    zypp::solver::detail::Resolver_Ptr resolver = new zypp::solver::detail::Resolver( pool );
     resolver->setTesting ( true );			// continue despite missing target
     resolver->setForceResolve( forceResolve );
 
@@ -846,11 +853,8 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    string note = node->getContent ();
 	    cout << "NOTE: " << note << endl;
-
 	} else if (node->equals ("verify")) {
-
 	    verify = true;
-
 	} else if (node->equals ("current")) {
             // unsupported
 	    string source_alias = node->getProp ("channel");
@@ -1154,6 +1158,16 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             else {
                 cerr << "Unknown item " << source_alias << "::" << name << endl;
             }
+	} else if (node->equals ("addQueueInstall")) {
+	    string name = node->getProp ("name");
+
+	    if (name.empty())
+	    {
+		cerr << "addQueueInstall need 'name' parameter" << endl;
+		return;
+	    }
+            zypp::solver::detail::SolverQueueItemInstall_Ptr install = new zypp::solver::detail::SolverQueueItemInstall(pool, name);
+            solverQueue.push_back (install);
 	} else if (node->equals ("createTestcase")) {
 	    string path = node->getProp ("path");
             if (path.empty())
@@ -1170,10 +1184,14 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
     bool success = false;
 
-    if (verify)
+    if (verify) {
 	success = resolver->verifySystem ();
-    else
-	success = resolver->resolvePool();
+    } else {
+        if (!solverQueue.empty())
+            success = resolver->resolveQueue(solverQueue);
+        else
+            success = resolver->resolvePool();
+    }
     if (success) {
         print_solution (pool, instorder, mediaorder);
     } else {
@@ -1247,6 +1265,7 @@ main (int argc, char *argv[])
     zypp::base::LogControl::instance().logfile( "-" );
 
     forceResolve = false;
+    solverQueue.clear();
 
     manager = makeRepoManager( "/tmp/myrepos" );
 
