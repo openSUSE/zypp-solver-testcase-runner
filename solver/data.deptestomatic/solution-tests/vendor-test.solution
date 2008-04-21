@@ -15,6 +15,9 @@
 >!>    Solution:
 >!>       do not install A-2.0-2.noarch
 >!>       
+>!>    Solution:
+>!>       Ignore some dependencies of A
+>!>       
 >!> Taking solution: 0
 >!> For problem:     0
 >!> No problems so far

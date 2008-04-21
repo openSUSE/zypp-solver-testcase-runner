@@ -9,4 +9,7 @@
 >!>    Solution:
 >!>       keep foo
 >!>       
+>!>    Solution:
+>!>       Ignore some dependencies of foo2
+>!>       
 >!> No valid solution found.

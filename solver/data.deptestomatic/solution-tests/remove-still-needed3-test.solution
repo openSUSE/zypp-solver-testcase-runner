@@ -9,9 +9,11 @@
 >!>    Solution:
 >!>       keep A
 >!>       
->!> Taking solution: 0
+>!>    Solution:
+>!>       Ignore some dependencies of B
+>!>       
+>!> Taking solution: 2
 >!> For problem:     0
 >!> No problems so far
 >!> Solution :
 >!> delete A-1.0-1.noarch
->!> delete B-1.0-1.noarch
