@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Apr 25 20:14:29 CEST 2008 - coolo@suse.de
+
+- new call resolveQueue added
+
+-------------------------------------------------------------------
 Fri Apr 11 22:42:30 CEST 2008 - coolo@suse.de
 
 - adapt to new libzypp
