@@ -978,7 +978,12 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
                 resolver->addExtraRequire(Capability (names[i], string2kind (node->getProp ("kind"))));
             }
 	} else if (node->equals ("reportproblems")) {
-	    if (resolver->resolvePool() == true
+            bool success;
+            if (!solverQueue.empty())
+                success = resolver->resolveQueue(solverQueue);
+            else
+                success = resolver->resolvePool();
+	    if (success
                 && node->getProp ("ignoreValidSolution").empty()) {
 		RESULT << "No problems so far" << endl;
 	    }
@@ -1046,7 +1051,13 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		RESULT << "Wrong solution number (0-" << solutionCounter << ")" <<endl;
 	    } else {
 		// resolve and check it again
-		if (resolver->resolvePool() == true) {
+                bool success;
+                if (!solverQueue.empty())
+                    success = resolver->resolveQueue(solverQueue);
+                else
+                    success = resolver->resolvePool();
+            
+		if (success) {
 		    RESULT << "No problems so far" << endl;
 		}
 		else {
@@ -1080,10 +1091,13 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    if (package_name.empty())
 		package_name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
+	    string version = node->getProp ("ver");
+	    string release = node->getProp ("rel");
+	    string architecture = node->getProp ("arch");
 
 	    PoolItem poolItem;
 
-	    poolItem = get_poolItem (source_alias, package_name, kind_name);
+	    poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );            
 	    if (poolItem) {
 		RESULT << "Locking " << package_name << " from channel " << source_alias << endl;
 		poolItem.status().setLock (true, ResStatus::USER);
@@ -1096,13 +1110,20 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    if (package_name.empty())
 		package_name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
+	    string version = node->getProp ("ver");
+	    string release = node->getProp ("rel");
+	    string architecture = node->getProp ("arch");
 
             // Solving is needed
-            resolver->resolvePool();
+            bool success;
+            if (!solverQueue.empty())
+                success = resolver->resolveQueue(solverQueue);
+            else
+                success = resolver->resolvePool();            
             
             if (!package_name.empty()) {
                 PoolItem poolItem;
-                poolItem = get_poolItem (source_alias, package_name, kind_name);
+                poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );                            
                 if (poolItem) {
                     if (poolItem.isSatisfied())
                         RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
