@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<test>
+  <setup arch="i686">
+    <system file="10.2-i386-system.xml.gz"/>
+    <channel file="os-110-b2-full.xml.gz" name="factory"/>
+    <locale name="de_DE"/>
+    <locale name="de"/>
+  </setup>
+  <trial>
+    <lock package="gnome2-NLD"/>
+    <install kind="product" name="openSUSE-fulltree"/>
+    <!-- can't have it on FTP -->
+    <uninstall kind="package" name="agfa-fonts"/>
+    <lock kind="package" name="agfa-fonts"/>
+    <uninstall kind="package" name="yast2-bootfloppy"/>
+    <uninstall kind="package" name="yast2-power-management"/>
+    <uninstall kind="package" name="zmd" version="7.1.100.0"/>
+    <uninstall kind="package" name="zen-updater" version="7.1.100"/>
+    <uninstall kind="package" name="sqlite-zmd" version="3.2.8"/>
+    <uninstall kind="package" name="libzypp-zmd-backend" version="7.1.1.0_0.7"/>
+    <uninstall kind="package" name="rug" version="7.1.100.0"/>
+    <uninstall kind="package" name="yast2-powertweak" version=" 2.15.1"/>
+    <uninstall kind="package" name="zaptel-kmp-default" version="1.2.10_2.6.18.2_34"/>
+    <uninstall kind="package" name="wlan-kmp-xen" version="1_2.6.18.2_34"/>
+    <uninstall kind="package" name="zaptel" version="1.2.10"/>
+    <uninstall kind="package" name="ipw3945d" version="1.7.18"/>
+    <uninstall kind="package" name="asterisk-zaptel" version="1.2.13"/>
+    <uninstall kind="package" name="ant-jai" version="1.6.5"/>
+    <uninstall kind="package" name="asterisk" version="1.2.13"/>
+    <uninstall kind="package" name="asterisk-alsa" version="1.2.13"/>
+    <uninstall kind="package" name="asterisk-capi" version="0.7.1"/>
+    <uninstall kind="package" name="asterisk-spandsp" version="1.2.13"/>
+    <uninstall kind="package" name="libpri" version="1.2.4"/>
+    <uninstall kind="package" name="cpp41" version="4.1.2"/>
+    <uninstall kind="package" name="gcc41" version="4.1.2"/>
+    <uninstall kind="package" name="gcc41-c++" version="4.1.2"/>
+    <uninstall kind="package" name="gcc41-gij" version="4.1.2"/>
+    <uninstall kind="package" name="gcc41-java" version="4.1.2"/>
+    <uninstall kind="package" name="gcc41-objc" version="4.1.2"/>
+    <uninstall kind="package" name="gcc41-obj-c++" version="4.1.2"/>
+    <uninstall kind="package" name="libgcj41" version="4.1.2"/>
+    <uninstall kind="package" name="libgcj41-devel" version="4.1.2"/>
+    <uninstall kind="package" name="libstdc++41-devel" version="4.1.2"/>
+    <uninstall kind="package" name="tomcat5" version="5.0.30"/>
+    <uninstall kind="package" name="art-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="gconf-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="gecko-sharp" version="0.6"/>
+    <uninstall kind="package" name="glade-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="glib-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="gnome-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="gtk-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="gtk-sharp-complete" version="1.0.10"/>
+    <uninstall kind="package" name="gtk-sharp-gapi" version="1.0.10"/>
+    <uninstall kind="package" name="vte-sharp" version="1.0.10"/>
+    <uninstall kind="package" name="jai" version="1.1.2.01"/>
+    <uninstall kind="package" name="rsaref"/>
+    <uninstall kind="package" name="limal-bootloader"/>
+    <uninstall kind="package" name="samba-pdb"/>
+    <uninstall kind="package" name="kino"/>
+    <uninstall kind="package" name="avmailgate"/>
+    <uninstall kind="package" name="smartlink-softmodem"/>
+    <uninstall kind="package" name="agfa-fonts"/> <!-- special case: DVD only -->
+    <uninstall kind="package" name="java-1_4_2-cacao-devel"/>
+    <uninstall kind="package" name="java-1_4_2-cacao"/>
+    <uninstall kind="package" name="yast2-bluetooth"/>
+    <uninstall kind="package" name="dockutils"/>
+    <!-- help the factory update -->
+    <uninstall kind="package" name="libstdc++41"/>
+    <install kind="package" name="libstdc++43"/>
+    <uninstall kind="package" name="libgcc41"/>
+    <install kind="package" name="libgcc43"/>
+    <uninstall kind="package" name="cpp41"/>
+    <install kind="package" name="cpp43"/>
+    <uninstall kind="package" name="gcc41"/>
+    <install kind="package" name="gcc43"/>
+    <uninstall kind="package" name="gcc41-c++"/>
+    <install kind="package" name="gcc43-c++"/>
+    <uninstall kind="package" name="gcc41-java"/>
+    <install kind="package" name="gcc43-java"/>
+    <uninstall kind="package" name="libmudflap41"/>
+    <install kind="package" name="libmudflap43"/>
+    <distupgrade/>
+    <reportproblems/>
+  </trial>
+</test>
