@@ -80,6 +80,5 @@
     <uninstall kind="package" name="libmudflap41"/>
     <install kind="package" name="libmudflap43"/>
     <distupgrade/>
-    <reportproblems/>
   </trial>
 </test>
