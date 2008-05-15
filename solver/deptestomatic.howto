@@ -89,6 +89,16 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<addRequire kind="..." name="..."/> <!-- sets an additional Require -->
 
+	<addQueueInstall name="..." soft="..."/> <!-- Task for ResolveQueue -->
+
+	<addQueueDelete name="..." soft="..."/> <!-- Task for ResolveQueue -->
+
+	<addQueueLock name="..."  kind="..." soft="..."/> <!-- Task for ResolveQueue -->
+
+	<addQueueUpdate name="..."  kind="..." soft="..."/> <!-- Task for ResolveQueue -->
+
+	<addQueueInstallOneOf <item>channel="..." name="..." package="..."	kind="..." soft="..."/ <item/> <item> ... </item>> <!-- Task for ResolveQueue -->
+
 	<reportproblems/> <!-- reports problems -->
 
 	<takesolution problem="..." solution="..."/> <!-- takes the given solution number to solve the given problem number -->
