@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+   install package B, A conflicts B
+-->
+<test>
+<setup>
+  <system file="conflicting-system.xml.gz"/>
+  <channel name="test" file="conflicting2-packages.xml.gz"/>
+</setup>
+<trial>
+  <addQueueInstall name="B"/>
+  <addQueueDelete name="A"/>
+  <reportproblems/>
+</trial>
+</test>

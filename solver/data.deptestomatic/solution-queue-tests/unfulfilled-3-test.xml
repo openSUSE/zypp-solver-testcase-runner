@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!--
+   install package with unfulfilled dependency. 
+-->
+<test>
+<setup>
+  <channel name="test" file="unfulfilled-packages.xml.gz"/>
+</setup>
+<trial>
+  <addQueueInstall name="unfulfilled1"/>
+  <addQueueInstall name="unfulfilled2"/>
+  <addQueueInstall name="unfulfilled3"/>
+  <addQueueInstall name="unfulfilled4"/>
+  <reportproblems/>
+</trial>
+</test>

@@ -1,0 +1,11 @@
+>!> 1 problems found:
+>!> Problem:
+>!> foonew-2.0-1.noarch obsoletes foo provided by foo-1.0-1.noarch
+>!> 
+>!>    Solution:
+>!>       do not install foo
+>!>       
+>!>    Solution:
+>!>       do not install foonew
+>!>       
+>!> No valid solution found.

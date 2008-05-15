@@ -1,0 +1,18 @@
+>!> 1 problems found:
+>!> Problem:
+>!> B-1.0-1.noarch requires A, but this requirement cannot be provided
+>!> deleted providers: A-1.0-1.noarch[@System]
+>!>    Solution:
+>!>       deinstallation of B-1.0-1.noarch
+>!>       
+>!>    Solution:
+>!>       keep A
+>!>       
+>!>    Solution:
+>!>       Ignore some dependencies of B
+>!>       
+>!> Taking solution: 2
+>!> For problem:     0
+>!> No problems so far
+>!> Solution :
+>!> delete A-1.0-1.noarch
