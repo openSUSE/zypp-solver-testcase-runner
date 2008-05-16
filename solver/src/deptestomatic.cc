@@ -554,7 +554,7 @@ print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix =
 		cout << it->second;
 	}
 	cout << endl;
-#if 0 // not supported currently
+
         if (verbose) {
             zypp::solver::detail::ItemCapKindList selectedBy = resolver->isInstalledBy(it->second);
             zypp::solver::detail::ItemCapKindList select = resolver->installs(it->second);
@@ -575,7 +575,6 @@ print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix =
                 cout << "         " << iter->item << " " << iter->cap << " " << iter->capKind << " " << iter->initialInstallation << endl;
             }
         }
-#endif
     }
     cout << "Pool End." << endl;
     return;
