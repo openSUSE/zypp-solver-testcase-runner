@@ -28,13 +28,11 @@
 #include <iostream>
 #include <map>
 #include <set>
-#if 0
 #include <qapplication.h>
 #include <qdialog.h>
 #include <qfiledialog.h>
 #include <qpushbutton.h>
 #include <qfont.h>
-#endif
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
@@ -82,6 +80,7 @@
 #include "zypp/solver/detail/SolverQueueItemInstallOneOf.h"
 #include "zypp/solver/detail/SolverQueueItemLock.h"
 #include "zypp/solver/detail/SolverQueueItemUpdate.h"
+#include "zypp/QZyppSolverDialog.h"
 
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
@@ -1073,7 +1072,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             string get_licence = node->getProp ("getlicence");
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
-#if 0
+
 	} else if (node->equals ("graphic")) {
             resolver->resolvePool();
             QApplication app(0, NULL);
@@ -1083,7 +1082,6 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             dialog->setMinimumSize ( 700, 700 );
             dialog->show();
             app.exec();
-#endif
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");
