@@ -55,8 +55,8 @@ AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 
 dnl Check qt paths
-QTDIR="/usr/lib/qt3"
-QTLIBDIR="/usr/lib/qt3/lib"
+QTDIR="/usr/lib/qt4"
+QTLIBDIR="/usr/lib"
 AC_ARG_WITH(qt-dir,
     AS_HELP_STRING([--with-qt-dir=DIR],
 		   [where the root of Qt is installed.]),
