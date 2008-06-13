@@ -4,11 +4,12 @@
 
 INCLUDES = -I/usr/include/libxml2	\
 	-I$(prefix)/include		\
-	-I/usr/lib/qt3/include
+	-I/usr/include/Qt		\
+	-DQT3_SUPPORT			\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
 
-LDADD =	$(libdir)/libzypp.so $(libdir)/libsatsolver.a -lexpat -L$(QTLIBDIR) -lqt-mt -lqdialogsolver
+LDADD =	$(libdir)/libzypp.so $(libdir)/libsatsolver.a -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
