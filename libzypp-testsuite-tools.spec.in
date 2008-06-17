@@ -9,8 +9,8 @@
 #
 
 Name:		libzypp-testsuite-tools
-BuildRequires:	gcc-c++ libzypp-devel libzypp fdupes dejagnu ruby ruby-zypp ruby-zypptools libexpat-devel libqt4-devel libqdialogsolver1-devel
-Requires:       ruby-zypp ruby-zypptools libqt4 libqdialogsolver1
+BuildRequires:	gcc-c++ libzypp-devel fdupes dejagnu ruby ruby-zypp ruby-zypptools libexpat-devel libqt4-devel libqdialogsolver1-devel yast2-core-devel yast2-libyui-devel
+Requires:       ruby-zypp ruby-zypptools libqt4 libqdialogsolver1 yast2-libyui
 License:	GPL
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Autoreqprov:	on

@@ -120,5 +120,9 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<graphic/> <!-- shows the solver result in gaphic mode -->
 
+	<YOU/> <!-- starts the YOU package selector -->
+
+	<PkgUI/> <!-- starts the YaST package selector -->
+
    </trial>
 </test>
