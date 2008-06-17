@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Jun 17 12:25:20 CEST 2008 - schubi@suse.de
+
+- Added new commands: YOU", "PkgUI" for package UI
+
+-------------------------------------------------------------------
 Fri May 23 15:06:53 CEST 2008 - schubi@suse.de
 
 - Added grfical interface again 

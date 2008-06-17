@@ -49,5 +49,5 @@ dnl ==================================================
 m4_define([LIBZYPPTESTSUITE_MINOR],	 [2])
 m4_define([LIBZYPPTESTSUITE_COMPATMINOR], [2])
 dnl ==================================================
-m4_define([LIBZYPPTESTSUITE_PATCH],	 [3])
+m4_define([LIBZYPPTESTSUITE_PATCH],	 [4])
 dnl ==================================================

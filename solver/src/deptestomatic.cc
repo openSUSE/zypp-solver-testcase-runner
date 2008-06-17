@@ -86,6 +86,15 @@
 #include "XmlNode.h"
 #include "satsolver/repo_helix.h"
 
+#define YUILogComponent "example"
+#include "YUILog.h"
+#include "YUI.h"
+#include "YWidgetFactory.h"
+#include "YDialog.h"
+#include "YLayoutBox.h"
+#include "YPackageSelector.h"
+#include "YEvent.h"
+
 using namespace std;
 using namespace zypp;
 using zypp::solver::detail::InstallOrder;
@@ -1082,6 +1091,27 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             dialog->setMinimumSize ( 700, 700 );
             dialog->show();
             app.exec();
+        } else if (node->equals ("YOU") || node->equals ("PkgUI") ) {
+            resolver->resolvePool();
+
+            YUILog::setLogFileName( "/tmp/testUI.log" );
+            YUILog::enableDebugLogging();
+ 
+            YDialog *dialog = YUI::widgetFactory()->createMainDialog();
+            YLayoutBox *vbox    = YUI::widgetFactory()->createVBox( dialog );
+
+            long modeFlags = 0;
+            if ( node->equals ("YOU") )
+                modeFlags = YPkg_OnlineUpdateMode;
+            
+            YPackageSelector *pkgSelector = YUI::widgetFactory()->createPackageSelector( vbox,
+                                                                                         modeFlags );
+            dialog->setInitialSize();
+
+            static YUI *myUI = YUI::ui();
+            myUI->runPkgSelection( pkgSelector );
+
+            dialog->destroy();
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");
