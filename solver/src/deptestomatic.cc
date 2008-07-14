@@ -176,17 +176,8 @@ string2kind (const std::string & str)
 	else if (str == "patch") {
 	    kind = ResTraits<zypp::Patch>::kind;
 	}
-	else if (str == "atom") {
-	    kind = ResTraits<zypp::Atom>::kind;
-	}
 	else if (str == "pattern") {
 	    kind = ResTraits<zypp::Pattern>::kind;
-	}
-	else if (str == "script") {
-	    kind = ResTraits<zypp::Script>::kind;
-	}
-	else if (str == "message") {
-	    kind = ResTraits<zypp::Message>::kind;
 	}
 	else if (str == "product") {
 	    kind = ResTraits<zypp::Product>::kind;
@@ -387,7 +378,7 @@ struct IsStatisfied : public resfilter::ResObjectFilterFunctor
         else if(p.isBroken())
             RESULT << p << " IS BROKEN" << endl;
         else if(p.isRelevant())
-            RESULT << p << " IS RELEVANT" << endl;            
+            RESULT << p << " IS RELEVANT" << endl;
 	return true;
     }
 };
@@ -398,9 +389,9 @@ void isSatisfied (const string & kind_name) {
         IsStatisfied info (ResTraits<zypp::Package>::kind);
         invokeOnEach( God->pool().begin( ),
                       God->pool().end ( ),
-		      functor::functorRef<bool,PoolItem> (info) );                      
+		      functor::functorRef<bool,PoolItem> (info) );
     } else {
-        Resolvable::Kind kind = string2kind (kind_name);        
+        Resolvable::Kind kind = string2kind (kind_name);
 	IsStatisfied info (kind);
 
 	invokeOnEach( God->pool().byKindBegin( kind ),
@@ -816,7 +807,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     static bool first_trial = true;
 
     bool verify = false;
-    bool doUpdate = false;    
+    bool doUpdate = false;
     bool instorder = false;
     bool mediaorder = false;
 
@@ -936,7 +927,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    resolver->doUpgrade(stats);
 
 	    print_pool( resolver, MARKER );
-            
+
 	} else if (node->equals ("update")) {
 
 	    RESULT << "Doing update ..." << endl;
@@ -1065,7 +1056,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
                     success = resolver->resolveQueue(solverQueue);
                 else
                     success = resolver->resolvePool();
-            
+
 		if (success) {
 		    RESULT << "No problems so far" << endl;
 		}
@@ -1098,14 +1089,14 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
             YUILog::setLogFileName( "/tmp/testUI.log" );
             YUILog::enableDebugLogging();
- 
+
             YDialog *dialog = YUI::widgetFactory()->createMainDialog();
             YLayoutBox *vbox    = YUI::widgetFactory()->createVBox( dialog );
 
             long modeFlags = 0;
             if ( node->equals ("YOU") )
                 modeFlags = YPkg_OnlineUpdateMode;
-            
+
             YPackageSelector *pkgSelector = YUI::widgetFactory()->createPackageSelector( vbox,
                                                                                          modeFlags );
             dialog->setInitialSize();
@@ -1126,7 +1117,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    PoolItem poolItem;
 
-	    poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );            
+	    poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
 	    if (poolItem) {
 		RESULT << "Locking " << package_name << " from channel " << source_alias << endl;
 		poolItem.status().setLock (true, ResStatus::USER);
@@ -1148,11 +1139,11 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             if (!solverQueue.empty())
                 success = resolver->resolveQueue(solverQueue);
             else
-                success = resolver->resolvePool();            
-            
+                success = resolver->resolvePool();
+
             if (!package_name.empty()) {
                 PoolItem poolItem;
-                poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );                            
+                poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
                 if (poolItem) {
                     if (poolItem.isSatisfied())
                         RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
@@ -1210,7 +1201,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             }
 	} else if (node->equals ("addQueueInstall")) {
 	    string name = node->getProp ("name");
-	    string soft = node->getProp ("soft");            
+	    string soft = node->getProp ("soft");
 
 	    if (name.empty())
 	    {
@@ -1223,7 +1214,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	} else if (node->equals ("addQueueDelete")) {
 	    string name = node->getProp ("name");
 	    string soft = node->getProp ("soft");
-            
+
 	    if (name.empty())
 	    {
 		cerr << "addQueueDelete need 'name' parameter" << endl;
@@ -1233,7 +1224,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
                 new zypp::solver::detail::SolverQueueItemDelete(pool, name, (soft.empty() ? false : true));
             solverQueue.push_back (del);
 	} else if (node->equals ("addQueueLock")) {
-	    string soft = node->getProp ("soft");            
+	    string soft = node->getProp ("soft");
 	    string kind_name = node->getProp ("kind");
 	    string name = node->getProp ("name");
 	    if (name.empty())
@@ -1337,7 +1328,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     }
 
     bool success = false;
-    
+
     if (!doUpdate) {
         if (verify) {
             success = resolver->verifySystem ();
