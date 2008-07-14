@@ -816,6 +816,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     static bool first_trial = true;
 
     bool verify = false;
+    bool doUpdate = false;    
     bool instorder = false;
     bool mediaorder = false;
 
@@ -941,6 +942,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    RESULT << "Doing update ..." << endl;
 	    resolver->doUpdate();
             print_solution (pool, instorder, mediaorder);
+            doUpdate = true;
 
 	} else if (node->equals ("instorder")) {
 
@@ -1335,19 +1337,21 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     }
 
     bool success = false;
-
-    if (verify) {
-	success = resolver->verifySystem ();
-    } else {
-        if (!solverQueue.empty())
-            success = resolver->resolveQueue(solverQueue);
-        else
-            success = resolver->resolvePool();
-    }
-    if (success) {
-        print_solution (pool, instorder, mediaorder);
-    } else {
-        RESULT << "No valid solution found." << endl;
+    
+    if (!doUpdate) {
+        if (verify) {
+            success = resolver->verifySystem ();
+        } else {
+            if (!solverQueue.empty())
+                success = resolver->resolveQueue(solverQueue);
+            else
+                success = resolver->resolvePool();
+        }
+        if (success) {
+            print_solution (pool, instorder, mediaorder);
+        } else {
+            RESULT << "No valid solution found." << endl;
+        }
     }
 
 }
