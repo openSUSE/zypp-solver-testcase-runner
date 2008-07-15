@@ -47,6 +47,8 @@ Short instruction of all possible options to write a <description>-test.xml file
 
 	<locale	name="..."/> 
 
+	<systemCheck path="..."/> <!-- Filename of required system dependencies /etc/zypp/systemCheck. The system is broken if these requirements are not fulfilled. -->
+
    </setup>
    
    <!-- Any trials must be preceeded by the setup! -->
