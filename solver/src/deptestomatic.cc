@@ -80,6 +80,7 @@
 #include "zypp/solver/detail/SolverQueueItemInstallOneOf.h"
 #include "zypp/solver/detail/SolverQueueItemLock.h"
 #include "zypp/solver/detail/SolverQueueItemUpdate.h"
+#include "zypp/solver/detail/SystemCheck.h"
 #include "zypp/QZyppSolverDialog.h"
 
 #include "KeyRingCallbacks.h"
@@ -788,7 +789,11 @@ parse_xml_setup (XmlNode_Ptr node)
 		RESULT << "Requesting locale " << loc << endl;
 		locales.insert( Locale( loc ) );
 	    }
-	}else if (node->equals("setlicencebit")){
+	} else if (node->equals ("systemCheck")) {
+	    Pathname pathname = globalPath + node->getProp ("path");
+	    RESULT << "setting systemCheck to: " << pathname.asString() << endl;
+            SystemCheck::instance().setFile (pathname);
+	} else if (node->equals("setlicencebit")) {
 		set_licence = true;
 	} else {
 	    cerr << "Unrecognized tag '" << node->name() << "' in setup" << endl;
