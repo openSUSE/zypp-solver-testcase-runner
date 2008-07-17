@@ -11,9 +11,6 @@
 	<locale name="en_US" />
 </setup>
 <trial>
-<showpool all="yes"/>
-<establish/>
-<showpool all="true" prefix=">!> ESTABLISHED:"/>
 <install channel="1" kind="package" name="flash-player" arch="i586" version="9.0.48.0" release="16"/>
 <install channel="1" kind="package" name="RealPlayer" arch="i586" version="10.0.9" release="11"/>
 <install channel="1" kind="package" name="java-1_5_0-sun" arch="i586" version="1.5.0_update12" release="23"/>
