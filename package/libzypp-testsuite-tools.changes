@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Fri Jul 18 09:36:05 CEST 2008 - schubi@suse.de
+
+- removed scripts,atoms,... from deptestomatic 
+
+-------------------------------------------------------------------
 Tue Jun 17 12:25:20 CEST 2008 - schubi@suse.de
 
 - Added new commands: YOU", "PkgUI" for package UI
