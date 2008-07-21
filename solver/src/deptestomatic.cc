@@ -764,7 +764,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	    if (poolItem) {
 		RESULT << "Force-installing " << package_name << " from channel " << source_alias << endl;;
 
-		poolItem.status().setStatus(ResStatus::installed);
+		poolItem.status().setToBeInstalled(ResStatus::USER);
 	    } else {
 		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
 	    }
