@@ -615,8 +615,8 @@ load_source (const string & alias, const string & filename, const string & type,
               .setAlias      ( alias )
               .setName       ( "namen sind schall und rauch" )
               .setEnabled    ( true )
-              .setAutorefresh( false )
-              .addBaseUrl    ( Url(filename) );
+              .setAutorefresh( false );
+          nrepo.addBaseUrl   ( Url(filename) );
 
           //manager.addRepository( nrepo );
           manager.refreshMetadata( nrepo );
@@ -647,8 +647,8 @@ load_source (const string & alias, const string & filename, const string & type,
               .setAlias      ( alias )
               .setName       ( "namen sind schall und rauch" )
               .setEnabled    ( true )
-              .setAutorefresh( false )
-              .addBaseUrl    ( pathname.asUrl() );
+              .setAutorefresh( false );
+          nrepo.addBaseUrl   ( pathname.asUrl() );
 
           satRepo.setInfo (nrepo);
           _Repo *intSatRepo = satRepo.get();
