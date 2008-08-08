@@ -45,7 +45,6 @@
 #include "zypp/ZYpp.h"
 #include "zypp/ZYppFactory.h"
 #include "zypp/ResObjects.h"
-#include "zypp/ResTraits.h"
 #include "zypp/ResPool.h"
 #include "zypp/PoolItem.h"
 #include "zypp/Capability.h"
@@ -148,7 +147,7 @@ printRes ( std::ostream & str, ResObject::constPtr r )
 	Package::constPtr pkg = asKind<Package>(res);
 	if (pkg) str << "[" << pkg->mediaNr() << "]";
     }
-    if (r->kind() != ResTraits<zypp::Package>::kind)
+    if (r->kind() != ResKind::package)
 	str << r->kind() << ':';
     str  << r->name() << '-' << r->edition();
     if (r->arch() != "") {
@@ -169,19 +168,19 @@ printRes ( std::ostream & str, ResObject::constPtr r )
 Resolvable::Kind
 string2kind (const std::string & str)
 {
-    Resolvable::Kind kind = ResTraits<zypp::Package>::kind;
+    Resolvable::Kind kind = ResKind::package;
     if (!str.empty()) {
 	if (str == "package") {
 	    // empty
 	}
 	else if (str == "patch") {
-	    kind = ResTraits<zypp::Patch>::kind;
+	    kind = ResKind::patch;
 	}
 	else if (str == "pattern") {
-	    kind = ResTraits<zypp::Pattern>::kind;
+	    kind = ResKind::pattern;
 	}
 	else if (str == "product") {
-	    kind = ResTraits<zypp::Product>::kind;
+	    kind = ResKind::product;
 	}
 	else {
 	    cerr << "get_poolItem unknown kind '" << str << "'" << endl;
@@ -387,7 +386,7 @@ struct IsStatisfied : public resfilter::ResObjectFilterFunctor
 
 void isSatisfied (const string & kind_name) {
     if (kind_name.empty()) {
-        IsStatisfied info (ResTraits<zypp::Package>::kind);
+        IsStatisfied info (ResKind::package);
         invokeOnEach( God->pool().begin( ),
                       God->pool().end ( ),
 		      functor::functorRef<bool,PoolItem> (info) );
@@ -882,7 +881,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    poolItem = get_poolItem( source_alias, name, kind_name, version, release, architecture );
 	    if (poolItem) {
 		RESULT << "Installing "
-		    << ((poolItem->kind() != ResTraits<zypp::Package>::kind) ? (poolItem->kind().asString() + ":") : "")
+		    << ((poolItem->kind() != ResKind::package) ? (poolItem->kind().asString() + ":") : "")
 		    << name
 		    << (version.empty()?"":(string("-")+poolItem->edition().version()))
 		    << (release.empty()?"":(string("-")+poolItem->edition().release()))
