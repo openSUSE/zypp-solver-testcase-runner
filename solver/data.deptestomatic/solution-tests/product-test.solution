@@ -1,0 +1,19 @@
+>!> Requesting locale de_DE
+>!> Installing openSUSE-release from channel prodtest
+>!> Installing test from channel LocalStuff
+>!> 1 problems found:
+>!> Problem:
+>!> test-2-1.i586 conflicts with openSUSE-release = 11.0.42-11 provided by product:openSUSE-11.0.42.noarch
+>!> 
+>!>    Solution:
+>!>       do not install test-2-1.i586
+>!>       
+>!>    Solution:
+>!>       do not install product:openSUSE-11.0.42.noarch
+>!>       
+>!> Taking solution: 1
+>!> For problem:     0
+>!> No problems so far
+>!> No problems so far
+>!> Solution :
+>!> install test-2-1.i586[LocalStuff]
