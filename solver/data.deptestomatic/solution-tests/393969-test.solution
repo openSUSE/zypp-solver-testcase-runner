@@ -13,15 +13,15 @@
 >!> kerry-0.2.2-91.i586 requires beagle >= 0.2.6, but this requirement cannot be provided
 >!> 
 >!>    Solution:
->!>       keep beagle
+>!>       deinstallation of kerry-0.2.2-91.i586
 >!>       
 >!>    Solution:
->!>       deinstallation of kerry-0.2.2-91.i586
+>!>       keep beagle-0.2.18-30.i586
 >!>       
 >!>    Solution:
 >!>       Ignore some dependencies of kerry
 >!>       
->!> Taking solution: 0
+>!> Taking solution: 1
 >!> For problem:     0
 >!> 1 problems found:
 >!> 1 problems found:
@@ -29,15 +29,15 @@
 >!> kerry-0.2.2-91.i586 requires libbeagle.so.0, but this requirement cannot be provided
 >!> 
 >!>    Solution:
->!>       keep libbeagle
+>!>       deinstallation of kerry-0.2.2-91.i586
 >!>       
 >!>    Solution:
->!>       deinstallation of kerry-0.2.2-91.i586
+>!>       keep libbeagle-0.2.18-23.i586
 >!>       
 >!>    Solution:
 >!>       Ignore some dependencies of kerry
 >!>       
->!> Taking solution: 0
+>!> Taking solution: 1
 >!> For problem:     0
 >!> No problems so far
 >!> No problems so far

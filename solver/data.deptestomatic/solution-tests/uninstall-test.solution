@@ -4,10 +4,10 @@
 >!> foo2-1.0-1.noarch requires foo, but this requirement cannot be provided
 >!> deleted providers: foo-1.0-1.noarch[@System]
 >!>    Solution:
->!>       keep foo
+>!>       deinstallation of foo2-1.0-1.noarch
 >!>       
 >!>    Solution:
->!>       deinstallation of foo2-1.0-1.noarch
+>!>       keep foo-1.0-1.noarch
 >!>       
 >!>    Solution:
 >!>       Ignore some dependencies of foo2

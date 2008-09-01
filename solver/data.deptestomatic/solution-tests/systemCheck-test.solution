@@ -6,18 +6,18 @@
 >!> This request will break your system!
 >!> conflicting requests
 >!>    Solution:
->!>       keep ImageMagick-devel
+>!>       ignore the warning of a broken system
 >!>       
 >!>    Solution:
->!>       ignore the warning of a broken system
+>!>       keep ImageMagick-devel-6.3.5.10-2.i586
 >!>       
 >!> Problem:
 >!> This request will break your system!
 >!> conflicting requests
 >!>    Solution:
->!>       keep glibc
->!>       
->!>    Solution:
 >!>       Following actions will be done:
 >!>       ignore the warning of a broken system
+>!>    Solution:
+>!>       keep glibc-2.6.1-18.i686
+>!>       
 >!> No valid solution found.

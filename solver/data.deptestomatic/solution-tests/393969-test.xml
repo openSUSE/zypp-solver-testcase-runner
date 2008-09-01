@@ -59,9 +59,9 @@
 <uninstall  kind="package" name="libbeagle-devel" status="I_Tu_"/>
 <uninstall  kind="package" name="libbeagle-python" status="I_Tu_"/>
 <reportproblems/>
-<takesolution problem="0" solution="0"/>
+<takesolution problem="0" solution="1"/>
 <reportproblems/>
-<takesolution problem="0" solution="0"/>
+<takesolution problem="0" solution="1"/>
 <reportproblems/>
 </trial>
 </test>
