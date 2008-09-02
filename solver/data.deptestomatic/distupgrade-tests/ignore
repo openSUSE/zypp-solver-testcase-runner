@@ -5,3 +5,7 @@ exercise-sles10-beta3-nodelete-test.xml
 exercise-bug150844-test.xml
 #unmaintained packages does not fit due vendor checking anymore
 unmaintained-single-test.xml
+#has to be checked (distupgrade due the SAT solver)
+bug400422-test.xml
+10_2-i386-update-test.xml
+394367-test.xml

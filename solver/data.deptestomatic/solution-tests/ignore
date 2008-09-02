@@ -7,3 +7,5 @@ parallel-test.xml
 conflict3-test.xml
 remove-still-needed1-test.xml
 require-test.xml
+#vendor check is disabled while distupgrade
+vendor-test.xml
