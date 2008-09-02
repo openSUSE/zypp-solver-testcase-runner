@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Tue Sep  2 16:47:55 CEST 2008 - schubi@suse.de
+
+- compiler fixes
+- replace ResTraits<>::kind by ResKind
+- version 4.2.6 
+
+-------------------------------------------------------------------
 Fri Jul 18 09:36:05 CEST 2008 - schubi@suse.de
 
 - removed scripts,atoms,... from deptestomatic 
