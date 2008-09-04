@@ -610,11 +610,10 @@ load_source (const string & alias, const string & filename, const string & type,
           MIL << "Load from Url '" << filename << "'" << endl;
 
           RepoInfo nrepo;
-          nrepo
-              .setAlias      ( alias )
-              .setName       ( "namen sind schall und rauch" )
-              .setEnabled    ( true )
-              .setAutorefresh( false );
+          nrepo.setAlias      ( alias );
+          nrepo.setName       ( "namen sind schall und rauch" );
+          nrepo.setEnabled    ( true );
+          nrepo.setAutorefresh( false );
           nrepo.addBaseUrl   ( Url(filename) );
 
           //manager.addRepository( nrepo );
@@ -642,11 +641,11 @@ load_source (const string & alias, const string & filename, const string & type,
           }
 
           RepoInfo nrepo;
-          nrepo
-              .setAlias      ( alias )
-              .setName       ( "namen sind schall und rauch" )
-              .setEnabled    ( true )
-              .setAutorefresh( false );
+          
+          nrepo.setAlias      ( alias );
+          nrepo.setName       ( "namen sind schall und rauch" );
+          nrepo.setEnabled    ( true );
+          nrepo.setAutorefresh( false );
           nrepo.addBaseUrl   ( pathname.asUrl() );
 
           satRepo.setInfo (nrepo);
