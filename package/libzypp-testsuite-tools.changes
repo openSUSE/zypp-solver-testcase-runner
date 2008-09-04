@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Thu Sep  4 16:59:37 CEST 2008 - jkupec@suse.cz
+
+- adapted to zypp::RepoInfo setters change
+
+-------------------------------------------------------------------
 Tue Sep  2 16:47:55 CEST 2008 - schubi@suse.de
 
 - compiler fixes
