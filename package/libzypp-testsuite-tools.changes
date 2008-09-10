@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Wed Sep 10 17:45:26 CEST 2008 - ma@suse.de
+
+- adapted to new product handling
+
+-------------------------------------------------------------------
 Thu Sep  4 16:59:37 CEST 2008 - jkupec@suse.cz
 
 - adapted to zypp::RepoInfo setters change
