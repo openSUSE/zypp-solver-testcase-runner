@@ -1,0 +1,23 @@
+>!> setting systemCheck to: ./systemCheckFile
+>!> Uninstalling ImageMagick-devel
+>!> Uninstalling glibc
+>!> 2 problems found:
+>!> Problem:
+>!> This request will break your system!
+>!> conflicting requests
+>!>    Solution:
+>!>       Following actions will be done:
+>!>       ignore the warning of a broken system
+>!>    Solution:
+>!>       keep glibc-2.6.1-18.i686
+>!>       
+>!> Problem:
+>!> This request will break your system!
+>!> conflicting requests
+>!>    Solution:
+>!>       ignore the warning of a broken system
+>!>       
+>!>    Solution:
+>!>       keep ImageMagick-devel-6.3.5.10-2.i586
+>!>       
+>!> No valid solution found.
