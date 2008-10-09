@@ -1,0 +1,35 @@
+>!> Installing cscope-debugsource.i586 from channel stable
+>!> Locking cscope from channel openSUSE-dvd_11.1-0
+>!> Locking build from channel openSUSE-dvd_11.1-0
+>!> Locking cscope from channel openSUSE-retail 11.0
+>!> Locking build from channel openSUSE-retail 11.0
+>!> Locking cscope from channel repo-oss
+>!> Locking build from channel repo-oss
+>!> Locking cscope from channel stable
+>!> Locking build from channel stable
+>!> 1 problems found:
+>!> Problem:
+>!> cscope-debuginfo-15.6-93.1.i586 requires cscope = 15.6-93.1, but this requirement cannot be provided
+>!> uninstallable providers: cscope-15.6-93.1.i586[openSUSE-retail 11.0]
+>!>    Solution:
+>!>       do not forbid installation of cscope-15.6-93.1.i586[repo-oss]
+>!>       
+>!>    Solution:
+>!>       do not forbid installation of cscope-15.6-93.1.i586[stable]
+>!>       
+>!>    Solution:
+>!>       do not forbid installation of cscope-15.6-93.1.i586[openSUSE-retail 11.0]
+>!>       
+>!>    Solution:
+>!>       do not install cscope-debugsource-15.6-93.1.i586
+>!>       
+>!>    Solution:
+>!>       Ignore some dependencies of cscope-debuginfo
+>!>       
+>!> Taking solution: 3
+>!> For problem:     0
+>!> No problems so far
+>!> No problems so far
+>!> Solution :
+>!> install polkit-default-privs-0.1_200809171509-1.2.noarch[openSUSE-dvd_11.1-0]
+>!> install python-ReportLab-2.1-1.4.i586[openSUSE-dvd_11.1-0]
