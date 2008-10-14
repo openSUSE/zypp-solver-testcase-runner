@@ -597,7 +597,7 @@ set_licence_Pool()
 }
 
 static bool
-load_source (const string & alias, const string & filename, const string & type, bool system_packages)
+load_source (const string & alias, const string & filename, const string & type, bool system_packages, unsigned priority)
 {
     Pathname pathname = globalPath + filename;
     MIL << "'" << pathname << "'" << endl;
@@ -614,6 +614,7 @@ load_source (const string & alias, const string & filename, const string & type,
           nrepo.setName       ( "namen sind schall und rauch" );
           nrepo.setEnabled    ( true );
           nrepo.setAutorefresh( false );
+          nrepo.setPriority   ( priority );
           nrepo.addBaseUrl   ( Url(filename) );
 
           //manager.addRepository( nrepo );
@@ -646,6 +647,7 @@ load_source (const string & alias, const string & filename, const string & type,
           nrepo.setName       ( "namen sind schall und rauch" );
           nrepo.setEnabled    ( true );
           nrepo.setAutorefresh( false );
+          nrepo.setPriority   ( priority );
           nrepo.addBaseUrl   ( pathname.asUrl() );
 
           satRepo.setInfo (nrepo);
@@ -721,7 +723,7 @@ parse_xml_setup (XmlNode_Ptr node)
 	} else if (node->equals ("system")) {
 
 	    string file = node->getProp ("file");
-	    if (!load_source ("@System", file, "helix", true)) {
+	    if (!load_source ("@System", file, "helix", true, 99 )) {
 		cerr << "Can't setup 'system'" << endl;
 		exit( 1 );
 	    }
@@ -736,7 +738,11 @@ parse_xml_setup (XmlNode_Ptr node)
 	    string name = node->getProp ("name");
 	    string file = node->getProp ("file");
 	    string type = node->getProp ("type");
-	    if (!load_source (name, file, type, false)) {
+      	    string priority = node->getProp ("priority");
+            unsigned prio = 99;
+            if (!priority.empty())
+                prio = str::strtonum<unsigned>( priority );
+	    if (!load_source (name, file, type, false, prio)) {
 		cerr << "Can't setup 'channel'" << endl;
 		exit( 1 );
 	    }
@@ -745,7 +751,7 @@ parse_xml_setup (XmlNode_Ptr node)
 
 	    string url = node->getProp ("url");
 	    string alias = node->getProp ("name");
-	    if (!load_source( alias, url, "url", false )) {
+	    if (!load_source( alias, url, "url", false, 99 )) {
 		cerr << "Can't setup 'source'" << endl;
 		exit( 1 );
 	    }
