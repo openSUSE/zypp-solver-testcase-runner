@@ -663,7 +663,7 @@ load_source (const string & alias, const string & filename, const string & type,
               cout << "Couldn't load packages from XML file '" << filename << "'" << endl;
               return false;
           }
-          repo_add_helix(intSatRepo, fpHelix);
+          repo_add_helix(intSatRepo, fpHelix, 0);
           cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
           pclose( fpHelix );
 	}
