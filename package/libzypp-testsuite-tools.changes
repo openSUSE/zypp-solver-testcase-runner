@@ -1,4 +1,9 @@
 -------------------------------------------------------------------
+Tue Nov  4 15:46:33 CET 2008 - dmacvicar@suse.de
+
+- add showselectable tag to see selectables 
+
+-------------------------------------------------------------------
 Wed Oct 15 09:45:35 CEST 2008 - dmacvicar@suse.de
 
 - fix build 
