@@ -64,6 +64,8 @@
 #include "zypp/base/Exception.h"
 #include "zypp/base/Algorithm.h"
 
+#include "zypp/ui/Selectable.h"
+
 #include "zypp/media/MediaManager.h"
 
 #include "zypp/pool/GetResolvablesToInsDel.h"
@@ -97,6 +99,7 @@
 
 using namespace std;
 using namespace zypp;
+using zypp::ui::Selectable;
 using zypp::solver::detail::InstallOrder;
 using zypp::solver::detail::Testcase;
 using zypp::ResolverProblemList;
@@ -1084,7 +1087,20 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 
-	} else if (node->equals ("graphic")) {
+	} 
+        else if (node->equals ("showselectable")){
+                Selectable::Ptr item;
+                string kind_name = node->getProp ("kind");
+                if ( kind_name.empty() )
+                    kind_name = "package";
+                string name = node->getProp ("name");
+                item = Selectable::get( ResKind(kind_name), name );
+                if ( item )
+                    dumpOn(cout, *item);
+                else
+                    cout << "Selectable '" << name << "' not valid" << endl;
+        }
+        else if (node->equals ("graphic")) {
             resolver->resolvePool();
             QApplication app(0, NULL);
             QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
@@ -1445,4 +1461,5 @@ main (int argc, char *argv[])
 
     return 0;
 }
+
 
