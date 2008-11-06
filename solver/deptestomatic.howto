@@ -21,6 +21,10 @@ Short instruction of all possible options to write a <description>-test.xml file
 					 <!-- IMPORTANT: This flag has to bet set before the declaration of channel, source, system -->
 
 	<forceResolve/>: <!-- force Resolve -->
+
+	<ignorealreadyrecommended/>: <!-- ignore recommended packages that have already been recommended by the installed packages -->
+
+	<onlyRequires/>: <!-- ignore recommended packages -->
 		
 	<maxSolverPasses value=".."/> <!-- sets the max solver passes -->
 		
