@@ -115,6 +115,8 @@ static LocaleSet locales;
 static ZYpp::Ptr God;
 static RepoManager manager;
 static bool forceResolve;
+static bool ignorealreadyrecommended;
+static bool onlyRequires;
 static zypp::solver::detail::SolverQueueItemList solverQueue;
 
 typedef set<PoolItem> PoolItemSet;
@@ -723,6 +725,12 @@ parse_xml_setup (XmlNode_Ptr node)
 	if (node->equals ("forceResolve")) {
 	    forceResolve = true;
 
+	} else if (node->equals ("ignorealreadyrecommended")) {
+	    ignorealreadyrecommended = true;
+            
+	} else if (node->equals ("onlyRequires")) {
+	    onlyRequires = true;
+            
 	} else if (node->equals ("system")) {
 
 	    string file = node->getProp ("file");
@@ -848,6 +856,8 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     zypp::solver::detail::Resolver_Ptr resolver = new zypp::solver::detail::Resolver( pool );
     resolver->setTesting ( true );			// continue despite missing target
     resolver->setForceResolve( forceResolve );
+    resolver->setIgnorealreadyrecommended( ignorealreadyrecommended );
+    resolver->setOnlyRequires( onlyRequires );        
 
     if (!locales.empty()) {
         pool.setRequestedLocales( locales );
@@ -1437,6 +1447,9 @@ main (int argc, char *argv[])
     zypp::base::LogControl::instance().logfile( "-" );
 
     forceResolve = false;
+    ignorealreadyrecommended = false;
+    onlyRequires = false;    
+    
     solverQueue.clear();
 
     manager = makeRepoManager( "/tmp/myrepos" );
