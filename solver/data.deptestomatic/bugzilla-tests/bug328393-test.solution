@@ -1081,7 +1081,7 @@
 >!>       do not install aqbanking-2.3.2-0.pm.1.i586
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of aqbanking-lang
+>!>       ignore some dependencies of aqbanking-lang
 >!>       
 >!> Problem:
 >!> gstreamer010-plugins-good-0.10.6-39.i586 requires gstreamer010 = 0.10.13, but this requirement cannot be provided
@@ -1093,6 +1093,6 @@
 >!>       Following actions will be done:
 >!>       do not install gstreamer010-0.10.14-0.pm.2.i586
 >!>    Solution:
->!>       Ignore some dependencies of gstreamer010-plugins-good
+>!>       ignore some dependencies of gstreamer010-plugins-good
 >!>       
 >!> No valid solution found.

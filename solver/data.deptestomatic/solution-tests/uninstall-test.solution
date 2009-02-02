@@ -10,6 +10,6 @@
 >!>       keep foo-1.0-1.noarch
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of foo2
+>!>       ignore some dependencies of foo2
 >!>       
 >!> No valid solution found.

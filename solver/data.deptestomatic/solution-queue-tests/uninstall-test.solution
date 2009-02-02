@@ -9,6 +9,6 @@
 >!>       keep foo
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of foo2
+>!>       ignore some dependencies of foo2
 >!>       
 >!> No valid solution found.

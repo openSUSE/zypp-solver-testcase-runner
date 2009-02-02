@@ -11,7 +11,7 @@
 >!>       do not ask to delete all solvables providing sqlite3
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of perl-DBD-SQLite
+>!>       ignore some dependencies of perl-DBD-SQLite
 >!>       
 >!> Taking solution: 1
 >!> For problem:     0

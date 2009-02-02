@@ -20,7 +20,7 @@
 >!>       do not install monodevelop-boo-1.0-96.19.noarch
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of monodevelop-boo
+>!>       ignore some dependencies of monodevelop-boo
 >!>       
 >!> Taking solution: 0
 >!> For problem:     0

@@ -1,0 +1,86 @@
+>!> Requesting locale de_DE
+>!> Installing openSUSE-release from channel prodtest
+>!> Installing test from channel LocalStuff
+>!> 1 problems found:
+>!> Problem:
+>!> test-2-1.i586 conflicts with openSUSE-release = 11.0.42-11 provided by product:openSUSE-11.0.42.i586
+>!> 
+>!>    Solution:
+>!>       Following actions will be done:
+>!>       do not install product:openSUSE-11.0.42.i586
+>!>    Solution:
+>!>       do not install test-2-1.i586
+>!>       
+>!> Taking solution: 1
+>!> For problem:     0
+>!> No problems so far
+>!> No problems so far
+>!> Solution :
+>!> install aaa_base-11.0.42-9.i586[prodtest]
+>!> install audit-libs-1.7.4-5.i586[prodtest]
+>!> install bash-3.2-118.i586[prodtest]
+>!> install bash-doc-3.2-77.i586[prodtest]
+>!> install binutils-2.18.50.20080718-2.i586[prodtest]
+>!> install bundle-lang-common-de-11.0-135.noarch[prodtest]
+>!> install bundle-lang-common-en-11.0-135.noarch[prodtest]
+>!> install bzip2-1.0.5-18.i586[prodtest]
+>!> install coreutils-6.12-6.i586[prodtest]
+>!> install cpio-2.9-65.i586[prodtest]
+>!> install cracklib-2.8.12-31.i586[prodtest]
+>!> install cracklib-dict-full-2.8.12-27.i586[prodtest]
+>!> install cron-4.1-177.i586[prodtest]
+>!> install cyrus-sasl-2.1.22-147.i586[prodtest]
+>!> install diffutils-2.8.7-123.i586[prodtest]
+>!> install filesystem-11.0.42-9.i586[prodtest]
+>!> install fillup-1.42-221.i586[prodtest]
+>!> install findutils-4.4.0-18.i586[prodtest]
+>!> install gawk-3.1.6-5.i586[prodtest]
+>!> install glibc-2.8-22.i686[prodtest]
+>!> install grep-2.5.2-78.i586[prodtest]
+>!> install info-4.12-5.i586[prodtest]
+>!> install insserv-1.11.0-37.i586[prodtest]
+>!> install libacl-2.2.47-3.i586[prodtest]
+>!> install libasound2-1.0.17-2.i586[prodtest]
+>!> install libattr-2.4.39-45.i586[prodtest]
+>!> install libbz2-1-1.0.5-18.i586[prodtest]
+>!> install libdb-4_5-4.5.20-73.i586[prodtest]
+>!> install libgcc43-4.3.2_20080715-2.i586[prodtest]
+>!> install libldap-2_4-2-2.4.10-9.i586[prodtest]
+>!> install libncurses5-5.6-85.i586[prodtest]
+>!> install libnscd-2.0.2-86.i586[prodtest]
+>!> install libopenssl0_9_8-0.9.8h-6.i586[prodtest]
+>!> install libreadline5-5.2-77.i586[prodtest]
+>!> install libstdc++43-4.3.2_20080715-2.i586[prodtest]
+>!> install libvolume_id-125-2.i586[prodtest]
+>!> install libxcrypt-3.0.1-5.i586[prodtest]
+>!> install libzio-0.7-13.i586[prodtest]
+>!> install login-3.36-8.i586[prodtest]
+>!> install logrotate-3.7.5-53.i586[prodtest]
+>!> install mingetty-1.0.7s-71.i586[prodtest]
+>!> install module-init-tools-3.4-20.i586[prodtest]
+>!> install ncurses-utils-5.6-85.i586[prodtest]
+>!> install net-tools-1.60-696.i586[prodtest]
+>!> install netcfg-11.0.42-4.noarch[prodtest]
+>!> install openSUSE-release-11.0.42-11.i586[prodtest]
+>!> install openldap2-client-2.4.10-9.i586[prodtest]
+>!> install openslp-1.2.0-149.i586[prodtest]
+>!> install openssl-0.9.8h-6.i586[prodtest]
+>!> install openssl-certs-0.9.8h-5.noarch[prodtest]
+>!> install pam-1.0.1-13.i586[prodtest]
+>!> install pam-modules-11.0.42-4.i586[prodtest]
+>!> install pcre-7.6-27.i586[prodtest]
+>!> install perl-base-5.10.0-42.i586[prodtest]
+>!> install permissions-2008.7.15-3.i586[prodtest]
+>!> install popt-1.7-434.i586[prodtest]
+>!> install postfix-2.5.1-37.i586[prodtest]
+>!> install psmisc-22.6-35.i586[prodtest]
+>!> install pwdutils-3.2.1-19.i586[prodtest]
+>!> install readline-doc-5.2-77.i586[prodtest]
+>!> install rpm-4.4.2-206.i586[prodtest]
+>!> install sed-4.1.5-108.i586[prodtest]
+>!> install smartlink-softmodem-2.9.10-209.i586[prodtest]
+>!> install sysvinit-2.86-155.i586[prodtest]
+>!> install terminfo-base-5.6-85.i586[prodtest]
+>!> install udev-125-2.i586[prodtest]
+>!> install zlib-1.2.3-118.i586[prodtest]
+>!> install product:openSUSE-11.0.42.i586[prodtest]

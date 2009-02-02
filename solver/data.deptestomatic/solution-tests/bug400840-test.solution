@@ -24,7 +24,7 @@
 >!>       do not install cscope-debugsource-15.6-93.1.i586
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of cscope-debuginfo
+>!>       ignore some dependencies of cscope-debuginfo
 >!>       
 >!> Taking solution: 3
 >!> For problem:     0

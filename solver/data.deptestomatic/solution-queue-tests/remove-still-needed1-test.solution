@@ -9,7 +9,7 @@
 >!>       keep A
 >!>       
 >!>    Solution:
->!>       Ignore some dependencies of B
+>!>       ignore some dependencies of B
 >!>       
 >!> Taking solution: 2
 >!> For problem:     0
