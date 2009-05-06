@@ -1,7 +1,0 @@
-package Nuremberg 1.2-1 i586
-  Provides: Nuremberg == 1.2-1
-
-package Prague 1.4-1 i586
-  Provides: Prague == 1.2
-  Provides: Prague == 1.4-1
-

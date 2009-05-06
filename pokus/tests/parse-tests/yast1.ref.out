@@ -1,5 +1,0 @@
-ZYppException caught
-History:
- - Can't provide ./suse/setup/descr/packages : Media Exception
- - File ./suse/setup/descr/packages not found on media: file:/tmp/tmp.abcdefghij
-Valid metadata not found at specified URL(s)
