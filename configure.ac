@@ -104,11 +104,6 @@ AC_OUTPUT(
 	solver/solver.test/Makefile	\
 	solver/src/Makefile	\
 	solver/single.out/Makefile
-dnl	pokus/Makefile			\
-dnl	pokus/config/Makefile		\
-dnl	pokus/pokus.test/Makefile	\
-dnl	pokus/src/Makefile		\
-dnl	pokus/data/Makefile
 )
 dnl ==================================================
 

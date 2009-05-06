@@ -1,5 +1,0 @@
-ZYppException caught
-History:
- - Can't provide ./repodata/primary.xml : Media Exception
- - File ./repodata/primary.xml not found on media: file:/tmp/tmp.abcdefghij
-Valid metadata not found at specified URL(s)
