@@ -109,7 +109,7 @@ using zypp::solver::detail::XmlNode_Ptr;
 //-----------------------------------------------------------------------------
 
 static bool show_mediaid = false;
-static string globalPath;
+static Pathname globalPath;
 static LocaleSet locales;
 
 static ZYpp::Ptr God;
@@ -196,6 +196,19 @@ string2kind (const std::string & str)
 
 //---------------------------------------------------------------------------
 
+std::ostream & dumpHelpOn( std::ostream & str )
+{
+  str << "\
+List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for details: \n\
+  PkgUI YOU addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
+  addRequire arch availablelocales channel createTestcase current distupgrade force-install forceResolve \n\
+  graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid mediaorder \n\
+  onlyRequires reportproblems setlicencebit showpool showselectable source subscribe system systemCheck \n\
+  takesolution uninstall update validate verify whatprovides" << endl;
+
+
+  return str;
+}
 /* ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** ** */
 
 //==============================================================================================================================
@@ -647,7 +660,7 @@ load_source (const string & alias, const string & filename, const string & type,
           }
 
           RepoInfo nrepo;
-          
+
           nrepo.setAlias      ( alias );
           nrepo.setName       ( "namen sind schall und rauch" );
           nrepo.setEnabled    ( true );
@@ -727,10 +740,10 @@ parse_xml_setup (XmlNode_Ptr node)
 
 	} else if (node->equals ("ignorealreadyrecommended")) {
 	    ignorealreadyrecommended = true;
-            
+
 	} else if (node->equals ("onlyRequires")) {
 	    onlyRequires = true;
-            
+
 	} else if (node->equals ("system")) {
 
 	    string file = node->getProp ("file");
@@ -854,10 +867,9 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     }
 
     zypp::solver::detail::Resolver_Ptr resolver = new zypp::solver::detail::Resolver( pool );
-    resolver->setTesting ( true );			// continue despite missing target
     resolver->setForceResolve( forceResolve );
-    resolver->setIgnorealreadyrecommended( ignorealreadyrecommended );
-    resolver->setOnlyRequires( onlyRequires );        
+    resolver->setIgnoreAlreadyRecommended( ignorealreadyrecommended );
+    resolver->setOnlyRequires( onlyRequires );
 
     if (!locales.empty()) {
         pool.setRequestedLocales( locales );
@@ -1097,7 +1109,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 
-	} 
+	}
         else if (node->equals ("showselectable")){
                 Selectable::Ptr item;
                 string kind_name = node->getProp ("kind");
@@ -1412,7 +1424,7 @@ parse_xml_test (XmlNode_Ptr node)
 
 
 static void
-process_xml_test_file (const string & filename)
+process_xml_test_file (const Pathname & filename)
 {
     xmlDocPtr xml_doc;
     XmlNode_Ptr root;
@@ -1444,12 +1456,18 @@ main (int argc, char *argv[])
 	cerr << "Usage: deptestomatic testfile.xml" << endl;
 	exit (0);
     }
+
+    if ( argv[1] == string("-h") || argv[1] == string("--help") ) {
+      dumpHelpOn( cerr );
+      exit( 0 );
+    }
+
     zypp::base::LogControl::instance().logfile( "-" );
 
     forceResolve = false;
     ignorealreadyrecommended = false;
-    onlyRequires = false;    
-    
+    onlyRequires = false;
+
     solverQueue.clear();
 
     manager = makeRepoManager( "/tmp/myrepos" );
@@ -1466,11 +1484,10 @@ main (int argc, char *argv[])
     KeyRingCallbacks keyring_callbacks;
     DigestCallbacks digest_callbacks;
 
-    globalPath = argv[1];
-    globalPath = globalPath.substr (0, globalPath.find_last_of ("/") +1);
+    globalPath = Pathname::dirname(argv[1]);
 
     DBG << "init_libzypp() done" << endl;
-    process_xml_test_file (string (argv[1]));
+    process_xml_test_file ( argv[1] );
 
     return 0;
 }
