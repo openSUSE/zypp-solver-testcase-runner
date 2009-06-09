@@ -1,9 +1,14 @@
 -------------------------------------------------------------------
+Tue Jun  9 13:48:14 CEST 2009 - jkupec@suse.cz
+
+- fixed changed keyring callbacks
+- version 4.2.7
+
+-------------------------------------------------------------------
 Wed Jun  3 17:47:55 CEST 2009 - ma@suse.de
 
 - Add '--help' at least listing the tags and linking to the
   wiki page.
-- version 4.2.7
 
 -------------------------------------------------------------------
 Tue Nov  4 15:46:33 CET 2008 - dmacvicar@suse.de
