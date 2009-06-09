@@ -30,14 +30,21 @@ namespace zypp {
     ///////////////////////////////////////////////////////////////////
     struct KeyRingReceive : public zypp::callback::ReceiveReport<zypp::KeyRingReport>
     {
-	virtual bool askUserToAcceptUnsignedFile( const std::string &file )
+	virtual bool askUserToAcceptUnsignedFile( const std::string &file, const KeyContext & context )
 	{
-	  XXX << "(" << file << ")" << std::endl;
+	  XXX << "("
+            << file << ", "
+            << (context.empty() ? "<unknown>" : context.repoInfo().alias())
+            << ")" << std::endl;
 	  return true;
 	}
-	virtual bool askUserToAcceptUnknownKey( const std::string &file, const std::string &id )
+	virtual bool askUserToAcceptUnknownKey( const std::string &file,
+                                                const std::string &id,
+                                                const zypp::KeyContext & context )
 	{
-	  XXX << "(" << file << ", " << id << ")" << std::endl;
+	  XXX << "(" << file << ", " << id << ", "
+            << (context.empty() ? "<unknown>" : context.repoInfo().alias())
+            << ")" << std::endl;
 	  return true;
 	}
 	virtual bool askUserToImportKey( const PublicKey &key )
@@ -49,9 +56,13 @@ namespace zypp {
 	  XXX << "(" << key << ")" << std::endl;
 	  return true;
 	}
-	virtual bool askUserToAcceptVerificationFailed( const std::string &file,  const PublicKey &key  )
+	virtual bool askUserToAcceptVerificationFailed( const std::string &file,
+                                                        const PublicKey &key,
+                                                        const zypp::KeyContext & context)
 	{
-	  XXX << "(" << file << ", " << key << ")" << std::endl;
+	  XXX << "(" << file << ", " << key << ", "
+            << (context.empty() ? "<unknown>" : context.repoInfo().alias())
+            << ")" << std::endl;
 	  return true;
 	}
     };
