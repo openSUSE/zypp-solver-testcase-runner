@@ -86,7 +86,6 @@
 
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
-#include "satsolver/repo_helix.h"
 
 #define YUILogComponent "example"
 #include "YUILog.h"
@@ -629,7 +628,7 @@ load_source (const string & alias, const string & filename, const string & type,
 
           RepoInfo nrepo;
           nrepo.setAlias      ( alias );
-          nrepo.setName       ( "namen sind schall und rauch" );
+          nrepo.setName       ( alias );
           nrepo.setEnabled    ( true );
           nrepo.setAutorefresh( false );
           nrepo.setPriority   ( priority );
@@ -662,30 +661,15 @@ load_source (const string & alias, const string & filename, const string & type,
           RepoInfo nrepo;
 
           nrepo.setAlias      ( alias );
-          nrepo.setName       ( "namen sind schall und rauch" );
+          nrepo.setName       ( alias );
           nrepo.setEnabled    ( true );
           nrepo.setAutorefresh( false );
           nrepo.setPriority   ( priority );
           nrepo.addBaseUrl   ( pathname.asUrl() );
 
           satRepo.setInfo (nrepo);
-          _Repo *intSatRepo = satRepo.get();
-          string command;
-
-          if (str::endsWith(filename, ".gz")) {
-              command = "zcat " + filename;
-          } else {
-              command = "cat " + filename;
-          }
-          FILE *fpHelix = popen( command.c_str(), "r" );
-          if (!fpHelix)
-          {
-              cout << "Couldn't load packages from XML file '" << filename << "'" << endl;
-              return false;
-          }
-          repo_add_helix(intSatRepo, fpHelix, 0);
+          satRepo.addHelix( filename );
           cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
-          pclose( fpHelix );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
