@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jul  8 14:16:33 CEST 2009 - ma@suse.de
+
+- Remove references to deprecated UpgradeStatistics.
+- version 4.2.9
+
+-------------------------------------------------------------------
 Mon Jun 22 15:29:19 CEST 2009 - ma@suse.de
 
 - Remove dependency to satsolver/repo_helix.h.

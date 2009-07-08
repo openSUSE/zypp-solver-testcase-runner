@@ -940,9 +940,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	} else if (node->equals ("distupgrade")) {
 
 	    RESULT << "Doing distribution upgrade ..." << endl;
-	    UpgradeStatistics stats;
-
-	    resolver->doUpgrade(stats);
+	    resolver->doUpgrade();
 
 	    print_pool( resolver, MARKER );
 
