@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Tue Aug  4 15:16:26 CEST 2009 - ma@suse.de
+
+- Parse and process <upgradeRepo name=REPOALIAS/>
+- version 4.2.10
+
+-------------------------------------------------------------------
 Wed Jul  8 14:16:33 CEST 2009 - ma@suse.de
 
 - Remove references to deprecated UpgradeStatistics.

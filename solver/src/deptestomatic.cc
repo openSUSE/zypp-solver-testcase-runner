@@ -203,7 +203,7 @@ List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for deta
   addRequire arch availablelocales channel createTestcase current distupgrade force-install forceResolve \n\
   graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid mediaorder \n\
   onlyRequires reportproblems setlicencebit showpool showselectable source subscribe system systemCheck \n\
-  takesolution uninstall update validate verify whatprovides" << endl;
+  takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
 
 
   return str;
@@ -668,7 +668,7 @@ load_source (const string & alias, const string & filename, const string & type,
           nrepo.addBaseUrl   ( pathname.asUrl() );
 
           satRepo.setInfo (nrepo);
-          satRepo.addHelix( filename );
+          satRepo.addHelix( pathname );
           cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
 	}
 	catch ( Exception & excpt_r ) {
@@ -850,6 +850,8 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	exit (0);
     }
 
+    sat::Pool satpool( sat::Pool::instance() );
+
     zypp::solver::detail::Resolver_Ptr resolver = new zypp::solver::detail::Resolver( pool );
     resolver->setForceResolve( forceResolve );
     resolver->setIgnoreAlreadyRecommended( ignorealreadyrecommended );
@@ -984,14 +986,28 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	} else if (node->equals ("addConflict")) {
             vector<string> names;
             str::split( node->getProp ("name"), back_inserter(names), "," );
-            for (unsigned i=0; i < names.size(); i++) {
+            for (unsigned i=0; i < names.size(); ++i) {
                 resolver->addExtraConflict(Capability (names[i], string2kind (node->getProp ("kind"))));
             }
 	} else if (node->equals ("addRequire")) {
             vector<string> names;
             str::split( node->getProp ("name"), back_inserter(names), "," );
-            for (unsigned i=0; i < names.size(); i++) {
+            for (unsigned i=0; i < names.size(); ++i) {
                 resolver->addExtraRequire(Capability (names[i], string2kind (node->getProp ("kind"))));
+            }
+	} else if (node->equals ("upgradeRepo")) {
+            vector<string> names;
+            str::split( node->getProp ("name"), back_inserter(names), "," );
+            for (unsigned i=0; i < names.size(); ++i) {
+              Repository r = satpool.reposFind( names[i] );
+              if ( ! r )
+              {
+                ERR << "upgradeRepo '" << r << "' not found." << endl;
+                cerr << "upgradeRepo '" << r << "' not found." << endl;
+		exit( 1 );
+              }
+              else
+                resolver->addUpgradeRepo( r );
             }
 	} else if (node->equals ("reportproblems")) {
             bool success;
@@ -1350,6 +1366,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             testcase.createTestcase (*resolver);
 
 	} else {
+	    ERR << "Unknown tag '" << node->name() << "' in trial" << endl;
 	    cerr << "Unknown tag '" << node->name() << "' in trial" << endl;
 	}
 
