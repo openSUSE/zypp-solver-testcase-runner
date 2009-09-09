@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Sep  9 15:25:35 CEST 2009 - ma@suse.de
+
+- Always print solver problems if solving failed.
+- version 4.2.11
+
+-------------------------------------------------------------------
 Tue Aug  4 15:16:26 CEST 2009 - ma@suse.de
 
 - Parse and process <upgradeRepo name=REPOALIAS/>
