@@ -186,6 +186,9 @@ string2kind (const std::string & str)
 	else if (str == "product") {
 	    kind = ResKind::product;
 	}
+	else if (str == "srcpackage") {
+	    kind = ResKind::srcpackage;
+	}
 	else {
 	    cerr << "get_poolItem unknown kind '" << str << "'" << endl;
 	}
@@ -376,6 +379,28 @@ print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
     return;
 }
 
+static void print_problems( zypp::solver::detail::Resolver_Ptr resolver )
+{
+  ResolverProblemList problems = resolver->problems();
+  problems.sort( compare_problems() );
+  RESULT << problems.size() << " problems found:" << endl;
+  for ( ResolverProblemList::iterator iter = problems.begin(); iter != problems.end(); ++iter )
+  {
+    ResolverProblem problem = **iter;
+    RESULT << "Problem:" << endl;
+    RESULT << problem.description() << endl;
+    RESULT << problem.details() << endl;
+
+    ProblemSolutionList solutions = problem.solutions();
+    for ( ProblemSolutionList::const_iterator iter = solutions.begin(); iter != solutions.end(); ++iter )
+    {
+      ProblemSolution solution = **iter;
+      RESULT << "   Solution:" << endl;
+      RESULT << "      " << solution.description() << endl;
+      RESULT << "      " << solution.details() << endl;
+    }
+  }
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -1020,25 +1045,8 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		RESULT << "No problems so far" << endl;
 	    }
 	    else {
-		ResolverProblemList problems = resolver->problems ();
-		problems.sort(compare_problems());
-		RESULT << problems.size() << " problems found:" << endl;
-		for (ResolverProblemList::iterator iter = problems.begin(); iter != problems.end(); ++iter) {
-		    ResolverProblem problem = **iter;
-		    RESULT << "Problem:" << endl;
-		    RESULT << problem.description() << endl;
-		    RESULT << problem.details() << endl;
-
-		    ProblemSolutionList solutions = problem.solutions();
-		    for (ProblemSolutionList::const_iterator iter = solutions.begin();
-			 iter != solutions.end(); ++iter) {
-			ProblemSolution solution = **iter;
-			RESULT << "   Solution:" << endl;
-			RESULT << "      " << solution.description() << endl;
-			RESULT << "      " << solution.details() << endl;
-		    }
-		}
-	    }
+		print_problems( resolver );
+            }
 	} else if (node->equals ("takesolution")) {
 	    string problemNrStr = node->getProp ("problem");
 	    string solutionNrStr = node->getProp ("solution");
@@ -1388,6 +1396,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             print_solution (pool, instorder, mediaorder);
         } else {
             RESULT << "No valid solution found." << endl;
+            print_problems( resolver );
         }
     }
 
