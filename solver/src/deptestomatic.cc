@@ -23,16 +23,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
  * USA.
  */
-
 #include <sstream>
 #include <iostream>
 #include <map>
 #include <set>
-#include <qapplication.h>
-#include <qdialog.h>
-#include <qfiledialog.h>
-#include <qpushbutton.h>
-#include <qfont.h>
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
@@ -87,6 +81,13 @@
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
 
+#ifndef NOUI
+#include <qapplication.h>
+#include <qdialog.h>
+#include <qfiledialog.h>
+#include <qpushbutton.h>
+#include <qfont.h>
+
 #define YUILogComponent "example"
 #include "YUILog.h"
 #include "YUI.h"
@@ -95,6 +96,7 @@
 #include "YLayoutBox.h"
 #include "YPackageSelector.h"
 #include "YEvent.h"
+#endif
 
 using namespace std;
 using namespace zypp;
@@ -1129,6 +1131,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
                     cout << "Selectable '" << name << "' not valid" << endl;
         }
         else if (node->equals ("graphic")) {
+#ifndef NOUI
             resolver->resolvePool();
             QApplication app(0, NULL);
             QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
@@ -1137,7 +1140,12 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             dialog->setMinimumSize ( 700, 700 );
             dialog->show();
             app.exec();
+#else
+            RESULT << "<graphic> is not supported by deptestomatic.noui" << endl;
+#endif
         } else if (node->equals ("YOU") || node->equals ("PkgUI") ) {
+#ifndef NOUI
+
             resolver->resolvePool();
 
             YUILog::setLogFileName( "/tmp/testUI.log" );
@@ -1158,6 +1166,9 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             myUI->runPkgSelection( pkgSelector );
 
             dialog->destroy();
+#else
+            RESULT << "<YOU> or <PkgUI> are not supported by deptestomatic.noui" << endl;
+#endif
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");
