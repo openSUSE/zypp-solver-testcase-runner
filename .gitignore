@@ -23,4 +23,5 @@ libzypp-testsuite-tools.spec
 ltmain.sh
 missing
 solver/src/deptestomatic.multi
+solver/src/deptestomatic.noui
 stamp-h1

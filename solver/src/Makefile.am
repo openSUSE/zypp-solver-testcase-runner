@@ -14,7 +14,7 @@ LDADD =	-lzypp -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyui
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
-noinst_PROGRAMS = deptestomatic.multi
+noinst_PROGRAMS = deptestomatic.multi deptestomatic.noui
 
 testsuitesolversrcbindir = ${testsuitebindir}
 testsuitesolversrcbin_DATA = deptestomatic.multi
@@ -24,3 +24,8 @@ deptestomatic_multi_SOURCES =				\
 	KeyRingCallbacks.h				\
 	XmlNode.cc					\
 	XmlNode.h
+
+# ----
+deptestomatic_noui_SOURCES =  $(deptestomatic_multi_SOURCES)
+deptestomatic_noui_CXXFLAGS = -DNOUI
+deptestomatic_noui_LDADD = -lzypp -lexpat
