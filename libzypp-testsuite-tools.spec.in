@@ -40,6 +40,9 @@ Authors:
 Requires:       libzypp-testsuite-tools
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-data
 Group:          System/Packages
+%if %suse_version > 1120
+BuildArch:      noarch
+%endif
 
 %description -n libzypp-testsuite-tools-data
 Package, Patch, Pattern, and Product Management - testsuite-data
