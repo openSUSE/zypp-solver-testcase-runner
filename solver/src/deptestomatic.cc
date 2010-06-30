@@ -76,7 +76,6 @@
 #include "zypp/solver/detail/SolverQueueItemLock.h"
 #include "zypp/solver/detail/SolverQueueItemUpdate.h"
 #include "zypp/solver/detail/SystemCheck.h"
-#include "zypp/QZyppSolverDialog.h"
 
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
@@ -87,6 +86,7 @@
 #include <qfiledialog.h>
 #include <qpushbutton.h>
 #include <qfont.h>
+#include "zypp/QZyppSolverDialog.h"
 
 #define YUILogComponent "example"
 #include "YUILog.h"
