@@ -28,4 +28,4 @@ deptestomatic_multi_SOURCES =				\
 # ----
 deptestomatic_noui_SOURCES =  $(deptestomatic_multi_SOURCES)
 deptestomatic_noui_CXXFLAGS = -DNOUI
-deptestomatic_noui_LDADD = -lzypp -lexpat
+deptestomatic_noui_LDADD = -lzypp -lxml2 -lexpat
