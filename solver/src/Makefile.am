@@ -10,7 +10,7 @@ INCLUDES = -I/usr/include/libxml2	\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
 
-LDADD =	-lzypp -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyui
+LDADD =	-lzypp -lxml2 -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyui
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
