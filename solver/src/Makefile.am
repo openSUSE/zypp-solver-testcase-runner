@@ -18,8 +18,6 @@ noinst_PROGRAMS = deptestomatic.multi deptestomatic.noui
 testsuitesolversrcbindir = ${testsuitebindir}
 testsuitesolversrcbin_DATA = deptestomatic.multi
 
-deptestomatic_multi_CXXFLAGS = -std=c++0x
-
 deptestomatic_multi_SOURCES =				\
 	deptestomatic.cc 				\
 	KeyRingCallbacks.h				\
@@ -28,5 +26,5 @@ deptestomatic_multi_SOURCES =				\
 
 # ----
 deptestomatic_noui_SOURCES =  $(deptestomatic_multi_SOURCES)
-deptestomatic_noui_CXXFLAGS = -DNOUI -std=c++0x
+deptestomatic_noui_CXXFLAGS = -DNOUI
 deptestomatic_noui_LDADD = -lzypp -lxml2 -lexpat
