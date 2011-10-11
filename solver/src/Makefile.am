@@ -9,7 +9,6 @@ INCLUDES = -I/usr/include/libxml2	\
 	-DQT3_SUPPORT			\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 
-
 LDADD =	-lzypp -lxml2 -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyui
 
 # We're not ready for this yet.
@@ -19,6 +18,8 @@ noinst_PROGRAMS = deptestomatic.multi deptestomatic.noui
 testsuitesolversrcbindir = ${testsuitebindir}
 testsuitesolversrcbin_DATA = deptestomatic.multi
 
+deptestomatic_multi_CXXFLAGS = -std=c++0x
+
 deptestomatic_multi_SOURCES =				\
 	deptestomatic.cc 				\
 	KeyRingCallbacks.h				\
@@ -27,5 +28,5 @@ deptestomatic_multi_SOURCES =				\
 
 # ----
 deptestomatic_noui_SOURCES =  $(deptestomatic_multi_SOURCES)
-deptestomatic_noui_CXXFLAGS = -DNOUI
+deptestomatic_noui_CXXFLAGS = -DNOUI -std=c++0x
 deptestomatic_noui_LDADD = -lzypp -lxml2 -lexpat

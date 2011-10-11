@@ -118,6 +118,7 @@ static RepoManager manager;
 static bool forceResolve;
 static bool ignorealreadyrecommended;
 static bool onlyRequires;
+static bool allowVendorChange;
 static zypp::solver::detail::SolverQueueItemList solverQueue;
 
 typedef set<PoolItem> PoolItemSet;
@@ -205,8 +206,8 @@ std::ostream & dumpHelpOn( std::ostream & str )
   str << "\
 List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for details: \n\
   PkgUI YOU addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
-  addRequire arch availablelocales channel createTestcase current distupgrade force-install forceResolve \n\
-  graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid mediaorder \n\
+  addRequire allowVendorChange arch availablelocales channel createTestcase current distupgrade force-install \n\
+  forceResolve graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid mediaorder \n\
   onlyRequires reportproblems setlicencebit showpool showselectable source subscribe system systemCheck \n\
   takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
 
@@ -755,6 +756,9 @@ parse_xml_setup (XmlNode_Ptr node)
 	} else if (node->equals ("onlyRequires")) {
 	    onlyRequires = true;
 
+	} else if (node->equals ("allowVendorChange")) {
+	    allowVendorChange = true;
+
 	} else if (node->equals ("system")) {
 
 	    string file = node->getProp ("file");
@@ -883,6 +887,8 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     resolver->setForceResolve( forceResolve );
     resolver->setIgnoreAlreadyRecommended( ignorealreadyrecommended );
     resolver->setOnlyRequires( onlyRequires );
+    if ( allowVendorChange )
+      resolver->setAllowVendorChange( true );
 
     if (!locales.empty()) {
         pool.setRequestedLocales( locales );
@@ -968,13 +974,16 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	} else if (node->equals ("distupgrade")) {
 
+	    print_pool( resolver, MARKER );
 	    RESULT << "Doing distribution upgrade ..." << endl;
 	    resolver->doUpgrade();
-
-	    print_pool( resolver, MARKER );
+            print_solution (pool, instorder, mediaorder);
+            doUpdate = true;
+// 	    print_pool( resolver, MARKER );
 
 	} else if (node->equals ("update")) {
 
+	    print_pool( resolver, MARKER );
 	    RESULT << "Doing update ..." << endl;
 	    resolver->doUpdate();
             print_solution (pool, instorder, mediaorder);
@@ -1133,7 +1142,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
         else if (node->equals ("graphic")) {
 #ifndef NOUI
             resolver->resolvePool();
-            QApplication app(0, NULL);
+            QApplication app(NULL, 0);
             QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
             app.setMainWidget( dialog );
             dialog->setCaption("Solvertree");
@@ -1199,11 +1208,10 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    string architecture = node->getProp ("arch");
 
             // Solving is needed
-            bool success;
             if (!solverQueue.empty())
-                success = resolver->resolveQueue(solverQueue);
+                resolver->resolveQueue(solverQueue);
             else
-                success = resolver->resolvePool();
+                resolver->resolvePool();
 
             if (!package_name.empty()) {
                 PoolItem poolItem;
@@ -1397,6 +1405,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     if (!doUpdate) {
         if (verify) {
             success = resolver->verifySystem ();
+	    print_pool( resolver );
         } else {
             if (!solverQueue.empty())
                 success = resolver->resolveQueue(solverQueue);
@@ -1486,6 +1495,7 @@ main (int argc, char *argv[])
     forceResolve = false;
     ignorealreadyrecommended = false;
     onlyRequires = false;
+    allowVendorChange = false;
 
     solverQueue.clear();
 
