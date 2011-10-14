@@ -1,23 +1,30 @@
 #
 # spec file for package libzypp-testsuite-tools
 #
-# Copyright (c) 2006 SUSE LINUX Products GmbH, Nuernberg, Germany.
-# This file and all modifications and additions to the pristine
-# package are under the same license as the package itself.
+# Copyright (c) 2009 SUSE LINUX Products GmbH, Nuernberg, Germany.
 #
+# All modifications and additions to the file contributed by third parties
+# remain the property of their copyright owners, unless otherwise agreed
+# upon. The license for this file, and modifications and additions to the
+# file, is the same license as for the pristine package itself (unless the
+# license for the pristine package is not an Open Source License, in which
+# case the license is the MIT License). An "Open Source License" is a
+# license that conforms to the Open Source Definition (Version 1.9)
+# published by the Open Source Initiative.
+
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
 Name:		libzypp-testsuite-tools
-BuildRequires:	gcc-c++ fdupes  libexpat-devel libqt4-devel libqdialogsolver1-devel yast2-libyui-devel
-BuildRequires:  libzypp-devel >= 6.10.0
+BuildRequires:	fdupes  libexpat-devel libqt4-devel libqdialogsolver1-devel yast2-libyui-devel
+BuildRequires:	gcc-c++ >= 4.5
+BuildRequires:	libzypp-devel >= 6.10.0
 License:	GPL-2.0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-tools
 Version:	@VERSION@
 Release:	0
 Source:		zypp-testsuite-tools-@VERSION@.tar.bz2
-Prefix:		/usr
 Group:          System/Packages
 
 %description
@@ -35,6 +42,7 @@ Authors:
     Ladislav Slezak <lslezak@suse.cz>
 
 %package data
+License:        GPLv2+
 Requires:       libzypp-testsuite-tools
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-data
 Group:          System/Packages
@@ -88,6 +96,3 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %{prefix}/share/zypp/testsuite/data/
 
 %changelog -n libzypp-testsuite
- converted neededforbuild to BuildRequires
-* Wed Jan 31 2007 - shaas@suse.de
-- Initial version
