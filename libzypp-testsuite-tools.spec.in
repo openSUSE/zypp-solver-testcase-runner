@@ -73,7 +73,7 @@ grep -v devel/ x > configure.ac
 autoreconf --force --install --symlink --verbose
 %{?suse_update_config:%{suse_update_config -f}}
 CXXFLAGS="$RPM_OPT_FLAGS" \
-./configure --prefix=%{prefix} --libdir=%{_libdir} --with-qt-dir=/usr/lib/qt3 --with-qt-libdir=/usr/lib/qt3/%{_lib} --mandir=%{_mandir} --disable-static
+%configure --disable-static
 make %{?jobs:-j %jobs}
 
 %install
@@ -84,15 +84,15 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 %files
 %defattr(0755,root,root)
-%dir %{prefix}/lib/zypp
-%dir %{prefix}/lib/zypp/testsuite/
-%dir %{prefix}/lib/zypp/testsuite/bin
-%{prefix}/lib/zypp/testsuite/bin/
+%dir %{_prefix}/lib/zypp
+%dir %{_prefix}/lib/zypp/testsuite/
+%dir %{_prefix}/lib/zypp/testsuite/bin
+%{_prefix}/lib/zypp/testsuite/bin/
 
 %files data
 %defattr(-,root,root)
-%dir %{prefix}/share/zypp/testsuite
-%dir %{prefix}/share/zypp/testsuite/data
-%{prefix}/share/zypp/testsuite/data/
+%dir %{_prefix}/share/zypp/testsuite
+%dir %{_prefix}/share/zypp/testsuite/data
+%_{prefix}/share/zypp/testsuite/data/
 
 %changelog -n libzypp-testsuite
