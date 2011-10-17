@@ -93,6 +93,6 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %defattr(-,root,root)
 %dir %{_prefix}/share/zypp/testsuite
 %dir %{_prefix}/share/zypp/testsuite/data
-%_{prefix}/share/zypp/testsuite/data/
+%{_prefix}/share/zypp/testsuite/data/
 
 %changelog -n libzypp-testsuite
