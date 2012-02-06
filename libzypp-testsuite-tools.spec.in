@@ -20,7 +20,7 @@ BuildRequires:	fdupes  libexpat-devel libqt4-devel libqdialogsolver1-devel yast2
 BuildRequires:	gcc-c++ >= 4.5
 BuildRequires:	libzypp-devel >= 6.10.0
 BuildRequires:  libtool
-License:	GPL-2.0
+License:	GPL-2.0+
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-tools
 Version:	@VERSION@
@@ -43,7 +43,7 @@ Authors:
     Ladislav Slezak <lslezak@suse.cz>
 
 %package data
-License:        GPLv2+
+License:        GPL-2.0+
 Requires:       libzypp-testsuite-tools
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-data
 Group:          System/Packages
