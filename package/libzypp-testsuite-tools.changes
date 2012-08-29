@@ -1,4 +1,12 @@
 -------------------------------------------------------------------
+Wed Aug 29 14:28:48 CEST 2012 - ma@suse.de
+
+- Adapt to libyui changes
+- As zypp is now using libsolv, drop the outdated and unmaintained
+  testcase data package for the old solver.
+- version 4.3.0
+
+-------------------------------------------------------------------
 Wed Nov 23 21:12:04 UTC 2011 - coolo@suse.com
 
 - add libtool as buildrequire to avoid implicit dependency
