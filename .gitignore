@@ -6,6 +6,9 @@ Makefile
 *.lo
 *.a
 *.la
+*~
+.*.swp
+package/zypp-testsuite-tools-*.tar.*
 aclocal.m4
 autom4te.cache/
 config.guess
@@ -22,6 +25,6 @@ libzypp-testsuite-tools.pc
 libzypp-testsuite-tools.spec
 ltmain.sh
 missing
-solver/src/deptestomatic.multi
-solver/src/deptestomatic.noui
+src/deptestomatic.multi
+src/deptestomatic.noui
 stamp-h1

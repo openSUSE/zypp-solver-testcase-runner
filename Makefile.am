@@ -1,7 +1,7 @@
 #
 # Makefile.am for libzypp/testsuite
 #
-SUBDIRS = solver
+SUBDIRS = src
 
 ## ##################################################
 

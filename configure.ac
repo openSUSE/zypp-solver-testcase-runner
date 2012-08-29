@@ -96,14 +96,9 @@ dnl ==================================================
 dnl AC_CONFIG_FILES([FILE...])
 AC_OUTPUT(
 	Makefile			\
-	libzypp-testsuite-tools.spec			\
-	libzypp-testsuite-tools.pc			\
-	solver/Makefile	\
-	solver/config/Makefile	\
-	solver/lib/Makefile	\
-	solver/solver.test/Makefile	\
-	solver/src/Makefile	\
-	solver/single.out/Makefile
+	libzypp-testsuite-tools.spec	\
+	libzypp-testsuite-tools.pc	\
+	src/Makefile
 )
 dnl ==================================================
 

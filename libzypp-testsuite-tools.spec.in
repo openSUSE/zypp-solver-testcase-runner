@@ -42,29 +42,6 @@ Authors:
     Stanislav Visnovsky <visnov@suse.cz>
     Ladislav Slezak <lslezak@suse.cz>
 
-%package data
-License:        GPL-2.0+
-Requires:       libzypp-testsuite-tools
-Summary:        Package, Patch, Pattern, and Product Management - testsuite-data
-Group:          System/Packages
-%if %suse_version > 1120
-BuildArch:      noarch
-%endif
-
-%description -n libzypp-testsuite-tools-data
-Package, Patch, Pattern, and Product Management - testsuite-data
-
-Authors:
---------
-    Michael Andres <ma@suse.de>
-    Jiri Srain <jsrain@suse.cz>
-    Stefan Schubert <schubi@suse.de>
-    Duncan Mac-Vicar <dmacvicar@suse.de>
-    Klaus Kaempf <kkaempf@suse.de>
-    Marius Tomaschewski <mt@suse.de>
-    Stanislav Visnovsky <visnov@suse.cz>
-    Ladislav Slezak <lslezak@suse.cz>
-
 %prep
 %setup -q -n zypp-testsuite-tools-@VERSION@
 
@@ -89,11 +66,5 @@ make install DESTDIR=$RPM_BUILD_ROOT
 %dir %{_prefix}/lib/zypp/testsuite/
 %dir %{_prefix}/lib/zypp/testsuite/bin
 %{_prefix}/lib/zypp/testsuite/bin/
-
-%files data
-%defattr(-,root,root)
-%dir %{_prefix}/share/zypp/testsuite
-%dir %{_prefix}/share/zypp/testsuite/data
-%{_prefix}/share/zypp/testsuite/data/
 
 %changelog
