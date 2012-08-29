@@ -5,7 +5,6 @@
 INCLUDES = -I/usr/include/libxml2	\
 	-I$(prefix)/include		\
 	-I/usr/include/Qt		\
-	-I/usr/include/YaST2/yui	\
 	-DQT3_SUPPORT			\
 	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
 

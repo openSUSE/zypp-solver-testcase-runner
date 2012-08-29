@@ -13,7 +13,7 @@ AM_CONFIG_HEADER(config.h)
 
 dnl ==================================================
 
-CXXFLAGS="${CXXFLAGS} -DFAKE -g -O3 -Wall -Wformat -Woverloaded-virtual"
+CXXFLAGS="${CXXFLAGS} -DFAKE -g -O3 -Wall -Wformat -Woverloaded-virtual -std=c++0x"
 AC_SYS_LARGEFILE
 if test "$enable_largefile" != no ; then
 	enable_largefile=yes

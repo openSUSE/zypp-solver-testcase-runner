@@ -89,13 +89,13 @@
 #include "zypp/QZyppSolverDialog.h"
 
 #define YUILogComponent "example"
-#include "YUILog.h"
-#include "YUI.h"
-#include "YWidgetFactory.h"
-#include "YDialog.h"
-#include "YLayoutBox.h"
-#include "YPackageSelector.h"
-#include "YEvent.h"
+#include <yui/YUILog.h>
+#include <yui/YUI.h>
+#include <yui/YWidgetFactory.h>
+#include <yui/YDialog.h>
+#include <yui/YLayoutBox.h>
+#include <yui/YPackageSelector.h>
+#include <yui/YEvent.h>
 #endif
 
 using namespace std;
