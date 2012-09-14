@@ -1,4 +1,11 @@
 -------------------------------------------------------------------
+Mon Sep  3 10:18:32 UTC 2012 - cfarrell@suse.com
+
+- license update: GPL-2.0
+  Contains files with GPL-2.0 (i.e. "only") licenses - see e.g.
+  src/XmlNode.cc
+
+-------------------------------------------------------------------
 Wed Aug 29 14:28:48 CEST 2012 - ma@suse.de
 
 - Adapt to libyui changes
