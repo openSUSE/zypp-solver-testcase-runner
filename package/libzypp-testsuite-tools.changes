@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Jan  9 14:13:02 CET 2013 - ma@suse.de
+
+- Fix reporting of solver problems in distupgrade.
+- version 4.3.1
+
+-------------------------------------------------------------------
 Mon Sep  3 10:18:32 UTC 2012 - cfarrell@suse.com
 
 - license update: GPL-2.0
