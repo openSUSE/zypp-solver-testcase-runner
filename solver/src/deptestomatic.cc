@@ -584,7 +584,7 @@ void
 print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix = "", bool show_all = true, string show_licence = "false", bool verbose = false )
 {
     SortItem info( show_all );
-    cout << "Current pool:" << endl;
+    cout << "Current pool: " <<  God->pool().size() << endl;
     invokeOnEach( God->pool().begin( ),
 		  God->pool().end ( ),
 		  functor::functorRef<bool,PoolItem> (info) );
@@ -974,16 +974,13 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	} else if (node->equals ("distupgrade")) {
 
-	    print_pool( resolver, MARKER );
 	    RESULT << "Doing distribution upgrade ..." << endl;
 	    resolver->doUpgrade();
-            print_solution (pool, instorder, mediaorder);
-            doUpdate = true;
-// 	    print_pool( resolver, MARKER );
+
+	    print_pool( resolver, MARKER );
 
 	} else if (node->equals ("update")) {
 
-	    print_pool( resolver, MARKER );
 	    RESULT << "Doing update ..." << endl;
 	    resolver->doUpdate();
             print_solution (pool, instorder, mediaorder);
