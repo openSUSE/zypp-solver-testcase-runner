@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed May  8 19:44:07 CEST 2013 - ma@suse.de
+
+- Remove deprecated installorder code
+- version 4.3.2
+
+-------------------------------------------------------------------
 Wed Jan  9 14:13:02 CET 2013 - ma@suse.de
 
 - Fix reporting of solver problems in distupgrade.
