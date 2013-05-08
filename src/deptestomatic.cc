@@ -53,7 +53,7 @@
 #include "zypp/ZConfig.h"
 
 #include "zypp/base/String.h"
-#include "zypp/base/Logger.h"
+#include "zypp/base/LogTools.h"
 #include "zypp/base/LogControl.h"
 #include "zypp/base/Exception.h"
 #include "zypp/base/Algorithm.h"
@@ -62,12 +62,9 @@
 
 #include "zypp/media/MediaManager.h"
 
-#include "zypp/pool/GetResolvablesToInsDel.h"
-
 #include "zypp/Repository.h"
 
 #include "zypp/solver/detail/Resolver.h"
-#include "zypp/solver/detail/InstallOrder.h"
 #include "zypp/solver/detail/Testcase.h"
 #include "zypp/solver/detail/SolverQueueItem.h"
 #include "zypp/solver/detail/SolverQueueItemDelete.h"
@@ -101,7 +98,6 @@
 using namespace std;
 using namespace zypp;
 using zypp::ui::Selectable;
-using zypp::solver::detail::InstallOrder;
 using zypp::solver::detail::Testcase;
 using zypp::ResolverProblemList;
 using zypp::solver::detail::XmlNode;
@@ -207,7 +203,7 @@ std::ostream & dumpHelpOn( std::ostream & str )
 List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for details: \n\
   PkgUI YOU addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
   addRequire allowVendorChange arch availablelocales channel createTestcase current distupgrade force-install \n\
-  forceResolve graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid mediaorder \n\
+  forceResolve graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid \n\
   onlyRequires reportproblems setlicencebit showpool showselectable source subscribe system systemCheck \n\
   takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
 
@@ -302,7 +298,7 @@ uniquelyUninstalled (const ResPool & pool)
 }
 
 static void
-print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
+print_solution ( const ResPool & pool, bool instorder)
 {
     PoolItemOrderSet install = uniquelyInstalled(pool);
     PoolItemOrderSet uninstall = uniquelyUninstalled(pool);
@@ -326,54 +322,10 @@ print_solution ( const ResPool & pool, bool instorder, bool mediaorder)
     if (instorder) {
 	cout << endl;
 	RESULT << "Installation Order:" << endl << endl;
-	zypp::solver::detail::PoolItemSet dummy;
 
-	zypp::solver::detail::PoolItemSet insset( install.begin(), install.end() );
+	sat::Transaction trans( sat::Transaction::loadFromPool );
+	RESULT << dump(trans) << endl;
 
-	int counter = 1;
-	InstallOrder order( pool, insset, dummy );		 // sort according to prereq
-	order.init();
-	for ( zypp::solver::detail::PoolItemList items = order.computeNextSet(); ! items.empty(); items = order.computeNextSet() )
-	{
-	    RESULT << endl;
-	    RESULT << counter << ". set with " << items.size() << " resolvables" << endl;
-	    PoolItemOrderSet orderedset;
-
-	    for ( zypp::solver::detail::PoolItemList::iterator iter = items.begin(); iter != items.end(); ++iter )
-	    {
-		orderedset.insert( *iter );
-	    }
-	    for (PoolItemOrderSet::const_iterator iter = orderedset.begin(); iter != orderedset.end(); iter++) {
-		RESULT; printRes( cout,  *iter); cout << endl;
-	    }
-	    counter++;
-	    order.setInstalled( items );
-	}
-
-
-	cout << "- - - - - - - - - -" << endl;
-    }
-
-    if (mediaorder) {
-	cout << endl;
-	RESULT << "Media Order:" << endl << endl;
-
-	Target::PoolItemList dellist;
-	Target::PoolItemList inslist;
-	Target::PoolItemList srclist;
-        pool::GetResolvablesToInsDel collect( pool );
-        dellist.swap(collect._toDelete);
-        inslist.swap(collect._toInstall);
-        srclist.swap(collect._toSrcinstall);
-
-	int count = 0;
-	for (Target::PoolItemList::const_iterator iter = dellist.begin(); iter != dellist.end(); iter++) {
-	    cout << "DEL " << ++count << ".: "; printRes (cout, (*iter)); cout << endl;
-	}
-	count = 0;
-	for (Target::PoolItemList::const_iterator iter = inslist.begin(); iter != inslist.end(); iter++) {
-	    cout << "INS " << ++count << ".:"; printRes (cout, (*iter)); cout << endl;
-	}
 	cout << "- - - - - - - - - -" << endl;
     }
 
@@ -857,7 +809,6 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     bool verify = false;
     bool doUpdate = false;
     bool instorder = false;
-    bool mediaorder = false;
 
     if (!node->equals ("trial")) {
 	ZYPP_THROW (Exception ("Node not 'trial' in parse_xml_trial()"));
@@ -983,20 +934,14 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    RESULT << "Doing update ..." << endl;
 	    resolver->doUpdate();
-            print_solution (pool, instorder, mediaorder);
+            print_solution (pool, instorder);
             doUpdate = true;
 
-	} else if (node->equals ("instorder")) {
+	} else if (node->equals ("instorder") || node->equals ("mediaorder")/*legacy*/) {
 
 	    RESULT << "Calculating installation order ..." << endl;
 
 	    instorder = true;
-
-	} else if (node->equals ("mediaorder")) {
-
-	    RESULT << "Calculating media installation order ..." << endl;
-
-	    mediaorder = true;
 
 	} else if (node->equals ("whatprovides")) {
 
@@ -1410,7 +1355,7 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
                 success = resolver->resolvePool();
         }
         if (success) {
-            print_solution (pool, instorder, mediaorder);
+            print_solution (pool, instorder);
         } else {
             RESULT << "No valid solution found." << endl;
             print_problems( resolver );
