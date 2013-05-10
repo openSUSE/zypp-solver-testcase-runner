@@ -324,6 +324,7 @@ print_solution ( const ResPool & pool, bool instorder)
 	RESULT << "Installation Order:" << endl << endl;
 
 	sat::Transaction trans( sat::Transaction::loadFromPool );
+	trans.order();
 	RESULT << dump(trans) << endl;
 
 	cout << "- - - - - - - - - -" << endl;
