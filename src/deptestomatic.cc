@@ -204,8 +204,8 @@ List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for deta
   PkgUI YOU addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
   addRequire allowVendorChange arch availablelocales channel createTestcase current distupgrade force-install \n\
   forceResolve graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid \n\
-  onlyRequires reportproblems setlicencebit showpool showselectable source subscribe system systemCheck \n\
-  takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
+  onlyRequires reportproblems setlicencebit showpool showstatus showselectable source subscribe system \n\
+  systemCheck takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
 
 
   return str;
@@ -1068,6 +1068,15 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
             string get_licence = node->getProp ("getlicence");
             string verbose = node->getProp ("verbose");
 	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
+
+	}
+	else if (node->equals ("showstatus")) {
+	    resolver->resolvePool();
+	    string prefix = node->getProp ("prefix");
+	    string all = node->getProp ("all");
+            string get_licence = node->getProp ("getlicence");
+            string verbose = node->getProp ("verbose");
+	    print_pool( resolver, "", true, "false", true );
 
 	}
         else if (node->equals ("showselectable")){
