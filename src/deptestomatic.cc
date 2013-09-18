@@ -1421,47 +1421,58 @@ process_xml_test_file (const Pathname & filename)
 int
 main (int argc, char *argv[])
 {
-//    ZConfig::instance().setSystemArchitecture(Arch( "x86_64" ));
+  Pathname testFile( "solver-test.xml" );
 
-    if (argc != 2) {
-	cerr << "Usage: deptestomatic testfile.xml" << endl;
-	exit (0);
-    }
-
-    if ( argv[1] == string("-h") || argv[1] == string("--help") ) {
+  for ( --argc,++argv; argc; --argc,++argv )
+  {
+    if ( *argv == string("-h") || *argv == string("--help") )
+    {
       dumpHelpOn( cerr );
       exit( 0 );
     }
-
-    zypp::base::LogControl::instance().logfile( "-" );
-
-    forceResolve = false;
-    ignorealreadyrecommended = false;
-    onlyRequires = false;
-    allowVendorChange = false;
-
-    solverQueue.clear();
-
-    manager = makeRepoManager( "/tmp/myrepos" );
-
-    try {
-	God = zypp::getZYpp();
+    else if ( *argv == string("-v") )
+    {
+      zypp::base::LogControl::instance().logfile( "-" );
     }
-    catch (const Exception & excpt_r ) {
-	ZYPP_CAUGHT( excpt_r );
-	cerr << "Can't aquire ZYpp lock" << endl;
-	return 1;
+    else
+    {
+      testFile =  *argv;
     }
+  }
 
-    KeyRingCallbacks keyring_callbacks;
-    DigestCallbacks digest_callbacks;
+  if ( ! PathInfo(testFile).isFile() )
+  {
+    cerr << "Usage: deptestomatic [-h|-v] [solver-test.xml]" << endl;
+    exit (0);
+  }
 
-    globalPath = Pathname::dirname(argv[1]);
+  forceResolve = false;
+  onlyRequires = false;
+  allowVendorChange = false;
+  ignorealreadyrecommended = false;
 
-    DBG << "init_libzypp() done" << endl;
-    process_xml_test_file ( argv[1] );
+  solverQueue.clear();
 
-    return 0;
+  manager = makeRepoManager( "/tmp/myrepos" );
+
+  try {
+    God = zypp::getZYpp();
+  }
+  catch (const Exception & excpt_r ) {
+    ZYPP_CAUGHT( excpt_r );
+    cerr << "Can't aquire ZYpp lock" << endl;
+    return 1;
+  }
+
+  KeyRingCallbacks keyring_callbacks;
+  DigestCallbacks digest_callbacks;
+
+  globalPath = testFile.dirname();
+
+  DBG << "init_libzypp() done" << endl;
+  process_xml_test_file ( testFile );
+
+  return 0;
 }
 
 
