@@ -122,6 +122,7 @@ typedef set<PoolItem> PoolItemSet;
 #define MARKER ">!> "
 #define RESULT cout << MARKER
 
+
 RepoManager makeRepoManager( const Pathname & mgrdir_r )
 {
   RepoManagerOptions mgropt;
@@ -207,6 +208,10 @@ List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for deta
   onlyRequires reportproblems setlicencebit showpool showstatus showselectable source subscribe system \n\
   systemCheck takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
 
+// <reportproblems/>
+// <takesolution problem="0" solution="0"/>
+// <takesolution problem="0" solution="0"/>
+// <instorder/>
 
   return str;
 }
@@ -1008,16 +1013,17 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    assert (!solutionNrStr.empty());
 	    int problemNr = atoi (problemNrStr.c_str());
 	    int solutionNr = atoi (solutionNrStr.c_str());
-	    RESULT << "Taking solution: " << solutionNr << endl;
-	    RESULT << "For problem:     " << problemNr << endl;
+	    RESULT << "Want solution: " << solutionNr << endl;
+	    RESULT << "For problem:   " << problemNr << endl;
 	    ResolverProblemList problems = resolver->problems ();
+	    RESULT << "*T*(" << resolver->problems().size() << ")" << endl;
 
 	    int problemCounter = -1;
 	    int solutionCounter = -1;
 	    // find problem
-	    for (ResolverProblemList::iterator probIter = problems.begin();
-		 probIter != problems.end(); ++probIter) {
+	    for (ResolverProblemList::iterator probIter = problems.begin(); probIter != problems.end(); ++probIter) {
 		problemCounter++;
+	         RESULT << "*P*(" << problemCounter << "|" << solutionCounter << ")" << endl;
 		if (problemCounter == problemNr) {
 		    ResolverProblem problem = **probIter;
 		    ProblemSolutionList solutionList = problem.solutions();
@@ -1025,10 +1031,11 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		    for (ProblemSolutionList::iterator solIter = solutionList.begin();
 			 solIter != solutionList.end(); ++solIter) {
 			solutionCounter++;
+			RESULT << "*S*(" << problemCounter << "|" << solutionCounter << ")" << endl;
 			if (solutionCounter == solutionNr) {
 			    ProblemSolution_Ptr solution = *solIter;
-			    cout << "Taking solution: " << endl << *solution << endl;
-			    cout << "For problem: " << endl << problem << endl;
+			    RESULT << "Taking solution: " << endl << *solution << endl;
+			    RESULT << "For problem: " << endl << problem << endl;
 			    ProblemSolutionList doList;
 			    doList.push_back (solution);
 			    resolver->applySolutions (doList);
@@ -1039,10 +1046,8 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		}
 	    }
 
-	    if (problemCounter != problemNr) {
-		RESULT << "Wrong problem number (0-" << problemCounter << ")" << endl;
-	    } else if (solutionCounter != solutionNr) {
-		RESULT << "Wrong solution number (0-" << solutionCounter << ")" <<endl;
+	    if ( problemCounter != problemNr || solutionCounter != solutionNr ) {
+		RESULT << "Did not find problem=" << problemCounter << ", solution="  << solutionCounter << endl;
 	    } else {
 		// resolve and check it again
                 bool success;
