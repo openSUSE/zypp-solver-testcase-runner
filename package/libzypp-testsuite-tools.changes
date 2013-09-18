@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed Sep 18 17:58:58 CEST 2013 - ma@suse.de
+
+- Add support for hardware dependencies, multiversion packages.
+- version 4.4.0
+
+-------------------------------------------------------------------
 Wed May  8 19:44:07 CEST 2013 - ma@suse.de
 
 - Remove deprecated installorder code
