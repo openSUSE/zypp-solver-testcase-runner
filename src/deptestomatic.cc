@@ -895,11 +895,10 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
       pool.setRequestedLocales( locales );
     }
 
-    if ( !modaliasList.empty() )
-    {
-      RESULT << "Loaded " << modaliasList.size() << " modaliases." << endl;
-      target::Modalias::instance().modaliasList( modaliasList );
-    }
+    // set modaliases
+    RESULT << "Load " << modaliasList.size() << " modaliases." << endl;
+    target::Modalias::instance().modaliasList( modaliasList );
+
 
     node = node->children();
     while (node) {
