@@ -112,6 +112,7 @@ static bool show_mediaid = false;
 static Pathname globalPath;
 static LocaleSet locales;
 static target::Modalias::ModaliasList modaliasList;
+static std::set<std::string> multiversionSpec;
 
 static ZYpp::Ptr God;
 static RepoManager manager;
@@ -748,6 +749,10 @@ static void parse_xml_setup( XmlNode_Ptr node )
     {
       modaliasList.push_back( node->getProp("name") );
     }
+    else if ( node->equals("multiversion") )
+    {
+      multiversionSpec.insert( node->getProp("name") );
+    }
     else if (node->equals ("channel")) {
 
       string name = node->getProp("name");
@@ -899,6 +904,9 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     RESULT << "Load " << modaliasList.size() << " modaliases." << endl;
     target::Modalias::instance().modaliasList( modaliasList );
 
+    // set multiversion packages
+    RESULT << "Load " << multiversionSpec.size() << " multiversion specs." << endl;
+    ZConfig::instance().multiversionSpec( multiversionSpec );
 
     node = node->children();
     while (node) {

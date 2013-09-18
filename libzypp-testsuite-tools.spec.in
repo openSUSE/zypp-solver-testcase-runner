@@ -18,7 +18,7 @@
 Name:		libzypp-testsuite-tools
 BuildRequires:	fdupes  libexpat-devel libqt4-devel libqdialogsolver1-devel
 BuildRequires:	gcc-c++ >= 4.5
-BuildRequires:	libzypp-devel >= 13.2.0
+BuildRequires:	libzypp-devel >= 13.7.0
 BuildRequires:  libtool
 %if 0%{?suse_version} <= 1220
 BuildRequires:  yast2-libyui-devel
