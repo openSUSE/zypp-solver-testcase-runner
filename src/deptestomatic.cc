@@ -74,6 +74,8 @@
 #include "zypp/solver/detail/SolverQueueItemUpdate.h"
 #include "zypp/solver/detail/SystemCheck.h"
 
+#include "zypp/target/modalias/Modalias.h"
+
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
 
@@ -106,15 +108,18 @@ using zypp::solver::detail::XmlNode_Ptr;
 //-----------------------------------------------------------------------------
 
 static bool show_mediaid = false;
+
 static Pathname globalPath;
 static LocaleSet locales;
+static target::Modalias::ModaliasList modaliasList;
 
 static ZYpp::Ptr God;
 static RepoManager manager;
+
 static bool forceResolve;
-static bool ignorealreadyrecommended;
 static bool onlyRequires;
 static bool allowVendorChange;
+static bool ignorealreadyrecommended;
 static zypp::solver::detail::SolverQueueItemList solverQueue;
 
 typedef set<PoolItem> PoolItemSet;
@@ -672,143 +677,181 @@ load_source (const string & alias, const string & filename, const string & type,
 
 static bool done_setup = false;
 
-static void
-parse_xml_setup (XmlNode_Ptr node)
+static void parse_xml_setup( XmlNode_Ptr node )
 {
-    if (!node->equals("setup")) {
-	ZYPP_THROW (Exception ("Node not 'setup' in parse_xml_setup():"+node->name()));
+  if ( !node->equals("setup") ) {
+    ZYPP_THROW (Exception ("Node not 'setup' in parse_xml_setup():"+node->name()));
+  }
+
+  if ( done_setup ) {
+    cerr << "Multiple <setup>..</setup> sections not allowed!" << endl;
+    exit (0);
+  }
+  done_setup = true;
+
+  string architecture = node->getProp( "arch" );				// allow <setup arch="...">
+  if ( !architecture.empty() )
+  {
+    MIL << "Setting architecture to '" << architecture << "'" << endl;
+    try {
+      ZConfig::instance().setSystemArchitecture( Arch(architecture) );
+      setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
+    }
+    catch( const Exception & excpt_r ) {
+      ZYPP_CAUGHT( excpt_r );
+      cerr << "Bad architecture '" << architecture << "' in <setup...>" << endl;
+      return;
+    }
+  }
+
+  node = node->children();
+  while ( node != NULL )
+  {
+    if ( !node->isElement() )
+    {
+      node = node->next();
+      continue;
     }
 
-    if (done_setup) {
-	cerr << "Multiple <setup>..</setup> sections not allowed!" << endl;
-	exit (0);
+    if ( node->equals("forceResolve") )
+    {
+      forceResolve = true;
     }
-    done_setup = true;
+    else if ( node->equals("ignorealreadyrecommended") )
+    {
+      ignorealreadyrecommended = true;
+    }
+    else if ( node->equals("onlyRequires") )
+    {
+      onlyRequires = true;
+    }
+    else if ( node->equals("allowVendorChange") )
+    {
+      allowVendorChange = true;
+    }
+    else if ( node->equals("system") )
+    {
+      string file = node->getProp("file");
+      if (!load_source( "@System", file, "helix", true, 99 ) )
+      {
+	cerr << "Can't setup 'system'" << endl;
+	exit( 1 );
+      }
+    }
+    else if ( node->equals("hardwareInfo") )
+    {
+      Pathname pathname = globalPath + node->getProp("path");
+      setenv( "ZYPP_MODALIAS_SYSFS", pathname.asString().c_str(), 1 );
+      RESULT << "setting HardwareInfo to: " << pathname.asString() << endl;
+    }
+    else if ( node->equals("modalias") )
+    {
+      modaliasList.push_back( node->getProp("name") );
+    }
+    else if (node->equals ("channel")) {
 
-    string architecture = node->getProp( "arch" );				// allow <setup arch="...">
-    if (!architecture.empty()) {
+      string name = node->getProp("name");
+      string file = node->getProp("file");
+      string type = node->getProp("type");
+      string priority = node->getProp("priority");
+      unsigned prio = 99;
+      if ( !priority.empty() )
+      {
+	prio = str::strtonum<unsigned>( priority );
+      }
+      if ( !load_source( name, file, type, false, prio ) )
+      {
+	cerr << "Can't setup 'channel'" << endl;
+	exit( 1 );
+      }
+    }
+    else if ( node->equals("source") )
+    {
+      string url = node->getProp("url");
+      string alias = node->getProp("name");
+      if ( !load_source( alias, url, "url", false, 99 ) )
+      {
+	cerr << "Can't setup 'source'" << endl;
+	exit( 1 );
+      }
+    }
+    else if ( node->equals("force-install") )
+    {
+
+      string source_alias = node->getProp("channel");
+      string package_name = node->getProp("package");
+      string kind_name = node->getProp("kind");
+
+      PoolItem poolItem;
+
+      poolItem = get_poolItem( source_alias, package_name, kind_name );
+      if ( poolItem )
+      {
+	RESULT << "Force-installing " << package_name << " from channel " << source_alias << endl;;
+
+	poolItem.status().setToBeInstalled( ResStatus::USER );
+      }
+      else
+      {
+	cerr << "Unknown package " << source_alias << "::" << package_name << endl;
+      }
+    }
+    else if ( node->equals("mediaid") )
+    {
+      show_mediaid = true;
+    }
+    else if ( node->equals("arch") )
+    {
+      cerr << "<arch...> deprecated, use <setup arch=\"...\"> instead" << endl;
+      architecture = node->getProp("name");
+      if ( architecture.empty() )
+      {
+	cerr << "Property 'name=' in <arch.../> missing or empty" << endl;
+      }
+      else
+      {
 	MIL << "Setting architecture to '" << architecture << "'" << endl;
-	try {
-            ZConfig::instance().setSystemArchitecture(Arch( architecture ));
-            setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
-	}
-	catch( const Exception & excpt_r ) {
-	    ZYPP_CAUGHT( excpt_r );
-	    cerr << "Bad architecture '" << architecture << "' in <setup...>" << endl;
-	    return;
-	}
+	ZConfig::instance().setSystemArchitecture( Arch(architecture) );
+	setenv( "ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1 );
+      }
+    }
+    else if ( node->equals("locale") )
+    {
+      string loc = node->getProp("name");
+      if (  loc.empty() )
+      {
+	cerr << "Bad or missing name in <locale...>" << endl;
+      }
+      else
+      {
+	RESULT << "Requesting locale " << loc << endl;
+	locales.insert( Locale( loc ) );
+      }
+    }
+    else if ( node->equals("systemCheck") )
+    {
+      Pathname pathname = globalPath + node->getProp("path");
+      RESULT << "setting systemCheck to: " << pathname.asString() << endl;
+      SystemCheck::instance().setFile( pathname );
+    }
+    else if ( node->equals("setlicencebit") )
+    {
+      set_licence = true;
+    }
+    else
+    {
+      cerr << "Unrecognized tag '" << node->name() << "' in setup" << endl;
     }
 
-    node = node->children();
-    while (node != NULL) {
-	if (!node->isElement()) {
-	    node = node->next();
-	    continue;
-	}
-	if (node->equals ("forceResolve")) {
-	    forceResolve = true;
+    node = node->next();
+  }
 
-	} else if (node->equals ("ignorealreadyrecommended")) {
-	    ignorealreadyrecommended = true;
-
-	} else if (node->equals ("onlyRequires")) {
-	    onlyRequires = true;
-
-	} else if (node->equals ("allowVendorChange")) {
-	    allowVendorChange = true;
-
-	} else if (node->equals ("system")) {
-
-	    string file = node->getProp ("file");
-	    if (!load_source ("@System", file, "helix", true, 99 )) {
-		cerr << "Can't setup 'system'" << endl;
-		exit( 1 );
-	    }
-
-	} else if (node->equals ("hardwareInfo")) {
-
-	    Pathname pathname = globalPath + node->getProp ("path");
-	    setenv ("ZYPP_MODALIAS_SYSFS", pathname.asString().c_str(), 1);
-	    RESULT << "setting HardwareInfo to: " << pathname.asString() << endl;
-	} else if (node->equals ("channel")) {
-
-	    string name = node->getProp ("name");
-	    string file = node->getProp ("file");
-	    string type = node->getProp ("type");
-      	    string priority = node->getProp ("priority");
-            unsigned prio = 99;
-            if (!priority.empty())
-                prio = str::strtonum<unsigned>( priority );
-	    if (!load_source (name, file, type, false, prio)) {
-		cerr << "Can't setup 'channel'" << endl;
-		exit( 1 );
-	    }
-
-	} else if (node->equals ("source")) {
-
-	    string url = node->getProp ("url");
-	    string alias = node->getProp ("name");
-	    if (!load_source( alias, url, "url", false, 99 )) {
-		cerr << "Can't setup 'source'" << endl;
-		exit( 1 );
-	    }
-
-	} else if (node->equals ("force-install")) {
-
-	    string source_alias = node->getProp ("channel");
-	    string package_name = node->getProp ("package");
-	    string kind_name = node->getProp ("kind");
-
-	    PoolItem poolItem;
-
-	    poolItem = get_poolItem (source_alias, package_name, kind_name);
-	    if (poolItem) {
-		RESULT << "Force-installing " << package_name << " from channel " << source_alias << endl;;
-
-		poolItem.status().setToBeInstalled(ResStatus::USER);
-	    } else {
-		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
-	    }
-	} else if (node->equals ("mediaid")) {
-	    show_mediaid = true;
-	} else if (node->equals ("arch")) {
-	    cerr << "<arch...> deprecated, use <setup arch=\"...\"> instead" << endl;
-	    architecture = node->getProp ("name");
-	    if (architecture.empty()) {
-		cerr << "Property 'name=' in <arch.../> missing or empty" << endl;
-	    }
-	    else {
-		MIL << "Setting architecture to '" << architecture << "'" << endl;
-                ZConfig::instance().setSystemArchitecture(Arch( architecture ));
-                setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
-	    }
-	} else if (node->equals ("locale")) {
-	    string loc = node->getProp ("name");
-	    if (loc.empty())
-		cerr << "Bad or missing name in <locale...>" << endl;
-	    else {
-		RESULT << "Requesting locale " << loc << endl;
-		locales.insert( Locale( loc ) );
-	    }
-	} else if (node->equals ("systemCheck")) {
-	    Pathname pathname = globalPath + node->getProp ("path");
-	    RESULT << "setting systemCheck to: " << pathname.asString() << endl;
-            SystemCheck::instance().setFile (pathname);
-	} else if (node->equals("setlicencebit")) {
-		set_licence = true;
-	} else {
-	    cerr << "Unrecognized tag '" << node->name() << "' in setup" << endl;
-	}
-
-	node = node->next();
-    }
 }
 
 
 
 //-------------
-static void
-parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
+static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 {
     static bool first_trial = true;
 
@@ -847,8 +890,15 @@ parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     if ( allowVendorChange )
       resolver->setAllowVendorChange( true );
 
-    if (!locales.empty()) {
-        pool.setRequestedLocales( locales );
+    if ( !locales.empty() )
+    {
+      pool.setRequestedLocales( locales );
+    }
+
+    if ( !modaliasList.empty() )
+    {
+      RESULT << "Loaded " << modaliasList.size() << " modaliases." << endl;
+      target::Modalias::instance().modaliasList( modaliasList );
     }
 
     node = node->children();
