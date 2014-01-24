@@ -12,7 +12,7 @@ LDADD =	-lzypp -lxml2 -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyu
 
 # We're not ready for this yet.
 #check_PROGRAMS = deptestomatic.multi
-noinst_PROGRAMS = deptestomatic.multi deptestomatic.noui
+noinst_PROGRAMS = deptestomatic.noui deptestomatic.multi
 
 testsuitesolversrcbindir = ${testsuitebindir}
 testsuitesolversrcbin_DATA = deptestomatic.multi
