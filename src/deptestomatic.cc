@@ -195,6 +195,9 @@ string2kind (const std::string & str)
 	else if (str == "srcpackage") {
 	    kind = ResKind::srcpackage;
 	}
+	else if (str == "application") {
+	    kind = ResKind::application;
+	}
 	else {
 	    cerr << "get_poolItem unknown kind '" << str << "'" << endl;
 	}
