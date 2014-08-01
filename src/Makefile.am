@@ -15,7 +15,7 @@ LDADD =	-lzypp -lxml2 -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyu
 noinst_PROGRAMS = deptestomatic.multi deptestomatic.noui
 
 testsuitesolversrcbindir = ${testsuitebindir}
-testsuitesolversrcbin_DATA = deptestomatic.multi
+testsuitesolversrcbin_DATA = deptestomatic.noui deptestomatic.multi
 
 deptestomatic_multi_SOURCES =				\
 	deptestomatic.cc 				\
