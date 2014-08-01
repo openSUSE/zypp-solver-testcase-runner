@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Aug  1 11:47:21 CEST 2014 - ma@suse.de
+
+- Also install deptestomatic.noui (bnc#889426)
+- version 4.4.1
+
+-------------------------------------------------------------------
 Wed Sep 18 17:58:58 CEST 2013 - ma@suse.de
 
 - Add support for hardware dependencies, multiversion packages.
