@@ -1,4 +1,13 @@
 -------------------------------------------------------------------
+Tue Sep  9 17:45:41 CEST 2014 - ma@suse.de
+
+- Drop graphical PkgUI and YOU commands as required libraries were
+  dropped due to lack of QT5 support. The binary was renamed to 
+  deptestomatic. Legacy symlinks for deptestomatic.multi and 
+  deptestomatic.noui are provided.
+- version 5.0.0
+
+-------------------------------------------------------------------
 Fri Aug  1 11:26:32 CEST 2014 - ma@suse.de
 
 - Also install deptestomatic.noui (bnc#889426)

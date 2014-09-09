@@ -44,10 +44,10 @@ dnl 6) If any interfaces have been removed since the last public release, then
 dnl    set COMPATMINOR to MINOR. (binary incompatible change)
 dnl
 dnl ==================================================
-m4_define([LIBZYPPTESTSUITE_MAJOR], 	 [4])
+m4_define([LIBZYPPTESTSUITE_MAJOR], 	 [5])
 dnl ==================================================
-m4_define([LIBZYPPTESTSUITE_MINOR],	 [4])
+m4_define([LIBZYPPTESTSUITE_MINOR],	 [0])
 m4_define([LIBZYPPTESTSUITE_COMPATMINOR], [0])
 dnl ==================================================
-m4_define([LIBZYPPTESTSUITE_PATCH],	 [2])
+m4_define([LIBZYPPTESTSUITE_PATCH],	 [0])
 dnl ==================================================
