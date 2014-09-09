@@ -27,7 +27,7 @@
 #include "zypp/base/Logger.h"
 
 /////////////////////////////////////////////////////////////////////////
-namespace zypp 
+namespace zypp
 { ///////////////////////////////////////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////
   namespace solver
@@ -88,7 +88,7 @@ operator<<( ostream& os, const XmlNode& node)
 
 //---------------------------------------------------------------------------
 
-string 
+string
 XmlNode::getValue (const string & name, const string & deflt) const
 {
     string ret;
@@ -148,7 +148,7 @@ XmlNode::getProp (const std::string & name, const std::string & deflt) const
 
     if (ret) {
 	// XXX << "XmlNode::getProp(" << name << ") xmlGetProp '" << (char *)ret << "'" << endl;
-	
+
 	gs = string ((const char  *)ret);
 	xmlFree (ret);
 	return gs;
@@ -182,18 +182,18 @@ XmlNode::getIntValue (const std::string & name, int *value) const
 int
 XmlNode::getIntValueDefault (const std::string & name, int def) const
 {
-    int z;
+    int z = 0;
     if (this->getIntValue (name, &z))
 	return z;
     else
 	return def;
 }
 
-	       
+
 unsigned int
 XmlNode::getUnsignedIntValueDefault (const std::string & name, unsigned int def) const
 {
-    unsigned int z;
+    unsigned int z = 0;
     if (this->getUnsignedIntValue (name, &z))
 	return z;
     else
