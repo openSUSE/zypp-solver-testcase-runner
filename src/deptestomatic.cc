@@ -79,24 +79,6 @@
 #include "KeyRingCallbacks.h"
 #include "XmlNode.h"
 
-#ifndef NOUI
-#include <qapplication.h>
-#include <qdialog.h>
-#include <qfiledialog.h>
-#include <qpushbutton.h>
-#include <qfont.h>
-#include "zypp/QZyppSolverDialog.h"
-
-#define YUILogComponent "example"
-#include <yui/YUILog.h>
-#include <yui/YUI.h>
-#include <yui/YWidgetFactory.h>
-#include <yui/YDialog.h>
-#include <yui/YLayoutBox.h>
-#include <yui/YPackageSelector.h>
-#include <yui/YEvent.h>
-#endif
-
 using namespace std;
 using namespace zypp;
 using zypp::ui::Selectable;
@@ -210,10 +192,10 @@ string2kind (const std::string & str)
 std::ostream & dumpHelpOn( std::ostream & str )
 {
   str << "\
-List of known tags. See http://en.opensuse.org/Libzypp/Testsuite_solver for details: \n\
-  PkgUI YOU addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
+List of known tags. See http://old-en.opensuse.org/Libzypp/Testsuite_solver for details: \n\
+  addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
   addRequire allowVendorChange arch availablelocales channel createTestcase current distupgrade force-install \n\
-  forceResolve graphic hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid \n\
+  forceResolve hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid \n\
   onlyRequires reportproblems setlicencebit showpool showstatus showselectable source subscribe system \n\
   systemCheck takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
 
@@ -1157,44 +1139,9 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
                     cout << "Selectable '" << name << "' not valid" << endl;
         }
         else if (node->equals ("graphic")) {
-#ifndef NOUI
-            resolver->resolvePool();
-            QApplication app(NULL, 0);
-            QZyppSolverDialog *dialog = new QZyppSolverDialog(resolver);
-            app.setMainWidget( dialog );
-            dialog->setCaption("Solvertree");
-            dialog->setMinimumSize ( 700, 700 );
-            dialog->show();
-            app.exec();
-#else
-            RESULT << "<graphic> is not supported by deptestomatic.noui" << endl;
-#endif
+            RESULT << "<graphic> is no longer supported by deptestomatic" << endl;
         } else if (node->equals ("YOU") || node->equals ("PkgUI") ) {
-#ifndef NOUI
-
-            resolver->resolvePool();
-
-            YUILog::setLogFileName( "/tmp/testUI.log" );
-            YUILog::enableDebugLogging();
-
-            YDialog *dialog = YUI::widgetFactory()->createMainDialog();
-            YLayoutBox *vbox    = YUI::widgetFactory()->createVBox( dialog );
-
-            long modeFlags = 0;
-            if ( node->equals ("YOU") )
-                modeFlags = YPkg_OnlineUpdateMode;
-
-            YPackageSelector *pkgSelector = YUI::widgetFactory()->createPackageSelector( vbox,
-                                                                                         modeFlags );
-            dialog->setInitialSize();
-
-            static YUI *myUI = YUI::ui();
-            myUI->runPkgSelection( pkgSelector );
-
-            dialog->destroy();
-#else
-            RESULT << "<YOU> or <PkgUI> are not supported by deptestomatic.noui" << endl;
-#endif
+            RESULT << "<YOU> or <PkgUI> are no longer supported by deptestomatic" << endl;
 	} else if (node->equals ("lock")) {
 	    string source_alias = node->getProp ("channel");
 	    string package_name = node->getProp ("name");

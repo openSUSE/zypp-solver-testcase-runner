@@ -16,15 +16,10 @@
 #
 
 Name:		libzypp-testsuite-tools
-BuildRequires:	fdupes  libexpat-devel libqt4-devel libqdialogsolver1-devel
-BuildRequires:	gcc-c++ >= 4.5
-BuildRequires:	libzypp-devel >= 13.7.0
+BuildRequires:	fdupes  libexpat-devel
+BuildRequires:	gcc-c++ >= 4.6
+BuildRequires:	libzypp-devel >= 14.28.0
 BuildRequires:  libtool
-%if 0%{?suse_version} <= 1220
-BuildRequires:  yast2-libyui-devel
-%else
-BuildRequires:  libyui-devel
-%endif
 License:	GPL-2.0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-tools
@@ -61,6 +56,9 @@ make %{?jobs:-j %jobs}
 
 %install
 make install DESTDIR=$RPM_BUILD_ROOT
+# legacy symlinks
+ln -s deptestomatic $RPM_BUILD_ROOT/%{_prefix}/lib/zypp/testsuite/bin/deptestomatic.multi
+ln -s deptestomatic $RPM_BUILD_ROOT/%{_prefix}/lib/zypp/testsuite/bin/deptestomatic.noui
 %fdupes -s $RPM_BUILD_ROOT
 
 %clean

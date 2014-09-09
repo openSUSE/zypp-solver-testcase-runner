@@ -25,6 +25,7 @@ libzypp-testsuite-tools.pc
 libzypp-testsuite-tools.spec
 ltmain.sh
 missing
+src/deptestomatic
 src/deptestomatic.multi
 src/deptestomatic.noui
 stamp-h1

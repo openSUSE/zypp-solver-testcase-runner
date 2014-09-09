@@ -54,20 +54,6 @@ AC_PROG_CXXCPP
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 
-dnl Check qt paths
-QTDIR="/usr/lib/qt4"
-QTLIBDIR="/usr/lib"
-AC_ARG_WITH(qt-dir,
-    AS_HELP_STRING([--with-qt-dir=DIR],
-		   [where the root of Qt is installed.]),
-    [ QTDIR="$withval" ])
-AC_ARG_WITH(qt-libdir,
-    AS_HELP_STRING([--with-qt-libdir=DIR],
-		   [where the Qt library is installed.]),
-    [ QTLIBDIR="$withval" ])
-AC_SUBST(QTDIR)
-AC_SUBST(QTLIBDIR)
-
 dnl   do AC_CHECK_* tests using c++ (e.g. boost header)
 AC_LANG([C++])
 

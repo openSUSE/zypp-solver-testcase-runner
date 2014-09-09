@@ -1,29 +1,17 @@
 #
 # Makefile.am for zypp/testsuite/solver/src
 #
-
-INCLUDES = -I/usr/include/libxml2	\
-	-I$(prefix)/include		\
-	-I/usr/include/Qt		\
-	-DQT3_SUPPORT			\
-	-DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\"
-
-LDADD =	-lzypp -lxml2 -lexpat -lQtCore -lQtGui -lQt3Support -lqdialogsolver -lyui
-
-# We're not ready for this yet.
-#check_PROGRAMS = deptestomatic.multi
-noinst_PROGRAMS = deptestomatic.noui deptestomatic.multi
+noinst_PROGRAMS = deptestomatic
 
 testsuitesolversrcbindir = ${testsuitebindir}
-testsuitesolversrcbin_DATA = deptestomatic.noui deptestomatic.multi
+testsuitesolversrcbin_DATA = deptestomatic
 
-deptestomatic_multi_SOURCES =				\
-	deptestomatic.cc 				\
-	KeyRingCallbacks.h				\
-	XmlNode.cc					\
+deptestomatic_SOURCES =		\
+	deptestomatic.cc 	\
+	KeyRingCallbacks.h	\
+	XmlNode.cc		\
 	XmlNode.h
 
-# ----
-deptestomatic_noui_SOURCES =  $(deptestomatic_multi_SOURCES)
-deptestomatic_noui_CXXFLAGS = -DNOUI
-deptestomatic_noui_LDADD = -lzypp -lxml2 -lexpat
+deptestomatic_INCLUDES = -I/usr/include/libxml2 -I$(prefix)/include
+deptestomatic_CXXFLAGS = -DZYPP_BASE_LOGGER_LOGGROUP=\"testsuite\" -DNOUI
+deptestomatic_LDADD    =-lzypp -lxml2 -lexpat
