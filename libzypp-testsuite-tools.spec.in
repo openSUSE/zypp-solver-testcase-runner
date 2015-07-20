@@ -18,7 +18,7 @@
 Name:		libzypp-testsuite-tools
 BuildRequires:	fdupes  libexpat-devel
 BuildRequires:	gcc-c++ >= 4.6
-BuildRequires:	libzypp-devel >= 14.28.0
+BuildRequires:	libzypp-devel >= 15.10.0
 BuildRequires:  libtool
 License:	GPL-2.0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build

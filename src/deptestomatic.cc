@@ -36,6 +36,8 @@
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 
+#define ZYPP_USE_RESOLVER_INTERNALS
+
 #include "zypp/ZYpp.h"
 #include "zypp/ZYppFactory.h"
 #include "zypp/ResObjects.h"
@@ -66,13 +68,15 @@
 
 #include "zypp/solver/detail/Resolver.h"
 #include "zypp/solver/detail/Testcase.h"
+#include "zypp/solver/detail/SystemCheck.h"
+
+#include "zypp/solver/detail/ItemCapKind.h"
 #include "zypp/solver/detail/SolverQueueItem.h"
 #include "zypp/solver/detail/SolverQueueItemDelete.h"
 #include "zypp/solver/detail/SolverQueueItemInstall.h"
 #include "zypp/solver/detail/SolverQueueItemInstallOneOf.h"
 #include "zypp/solver/detail/SolverQueueItemLock.h"
 #include "zypp/solver/detail/SolverQueueItemUpdate.h"
-#include "zypp/solver/detail/SystemCheck.h"
 
 #include "zypp/target/modalias/Modalias.h"
 
@@ -87,6 +91,8 @@ using zypp::ResolverProblemList;
 using zypp::solver::detail::XmlNode;
 using zypp::solver::detail::XmlNode_Ptr;
 
+//-----------------------------------------------------------------------------
+typedef zypp::shared_ptr<zypp::solver::detail::ResolverInternal> MyResolver_Ptr;
 //-----------------------------------------------------------------------------
 
 static bool show_mediaid = false;
@@ -331,7 +337,7 @@ print_solution ( const ResPool & pool, bool instorder)
     return;
 }
 
-static void print_problems( zypp::solver::detail::Resolver_Ptr resolver )
+static void print_problems( MyResolver_Ptr resolver )
 {
   ResolverProblemList problems = resolver->problems();
   problems.sort( compare_problems() );
@@ -530,7 +536,7 @@ struct SortItem : public resfilter::PoolItemFilterFunctor
 // collect all installed items in a set
 
 void
-print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix = "", bool show_all = true, string show_licence = "false", bool verbose = false )
+print_pool( MyResolver_Ptr resolver, const string & prefix = "", bool show_all = true, string show_licence = "false", bool verbose = false )
 {
     SortItem info( show_all );
     cout << "Current pool: " <<  God->pool().size() << endl;
@@ -557,7 +563,7 @@ print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix =
                     cout << "   will be selected by:" << endl;
                 }
                 cout << prefix << ++count << ": ";
-                cout << "         " << iter->item << " " << iter->cap << " " << iter->capKind << " " << iter->initialInstallation << endl;
+                cout << "         " << iter->item() << " " << iter->cap() << " " << iter->capKind() << " " << iter->initialInstallation() << endl;
             }
             for (zypp::solver::detail::ItemCapKindList::const_iterator iter = select.begin(); iter != select.end(); ++iter) {
                 if (iter == select.begin()) {
@@ -565,7 +571,7 @@ print_pool( zypp::solver::detail::Resolver_Ptr resolver, const string & prefix =
                     cout << "   will select:" << endl;
                 }
                 cout << prefix << ++count << ": ";
-                cout << "         " << iter->item << " " << iter->cap << " " << iter->capKind << " " << iter->initialInstallation << endl;
+                cout << "         " << iter->item() << " " << iter->cap() << " " << iter->capKind() << " " << iter->initialInstallation() << endl;
             }
         }
     }
@@ -703,7 +709,7 @@ static void parse_xml_setup( XmlNode_Ptr node )
     {
       forceResolve = true;
     }
-    else if ( node->equals("ignorealreadyrecommended") )
+    else if ( node->equals("ignorealreadyrecommended") || node->equals("ignorealready") )
     {
       ignorealreadyrecommended = true;
     }
@@ -873,7 +879,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
     sat::Pool satpool( sat::Pool::instance() );
 
-    zypp::solver::detail::Resolver_Ptr resolver = new zypp::solver::detail::Resolver( pool );
+    MyResolver_Ptr resolver( new zypp::solver::detail::ResolverInternal( pool ) );
     resolver->setForceResolve( forceResolve );
     resolver->setIgnoreAlreadyRecommended( ignorealreadyrecommended );
     resolver->setOnlyRequires( onlyRequires );
