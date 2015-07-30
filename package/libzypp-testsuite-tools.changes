@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Thu Jul 30 18:17:13 CEST 2015 - ma@suse.com
+
+- Add requested locales and autoinstalled packages.
+- version 5.0.2
+
+-------------------------------------------------------------------
 Tue Sep  9 17:45:41 CEST 2014 - ma@suse.de
 
 - Cleanup include files. Prepare code to allow further
