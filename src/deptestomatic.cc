@@ -59,6 +59,7 @@
 #include "zypp/base/LogControl.h"
 #include "zypp/base/Exception.h"
 #include "zypp/base/Algorithm.h"
+#include "zypp/base/SetTracker.h"
 
 #include "zypp/ui/Selectable.h"
 
@@ -98,7 +99,8 @@ typedef zypp::shared_ptr<zypp::solver::detail::ResolverInternal> MyResolver_Ptr;
 static bool show_mediaid = false;
 
 static Pathname globalPath;
-static LocaleSet locales;
+static base::SetTracker<LocaleSet> localesTracker;
+static sat::StringQueue autoinstalled;
 static target::Modalias::ModaliasList modaliasList;
 static std::set<std::string> multiversionSpec;
 
@@ -813,16 +815,31 @@ static void parse_xml_setup( XmlNode_Ptr node )
     }
     else if ( node->equals("locale") )
     {
-      string loc = node->getProp("name");
-      if (  loc.empty() )
+      Locale loc( node->getProp("name") );
+      string fate = node->getProp("fate");
+      if ( !loc )
       {
 	cerr << "Bad or missing name in <locale...>" << endl;
+      }
+      else if ( fate == "added" )
+      {
+	RESULT << "Requesting locale " << loc << " (added)" << endl;
+	localesTracker.added().insert( loc );
+      }
+      else if ( fate == "removed" )
+      {
+	RESULT << "Requesting locale " << loc << " (removed)" << endl;
+	localesTracker.removed().insert( loc );
       }
       else
       {
 	RESULT << "Requesting locale " << loc << endl;
-	locales.insert( Locale( loc ) );
+	localesTracker.current().insert( loc );
       }
+    }
+    else if ( node->equals("autoinst") )
+    {
+      autoinstalled.push( IdString( node->getProp("name") ).id() );
     }
     else if ( node->equals("systemCheck") )
     {
@@ -886,10 +903,19 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     if ( allowVendorChange )
       resolver->setAllowVendorChange( true );
 
-    if ( !locales.empty() )
+    // RequestedLocales
     {
-      pool.setRequestedLocales( locales );
+      localesTracker.removed().insert( localesTracker.current().begin(), localesTracker.current().end() );
+      zypp::sat::Pool::instance().initRequestedLocales( localesTracker.removed() );
+      RESULT << "initRequestedLocales " << localesTracker.removed() << endl;
+
+      localesTracker.added().insert( localesTracker.current().begin(), localesTracker.current().end() );
+      zypp::sat::Pool::instance().setRequestedLocales( localesTracker.added() );
+      RESULT << "setRequestedLocales " << localesTracker.added() << endl;
     }
+
+    // AutoInstalled
+    zypp::sat::Pool::instance().setAutoInstalled( autoinstalled );
 
     // set modaliases
     RESULT << "Load " << modaliasList.size() << " modaliases." << endl;
