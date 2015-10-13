@@ -1185,14 +1185,31 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	    string release = node->getProp ("rel");
 	    string architecture = node->getProp ("arch");
 
-	    PoolItem poolItem;
-
-	    poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
-	    if (poolItem) {
-		RESULT << "Locking " << package_name << " from channel " << source_alias << endl;
+	    if ( version.empty() )
+	    {
+	      if ( kind_name.empty() )
+		kind_name = "package";
+	      Selectable::Ptr item = Selectable::get( ResKind(kind_name), package_name );
+	      if ( item )
+	      {
+		item->setStatus( item->hasInstalledObj() ? ui::S_Protected : ui::S_Taboo );
+		RESULT << "Locking " << item << endl;
+	      }
+	      else
+	      {
+		cerr << "Unknown Selectable " << kind_name << ":" << package_name << endl;
+	      }
+	    }
+	    else
+	    {
+	      PoolItem poolItem;
+	      poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
+	      if (poolItem) {
+		RESULT << "Locking " << package_name << " from channel " << source_alias << poolItem << endl;
 		poolItem.status().setLock (true, ResStatus::USER);
-	    } else {
+	      } else {
 		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
+	      }
 	    }
 	} else if (node->equals ("validate")) {
 	    string source_alias = node->getProp ("channel");
