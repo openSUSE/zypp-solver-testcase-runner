@@ -715,7 +715,7 @@ static void parse_xml_setup( XmlNode_Ptr node )
     {
       ignorealreadyrecommended = true;
     }
-    else if ( node->equals("onlyRequires") )
+    else if ( node->equals("onlyRequires") || node->equals("ignorerecommended") )
     {
       onlyRequires = true;
     }
@@ -1013,6 +1013,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 	} else if (node->equals ("update")) {
 
 	    RESULT << "Doing update ..." << endl;
+	    resolver->resolvePool();
 	    resolver->doUpdate();
             print_solution (pool, instorder);
             doUpdate = true;
