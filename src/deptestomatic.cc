@@ -952,8 +952,8 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		name = node->getProp ("package");
 	    string kind_name = node->getProp ("kind");
 	    string soft = node->getProp ("soft");
-	    string version = node->getProp ("ver");
-	    string release = node->getProp ("rel");
+	    string version = node->getProp ("version");
+	    string release = node->getProp ("release");
 	    string architecture = node->getProp ("arch");
 
 	    PoolItem poolItem;
