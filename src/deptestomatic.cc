@@ -432,7 +432,7 @@ struct FindPackage : public resfilter::ResObjectFilterFunctor
 	}
 
 	if (edition_set) {
-	    if (p->edition().compare( edition ) == 0) {			// if edition requested, force this edition
+	    if (p->edition().match( edition ) == 0) {			// if edition requested, force this edition
 		poolItem = p;
 		return false;
 	    }
