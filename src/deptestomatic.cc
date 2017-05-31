@@ -106,10 +106,24 @@ static std::set<std::string> multiversionSpec;
 
 static ZYpp::Ptr God;
 
-static bool forceResolve;
-static bool onlyRequires;
-static bool allowVendorChange;
-static bool ignorealreadyrecommended;
+// solver flags: default to false - set true if mentioned in <setup>
+bool ignorealreadyrecommended	= false;
+bool onlyRequires		= false;
+bool forceResolve		= false;
+
+bool cleandepsOnRemove		= false;
+
+bool allowDowngrade		= false;
+bool allowNameChange		= false;
+bool allowArchChange		= false;
+bool allowVendorChange		= false;
+
+bool dupAllowDowngrade		= false;
+bool dupAllowNameChange		= false;
+bool dupAllowArchChange		= false;
+bool dupAllowVendorChange	= false;
+
+
 static zypp::solver::detail::SolverQueueItemList solverQueue;
 
 typedef set<PoolItem> PoolItemSet;
@@ -705,22 +719,23 @@ static void parse_xml_setup( XmlNode_Ptr node )
       continue;
     }
 
-    if ( node->equals("forceResolve") )
-    {
-      forceResolve = true;
-    }
-    else if ( node->equals("ignorealreadyrecommended") || node->equals("ignorealready") )
-    {
-      ignorealreadyrecommended = true;
-    }
-    else if ( node->equals("onlyRequires") || node->equals("ignorerecommended") )
-    {
-      onlyRequires = true;
-    }
-    else if ( node->equals("allowVendorChange") )
-    {
-      allowVendorChange = true;
-    }
+#define if_SolverFlag( N ) if ( node->equals( #N ) ) { N = true; }
+         if_SolverFlag( ignorealreadyrecommended )	else if ( node->equals( "ignorealready" ) ) 	{ ignorealreadyrecommended = true; }
+    else if_SolverFlag( onlyRequires )			else if ( node->equals( "ignorerecommended" ) )	{ onlyRequires = true; }
+    else if_SolverFlag( forceResolve )
+
+    else if_SolverFlag( cleandepsOnRemove )
+
+    else if_SolverFlag( allowDowngrade )
+    else if_SolverFlag( allowNameChange )
+    else if_SolverFlag( allowArchChange )
+    else if_SolverFlag( allowVendorChange )
+
+    else if_SolverFlag( dupAllowDowngrade )
+    else if_SolverFlag( dupAllowNameChange )
+    else if_SolverFlag( dupAllowArchChange )
+    else if_SolverFlag( dupAllowVendorChange )
+#undef if_SolverFlag
     else if ( node->equals("system") )
     {
       string file = node->getProp("file");
@@ -895,11 +910,22 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     sat::Pool satpool( sat::Pool::instance() );
 
     MyResolver_Ptr resolver( new zypp::solver::detail::ResolverInternal( pool ) );
-    resolver->setForceResolve( forceResolve );
-    resolver->setIgnoreAlreadyRecommended( ignorealreadyrecommended );
-    resolver->setOnlyRequires( onlyRequires );
-    if ( allowVendorChange )
-      resolver->setAllowVendorChange( true );
+    // set solver flags:
+    resolver->setIgnoreAlreadyRecommended	( ignorealreadyrecommended );
+    resolver->setOnlyRequires			( onlyRequires );
+    resolver->setForceResolve			( forceResolve );
+
+    resolver->setCleandepsOnRemove		( cleandepsOnRemove );
+
+    resolver->setAllowDowngrade			( allowDowngrade );
+    resolver->setAllowNameChange		( allowNameChange );
+    resolver->setAllowArchChange		( allowArchChange );
+    resolver->setAllowVendorChange		( allowVendorChange );
+
+    resolver->dupSetAllowDowngrade		( dupAllowDowngrade );
+    resolver->dupSetAllowNameChange		( dupAllowNameChange );
+    resolver->dupSetAllowArchChange		( dupAllowArchChange );
+    resolver->dupSetAllowVendorChange		( dupAllowVendorChange );
 
     // RequestedLocales
     {
@@ -1515,11 +1541,6 @@ main (int argc, char *argv[])
     cerr << "Usage: deptestomatic [-h|-v] [solver-test.xml]" << endl;
     exit (0);
   }
-
-  forceResolve = false;
-  onlyRequires = false;
-  allowVendorChange = false;
-  ignorealreadyrecommended = false;
 
   solverQueue.clear();
 
