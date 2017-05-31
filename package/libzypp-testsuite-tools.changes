@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Wed May 31 16:26:20 CEST 2017 - ma@suse.com
+
+- Fix unrecognized solver flags (bsc#1041889)
+- version 5.0.3
+
+-------------------------------------------------------------------
 Thu Jul 30 18:17:13 CEST 2015 - ma@suse.com
 
 - Add requested locales and autoinstalled packages.
