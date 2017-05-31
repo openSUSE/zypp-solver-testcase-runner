@@ -105,7 +105,6 @@ static target::Modalias::ModaliasList modaliasList;
 static std::set<std::string> multiversionSpec;
 
 static ZYpp::Ptr God;
-static RepoManager manager;
 
 static bool forceResolve;
 static bool onlyRequires;
@@ -619,11 +618,10 @@ load_source (const string & alias, const string & filename, const string & type,
           nrepo.setPriority   ( priority );
           nrepo.addBaseUrl   ( Url(filename) );
 
-          //manager.addRepository( nrepo );
+	  RepoManager manager( makeRepoManager( "/tmp/myrepos" ) );
           manager.refreshMetadata( nrepo );
           manager.buildCache( nrepo );
-
-          manager.loadFromCache( nrepo );
+	  manager.loadFromCache( nrepo );
 	}
 	catch ( Exception & excpt_r ) {
 	    ZYPP_CAUGHT (excpt_r);
@@ -1061,8 +1059,8 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
               Repository r = satpool.reposFind( names[i] );
               if ( ! r )
               {
-                ERR << "upgradeRepo '" << r << "' not found." << endl;
-                cerr << "upgradeRepo '" << r << "' not found." << endl;
+                ERR << "upgradeRepo '" << names[i] << "' not found. (been empty?)" << endl;
+                cerr << "upgradeRepo '" << names[i] << "' not found. (been empty?)" << endl;
 		exit( 1 );
               }
               else
@@ -1143,6 +1141,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 		}
 	    }
 	} else if (node->equals ("showpool")) {
+	    resolver->resolvePool();
 	    string prefix = node->getProp ("prefix");
 	    string all = node->getProp ("all");
             string get_licence = node->getProp ("getlicence");
@@ -1523,8 +1522,6 @@ main (int argc, char *argv[])
   ignorealreadyrecommended = false;
 
   solverQueue.clear();
-
-  manager = makeRepoManager( "/tmp/myrepos" );
 
   try {
     God = zypp::getZYpp();
