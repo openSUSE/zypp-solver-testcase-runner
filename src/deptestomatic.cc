@@ -361,7 +361,8 @@ static void print_problems( MyResolver_Ptr resolver )
   {
     ResolverProblem problem = **iter;
     RESULT << "Problem:" << endl;
-    RESULT << problem.description() << endl;
+    for ( const std::string &prop : problem.completeProblemInfo() )
+        RESULT << prop << endl;
     RESULT << problem.details() << endl;
 
     ProblemSolutionList solutions = problem.solutions();
