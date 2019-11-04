@@ -961,7 +961,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    string note = node->getContent ();
 	    cout << "NOTE: " << note << endl;
-	} else if (node->equals ("verify")) {
+	} else if (node->equals ("vverify")) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
 	    verify = true;
 	} else if (node->equals ("current")) {
             // unsupported
@@ -1035,7 +1035,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
 	    print_pool( resolver, MARKER );
 
-	} else if (node->equals ("update")) {
+	} else if (node->equals ("update")||node->equals ("verify")) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
 
 	    RESULT << "Doing update ..." << endl;
 	    resolver->resolvePool();
