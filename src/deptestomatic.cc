@@ -107,6 +107,8 @@ static std::set<std::string> multiversionSpec;
 static ZYpp::Ptr God;
 
 // solver flags: default to false - set true if mentioned in <setup>
+ResolverFocus resolverFocus	= ResolverFocus::Default;
+
 bool ignorealreadyrecommended	= false;
 bool onlyRequires		= false;
 bool forceResolve		= false;
@@ -737,6 +739,10 @@ static void parse_xml_setup( XmlNode_Ptr node )
     else if_SolverFlag( dupAllowArchChange )
     else if_SolverFlag( dupAllowVendorChange )
 #undef if_SolverFlag
+    else if ( node->equals("focus") )
+    {
+      resolverFocus = resolverFocusFromString( node->getProp("value") );
+    }
     else if ( node->equals("system") )
     {
       string file = node->getProp("file");
@@ -912,6 +918,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
     MyResolver_Ptr resolver( new zypp::solver::detail::ResolverInternal( pool ) );
     // set solver flags:
+    resolver->setFocus				( resolverFocus == ResolverFocus::Default ? ResolverFocus::Job : resolverFocus ); // 'Default' would be our ZYppConf value
     resolver->setIgnoreAlreadyRecommended	( ignorealreadyrecommended );
     resolver->setOnlyRequires			( onlyRequires );
     resolver->setForceResolve			( forceResolve );
