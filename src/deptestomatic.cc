@@ -27,14 +27,13 @@
 #include <iostream>
 #include <map>
 #include <set>
-#include <stdio.h>
-#include <cstdlib>
-#include <cstring>
+#include <string_view>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
+#include <boost/algorithm/string.hpp>
 
 #define ZYPP_USE_RESOLVER_INTERNALS
 
@@ -1518,7 +1517,113 @@ process_xml_test_file (const Pathname & filename)
 
     xmlFreeDoc (xml_doc);
 }
+//---------------------------------------------------------------------------------------------------------------------
 
+// libsolv: order.c
+enum class CycleOrderBits {
+  BROKEN      = (1<<0),
+  CON         = (1<<1),
+  REQ_P       = (1<<2),
+  PREREQ_P    = (1<<3),
+  SUG         = (1<<4),
+  REC         = (1<<5),
+  REQ         = (1<<6),
+  PREREQ      = (1<<7),
+  CYCLETAIL   = (1<<16),
+  CYCLEHEAD   = (1<<17),
+};
+ZYPP_DECLARE_FLAGS( CycleOrder, CycleOrderBits );
+ZYPP_DECLARE_OPERATORS_FOR_FLAGS( CycleOrder );
+
+inline std::ostream & operator<<( std::ostream & str, CycleOrder obj )
+{
+#define OUTS(V) { CycleOrderBits::V, #V }
+  return str << stringify( obj, {
+    OUTS( BROKEN ),
+    OUTS( CON ),
+    OUTS( REQ_P ),
+    OUTS( PREREQ_P ),
+    OUTS( SUG ),
+    OUTS( REC ),
+    OUTS( REQ ),
+    OUTS( PREREQ ),
+    OUTS( CYCLETAIL ),
+    OUTS( CYCLEHEAD ),
+  } );
+#undef OUTS
+}
+
+
+inline size_t split( std::vector<std::string_view> & words_r, std::string_view line_r, std::string_view sepchars_r = " \t" )
+{
+  size_t ret = 0;
+  while ( ! line_r.empty() ) {
+    std::string_view::size_type p = line_r.find_first_not_of( sepchars_r );
+    if ( p == std::string_view::npos )
+      break;
+    line_r = line_r.substr( p );
+    p = line_r.find_first_of( sepchars_r );
+    words_r.push_back( p == std::string_view::npos ? line_r : line_r.substr( 0, p ) );
+    ++ret;
+    line_r = line_r.substr( p );
+  }
+  return ret;
+}
+
+inline bool addhexc2num( CycleOrder::Integral & num_r, char ch_r )
+{
+  if ( '0' <= ch_r && ch_r <= '9' )
+    ch_r -= '0';
+  else if ( 'a' <= ch_r && ch_r <= 'f' )
+    ch_r -= 'a'+10;
+  else if ( 'A' <= ch_r && ch_r <= 'F' )
+    ch_r -= 'A'+10;
+  else
+    return false;
+  num_r <<= 4;
+  num_r += ch_r;
+  return true;
+}
+
+inline CycleOrder cycleOrder( std::string_view input_r )
+{
+  CycleOrder::Integral ret = 0;
+  for ( char c : input_r ) {
+    if ( ! addhexc2num( ret, c ) )
+      break;
+  }
+  return CycleOrder(ret);
+}
+
+// deptestomatic  'cycle: --> wicked-service-0.6.60-2.13.2.x86_64 ##45##> wicked-0.6.60-2.13.2.x86_64 --48--> '
+int cycleinfo( std::string_view cycle_r )
+{
+  std::vector<std::string_view> words;
+  if ( split( words, cycle_r ) <= 2 ||  words[0] != "cycle:" || words[1] != "-->" ) {
+    cerr << "Parse cycle OOPS: " << words << endl;
+    return 1;
+  }
+
+  size_t sep = 1;	// get the brokenup '##%d##>'
+  for ( ; sep < words.size() && words[sep][0] != '#'; sep+=2 )
+  {;}
+  if ( sep >= words.size() ) {
+    cerr << "Parse cycle OOPS: no ##->##" << endl;
+    return 2;
+  }
+
+  str::Format fmt { "%-40s %-10s %s" };
+  auto writeln = [&fmt]( std::string_view nam, std::string_view req ) {
+    cout << fmt % nam % req % cycleOrder( req.substr(2) ) << endl;
+  };
+
+  for ( size_t i = sep+1; i < words.size(); i+=2 )
+    writeln( words[i], words[i+1] );
+  for ( size_t i = 2; i < sep; i+=2 )
+    writeln( words[i], words[i+1] );
+
+  return 0;
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -1537,6 +1642,10 @@ main (int argc, char *argv[])
     else if ( *argv == string("-v") )
     {
       zypp::base::LogControl::instance().logfile( "-" );
+    }
+    else if ( strncmp( *argv, "cycle:", 6 ) == 0 )
+    {
+      return cycleinfo( *argv );
     }
     else
     {
