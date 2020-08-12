@@ -1,5 +1,5 @@
 #
-# spec file for package libzypp-testsuite-tools
+# spec file for package @PACKAGE@
 #
 # Copyright (c) 2007-2011 SUSE LINUX Products GmbH, Nuernberg, Germany.
 #
@@ -15,18 +15,18 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
-Name:		libzypp-testsuite-tools
-BuildRequires:	fdupes  libexpat-devel
-BuildRequires:	gcc-c++ >= 4.6
-BuildRequires:	libzypp-devel >= 15.10.0
-BuildRequires:  libtool
+Name:		@PACKAGE@
+Version:	@VERSION@
+Release:	0
 License:	GPL-2.0
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-tools
-Version:	@VERSION@
-Release:	0
-Source:		zypp-testsuite-tools-@VERSION@.tar.bz2
 Group:          System/Packages
+Source:		%{name}-%{version}.tar.bz2
+BuildRequires:	cmake >= 3.1
+BuildRequires:	gcc-c++ >= 7
+BuildRequires:	libzypp-devel >= 17.23.2
+BuildRequires:	libxml2-devel
 
 %description
 Package, Patch, Pattern, and Product Management - testsuite-tools
@@ -43,25 +43,31 @@ Authors:
     Ladislav Slezak <lslezak@suse.cz>
 
 %prep
-%setup -q -n zypp-testsuite-tools-@VERSION@
+%setup -q
 
 %build
-mv configure.ac x
-grep -v devel/ x > configure.ac
-autoreconf --force --install --symlink --verbose
-%{?suse_update_config:%{suse_update_config -f}}
-CXXFLAGS="$RPM_OPT_FLAGS" \
-%configure --disable-static
-make %{?jobs:-j %jobs}
+mkdir -p build
+cd build
+CMAKE_FLAGS=
+cmake $CMAKE_FLAGS \
+      -DCMAKE_INSTALL_PREFIX=%{_prefix} \
+      -DSYSCONFDIR=%{_sysconfdir} \
+      -DMANDIR=%{_mandir} \
+      -DCMAKE_VERBOSE_MAKEFILE=TRUE \
+      -DCMAKE_C_FLAGS_RELEASE:STRING="$RPM_OPT_FLAGS" \
+      -DCMAKE_CXX_FLAGS_RELEASE:STRING="$RPM_OPT_FLAGS" \
+      -DCMAKE_BUILD_TYPE=Release \
+      ..
 
 %install
+cd build
 make install DESTDIR=$RPM_BUILD_ROOT
 # legacy symlinks
 ln -s deptestomatic $RPM_BUILD_ROOT/%{_prefix}/lib/zypp/testsuite/bin/deptestomatic.multi
 ln -s deptestomatic $RPM_BUILD_ROOT/%{_prefix}/lib/zypp/testsuite/bin/deptestomatic.noui
-%fdupes -s $RPM_BUILD_ROOT
 
 %clean
+rm -rf "$RPM_BUILD_ROOT"
 
 %files
 %defattr(0755,root,root)
