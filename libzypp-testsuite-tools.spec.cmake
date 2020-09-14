@@ -25,8 +25,7 @@ Group:          System/Packages
 Source:		%{name}-%{version}.tar.bz2
 BuildRequires:	cmake >= 3.1
 BuildRequires:	gcc-c++ >= 7
-BuildRequires:	libzypp-devel >= 17.23.2
-BuildRequires:	libxml2-devel
+BuildRequires:	libzypp-devel >= 17.25.0
 
 %description
 Package, Patch, Pattern, and Product Management - testsuite-tools
