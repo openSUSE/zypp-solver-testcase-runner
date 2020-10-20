@@ -6,9 +6,6 @@ SET( PACKAGE "libzypp-testsuite-tools" )
 INCLUDE( ${DEPTESTOMATIC_SOURCE_DIR}/VERSION.cmake )
 SET( VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
 
-INCLUDE(ZyppCommon)
-GENERATE_PACKAGING(${PACKAGE} ${VERSION})
-
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 IF ( ZYPP_SOURCE )
 
@@ -33,8 +30,10 @@ ELSE()
   )
 ENDIF()
 
-FIND_PACKAGE( LibXml2 REQUIRED )
 FIND_PACKAGE( Zypp REQUIRED )
+
+INCLUDE(ZyppCommon)
+GENERATE_PACKAGING(${PACKAGE} ${VERSION})
 
 SET( CMAKE_CXX_STANDARD ${ZYPPCOMMON_CXX_STANDARD} )
 
@@ -52,19 +51,17 @@ INCLUDE_DIRECTORIES(
 
 SET( HEADERS
   src/KeyRingCallbacks.h
-  src/XmlNode.h
 )
 
 SET( SOURCES
   src/deptestomatic.cc
-  src/XmlNode.cc
 )
 
 ADD_EXECUTABLE( deptestomatic ${HEADERS} ${SOURCES}  )
-TARGET_LINK_LIBRARIES( deptestomatic  ${LIBXML2_LIBRARIES} ${ZYPP_LIBRARY} )
+
+TARGET_LINK_LIBRARIES( deptestomatic ${ZYPP_LIBRARY} )
 
 INSTALL(
   TARGETS deptestomatic
   RUNTIME DESTINATION ${INSTALL_PREFIX}/lib/zypp/testsuite/bin
 )
-

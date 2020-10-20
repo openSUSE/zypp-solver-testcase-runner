@@ -31,8 +31,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <libxml/parser.h>
-#include <libxml/xmlmemory.h>
 #include <boost/algorithm/string.hpp>
 
 #define ZYPP_USE_RESOLVER_INTERNALS
@@ -79,52 +77,23 @@
 #include "zypp/solver/detail/SolverQueueItemUpdate.h"
 
 #include "zypp/target/modalias/Modalias.h"
+#include <zypp/misc/LoadTestcase.h>
 
 #include "KeyRingCallbacks.h"
-#include "XmlNode.h"
 
 using namespace std;
 using namespace zypp;
 using zypp::ui::Selectable;
 using zypp::solver::detail::Testcase;
 using zypp::ResolverProblemList;
-using zypp::solver::detail::XmlNode;
-using zypp::solver::detail::XmlNode_Ptr;
 
 //-----------------------------------------------------------------------------
 typedef zypp::shared_ptr<zypp::solver::detail::ResolverInternal> MyResolver_Ptr;
 //-----------------------------------------------------------------------------
 
-static bool show_mediaid = false;
-
-static Pathname globalPath;
-static base::SetTracker<LocaleSet> localesTracker;
-static sat::StringQueue autoinstalled;
-static target::Modalias::ModaliasList modaliasList;
-static std::set<std::string> multiversionSpec;
+static zypp::misc::testcase::TestcaseSetup const *testcaseSetup = nullptr;
 
 static ZYpp::Ptr God;
-
-// solver flags: default to false - set true if mentioned in <setup>
-ResolverFocus resolverFocus	= ResolverFocus::Default;
-
-bool ignorealreadyrecommended	= false;
-bool onlyRequires		= false;
-bool forceResolve		= false;
-
-bool cleandepsOnRemove		= false;
-
-bool allowDowngrade		= false;
-bool allowNameChange		= false;
-bool allowArchChange		= false;
-bool allowVendorChange		= false;
-
-bool dupAllowDowngrade		= false;
-bool dupAllowNameChange		= false;
-bool dupAllowArchChange		= false;
-bool dupAllowVendorChange	= false;
-
-
 static zypp::solver::detail::SolverQueueItemList solverQueue;
 
 typedef set<PoolItem> PoolItemSet;
@@ -156,7 +125,7 @@ public:
 static std::ostream &
 printRes ( std::ostream & str, ResObject::constPtr r )
 {
-    if (show_mediaid) {
+  if ( testcaseSetup->show_mediaid ) {
 	Resolvable::constPtr res = r;
 	Package::constPtr pkg = asKind<Package>(res);
 	if (pkg) str << "[" << pkg->mediaNr() << "]";
@@ -464,8 +433,6 @@ struct FindPackage : public resfilter::ResObjectFilterFunctor
     }
 };
 
-static bool set_licence = false;
-
 static PoolItem
 get_poolItem (const string & source_alias, const string & package_name, const string & kind_name = "", const string & ver = "", const string & rel = "", const string & arch = "")
 {
@@ -613,277 +580,49 @@ set_licence_Pool()
 	return;
 }
 
-static bool
-load_source (const string & alias, const string & filename, const string & type, bool system_packages, unsigned priority)
-{
-    Pathname pathname = globalPath + filename;
-    MIL << "'" << pathname << "'" << endl;
-
-    Repository repo;
-
-    if (type == "url") {
-	try {
-          cout << "Load from Url '" << filename << "'" << endl;
-          MIL << "Load from Url '" << filename << "'" << endl;
-
-          RepoInfo nrepo;
-          nrepo.setAlias      ( alias );
-          nrepo.setName       ( alias );
-          nrepo.setEnabled    ( true );
-          nrepo.setAutorefresh( false );
-          nrepo.setPriority   ( priority );
-          nrepo.addBaseUrl   ( Url(filename) );
-
-	  RepoManager manager( makeRepoManager( "/tmp/myrepos" ) );
-          manager.refreshMetadata( nrepo );
-          manager.buildCache( nrepo );
-	  manager.loadFromCache( nrepo );
-	}
-	catch ( Exception & excpt_r ) {
-	    ZYPP_CAUGHT (excpt_r);
-	    cout << "Couldn't load packages from Url '" << filename << "'" << endl;
-	    return false;
-	}
-    }
-    else {
-	try {
-          cout << "Load from File '" << pathname << "'" << endl;
-          MIL << "Load from File '" << pathname << "'" << endl;
-          zypp::Repository satRepo;
-
-          if (alias == "@System") {
-              satRepo = zypp::sat::Pool::instance().systemRepo();
-          } else {
-              satRepo = zypp::sat::Pool::instance().reposInsert(alias);
-          }
-
-          RepoInfo nrepo;
-
-          nrepo.setAlias      ( alias );
-          nrepo.setName       ( alias );
-          nrepo.setEnabled    ( true );
-          nrepo.setAutorefresh( false );
-          nrepo.setPriority   ( priority );
-          nrepo.addBaseUrl   ( pathname.asUrl() );
-
-          satRepo.setInfo (nrepo);
-          satRepo.addHelix( pathname );
-          cout << "Loaded " << satRepo.solvablesSize() << " resolvables from " << (filename.empty()?pathname.asString():filename) << "." << endl;
-	}
-	catch ( Exception & excpt_r ) {
-	    ZYPP_CAUGHT (excpt_r);
-	    cout << "Couldn't load packages from XML file '" << filename << "'" << endl;
-	    return false;
-	}
-    }
-
-    if(set_licence)
-      set_licence_Pool();
-
-    return true;
-}
-
 static bool done_setup = false;
 
-static void parse_xml_setup( XmlNode_Ptr node )
+static void execute_setup( const zypp::misc::testcase::LoadTestcase &testcase )
 {
-  if ( !node->equals("setup") ) {
-    ZYPP_THROW (Exception ("Node not 'setup' in parse_xml_setup():"+node->name()));
-  }
-
   if ( done_setup ) {
-    cerr << "Multiple <setup>..</setup> sections not allowed!" << endl;
+    cerr << "Calling execute_setup multiple times is not allowed!" << endl;
     exit (0);
   }
   done_setup = true;
 
-  string architecture = node->getProp( "arch" );				// allow <setup arch="...">
-  if ( !architecture.empty() )
-  {
-    MIL << "Setting architecture to '" << architecture << "'" << endl;
-    try {
-      ZConfig::instance().setSystemArchitecture( Arch(architecture) );
-      setenv ("ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1);
-    }
-    catch( const Exception & excpt_r ) {
-      ZYPP_CAUGHT( excpt_r );
-      cerr << "Bad architecture '" << architecture << "' in <setup...>" << endl;
-      return;
-    }
+  const auto &setup = testcase.setupInfo();
+
+  auto tempRepoManager = makeRepoManager( "/tmp/myrepos" );
+  if ( !setup.applySetup( tempRepoManager ) ) {
+    std::cerr << "Failed to apply setup from testcase" << std::endl;
+    exit(1);
   }
 
-  node = node->children();
-  while ( node != NULL )
-  {
-    if ( !node->isElement() )
-    {
-      node = node->next();
-      continue;
-    }
+  RESULT << "Read and applied setup from testcase" << std::endl;
 
-#define if_SolverFlag( N ) if ( node->equals( #N ) ) { N = true; }
-         if_SolverFlag( ignorealreadyrecommended )	else if ( node->equals( "ignorealready" ) ) 	{ ignorealreadyrecommended = true; }
-    else if_SolverFlag( onlyRequires )			else if ( node->equals( "ignorerecommended" ) )	{ onlyRequires = true; }
-    else if_SolverFlag( forceResolve )
+  for ( const auto &fi : setup.forceInstallTasks ) {
+    PoolItem poolItem;
 
-    else if_SolverFlag( cleandepsOnRemove )
+    poolItem = get_poolItem( fi.channel, fi.package, fi.kind );
+    if ( poolItem )
+    {
+      RESULT << "Force-installing " << fi.package << " from channel " << fi.channel << endl;;
 
-    else if_SolverFlag( allowDowngrade )
-    else if_SolverFlag( allowNameChange )
-    else if_SolverFlag( allowArchChange )
-    else if_SolverFlag( allowVendorChange )
-
-    else if_SolverFlag( dupAllowDowngrade )
-    else if_SolverFlag( dupAllowNameChange )
-    else if_SolverFlag( dupAllowArchChange )
-    else if_SolverFlag( dupAllowVendorChange )
-#undef if_SolverFlag
-    else if ( node->equals("focus") )
-    {
-      resolverFocus = resolverFocusFromString( node->getProp("value") );
-    }
-    else if ( node->equals("system") )
-    {
-      string file = node->getProp("file");
-      if (!load_source( "@System", file, "helix", true, 99 ) )
-      {
-	cerr << "Can't setup 'system'" << endl;
-	exit( 1 );
-      }
-    }
-    else if ( node->equals("hardwareInfo") )
-    {
-      Pathname pathname = globalPath + node->getProp("path");
-      setenv( "ZYPP_MODALIAS_SYSFS", pathname.asString().c_str(), 1 );
-      RESULT << "setting HardwareInfo to: " << pathname.asString() << endl;
-    }
-    else if ( node->equals("modalias") )
-    {
-      modaliasList.push_back( node->getProp("name") );
-    }
-    else if ( node->equals("multiversion") )
-    {
-      multiversionSpec.insert( node->getProp("name") );
-    }
-    else if (node->equals ("channel")) {
-
-      string name = node->getProp("name");
-      string file = node->getProp("file");
-      string type = node->getProp("type");
-      string priority = node->getProp("priority");
-      unsigned prio = 99;
-      if ( !priority.empty() )
-      {
-	prio = str::strtonum<unsigned>( priority );
-      }
-      if ( !load_source( name, file, type, false, prio ) )
-      {
-	cerr << "Can't setup 'channel'" << endl;
-	exit( 1 );
-      }
-    }
-    else if ( node->equals("source") )
-    {
-      string url = node->getProp("url");
-      string alias = node->getProp("name");
-      if ( !load_source( alias, url, "url", false, 99 ) )
-      {
-	cerr << "Can't setup 'source'" << endl;
-	exit( 1 );
-      }
-    }
-    else if ( node->equals("force-install") )
-    {
-
-      string source_alias = node->getProp("channel");
-      string package_name = node->getProp("package");
-      string kind_name = node->getProp("kind");
-
-      PoolItem poolItem;
-
-      poolItem = get_poolItem( source_alias, package_name, kind_name );
-      if ( poolItem )
-      {
-	RESULT << "Force-installing " << package_name << " from channel " << source_alias << endl;;
-
-	poolItem.status().setToBeInstalled( ResStatus::USER );
-      }
-      else
-      {
-	cerr << "Unknown package " << source_alias << "::" << package_name << endl;
-      }
-    }
-    else if ( node->equals("mediaid") )
-    {
-      show_mediaid = true;
-    }
-    else if ( node->equals("arch") )
-    {
-      cerr << "<arch...> deprecated, use <setup arch=\"...\"> instead" << endl;
-      architecture = node->getProp("name");
-      if ( architecture.empty() )
-      {
-	cerr << "Property 'name=' in <arch.../> missing or empty" << endl;
-      }
-      else
-      {
-	MIL << "Setting architecture to '" << architecture << "'" << endl;
-	ZConfig::instance().setSystemArchitecture( Arch(architecture) );
-	setenv( "ZYPP_TESTSUITE_FAKE_ARCH", architecture.c_str(), 1 );
-      }
-    }
-    else if ( node->equals("locale") )
-    {
-      Locale loc( node->getProp("name") );
-      string fate = node->getProp("fate");
-      if ( !loc )
-      {
-	cerr << "Bad or missing name in <locale...>" << endl;
-      }
-      else if ( fate == "added" )
-      {
-	RESULT << "Requesting locale " << loc << " (added)" << endl;
-	localesTracker.added().insert( loc );
-      }
-      else if ( fate == "removed" )
-      {
-	RESULT << "Requesting locale " << loc << " (removed)" << endl;
-	localesTracker.removed().insert( loc );
-      }
-      else
-      {
-	RESULT << "Requesting locale " << loc << endl;
-	localesTracker.current().insert( loc );
-      }
-    }
-    else if ( node->equals("autoinst") )
-    {
-      autoinstalled.push( IdString( node->getProp("name") ).id() );
-    }
-    else if ( node->equals("systemCheck") )
-    {
-      Pathname pathname = globalPath + node->getProp("path");
-      RESULT << "setting systemCheck to: " << pathname.asString() << endl;
-      SystemCheck::instance().setFile( pathname );
-    }
-    else if ( node->equals("setlicencebit") )
-    {
-      set_licence = true;
+      poolItem.status().setToBeInstalled( ResStatus::USER );
     }
     else
     {
-      cerr << "Unrecognized tag '" << node->name() << "' in setup" << endl;
+      cerr << "Unknown package " << fi.channel << "::" << fi.package << endl;
     }
-
-    node = node->next();
   }
 
+  if( setup.set_licence )
+    set_licence_Pool();
 }
 
 
-
 //-------------
-static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
+static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, const zypp::misc::testcase::TestcaseTrial &trial, ResPool & pool)
 {
     static bool first_trial = true;
 
@@ -891,11 +630,7 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     bool doUpdate = false;
     bool instorder = false;
 
-    if (!node->equals ("trial")) {
-	ZYPP_THROW (Exception ("Node not 'trial' in parse_xml_trial()"));
-    }
-
-    DBG << "parse_xml_trial()" << endl;
+    DBG << "execute_trial()" << endl;
 
     // reset pool on subsequent trials.
 
@@ -917,25 +652,26 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
 
     MyResolver_Ptr resolver( new zypp::solver::detail::ResolverInternal( pool ) );
     // set solver flags:
-    resolver->setFocus				( resolverFocus == ResolverFocus::Default ? ResolverFocus::Job : resolverFocus ); // 'Default' would be our ZYppConf value
-    resolver->setIgnoreAlreadyRecommended	( ignorealreadyrecommended );
-    resolver->setOnlyRequires			( onlyRequires );
-    resolver->setForceResolve			( forceResolve );
+    resolver->setFocus				( setup.resolverFocus == ResolverFocus::Default ? ResolverFocus::Job : setup.resolverFocus ); // 'Default' would be our ZYppConf value
+    resolver->setIgnoreAlreadyRecommended	( setup.ignorealreadyrecommended );
+    resolver->setOnlyRequires			( setup.onlyRequires );
+    resolver->setForceResolve			( setup.forceResolve );
 
-    resolver->setCleandepsOnRemove		( cleandepsOnRemove );
+    resolver->setCleandepsOnRemove		( setup.cleandepsOnRemove );
 
-    resolver->setAllowDowngrade			( allowDowngrade );
-    resolver->setAllowNameChange		( allowNameChange );
-    resolver->setAllowArchChange		( allowArchChange );
-    resolver->setAllowVendorChange		( allowVendorChange );
+    resolver->setAllowDowngrade			( setup.allowDowngrade );
+    resolver->setAllowNameChange		( setup.allowNameChange );
+    resolver->setAllowArchChange		( setup.allowArchChange );
+    resolver->setAllowVendorChange		( setup.allowVendorChange );
 
-    resolver->dupSetAllowDowngrade		( dupAllowDowngrade );
-    resolver->dupSetAllowNameChange		( dupAllowNameChange );
-    resolver->dupSetAllowArchChange		( dupAllowArchChange );
-    resolver->dupSetAllowVendorChange		( dupAllowVendorChange );
+    resolver->dupSetAllowDowngrade		( setup.dupAllowDowngrade );
+    resolver->dupSetAllowNameChange		( setup.dupAllowNameChange );
+    resolver->dupSetAllowArchChange		( setup.dupAllowArchChange );
+    resolver->dupSetAllowVendorChange		( setup.dupAllowVendorChange );
 
     // RequestedLocales
     {
+      base::SetTracker<LocaleSet> localesTracker = setup.localesTracker;
       localesTracker.removed().insert( localesTracker.current().begin(), localesTracker.current().end() );
       zypp::sat::Pool::instance().initRequestedLocales( localesTracker.removed() );
       RESULT << "initRequestedLocales " << localesTracker.removed() << endl;
@@ -946,576 +682,501 @@ static void parse_xml_trial (XmlNode_Ptr node, ResPool & pool)
     }
 
     // AutoInstalled
-    zypp::sat::Pool::instance().setAutoInstalled( autoinstalled );
+    zypp::sat::Pool::instance().setAutoInstalled( setup.autoinstalled );
 
     // set modaliases
-    RESULT << "Load " << modaliasList.size() << " modaliases." << endl;
-    target::Modalias::instance().modaliasList( modaliasList );
+    RESULT << "Load " << setup.modaliasList.size() << " modaliases." << endl;
+    target::Modalias::instance().modaliasList( setup.modaliasList );
 
     // set multiversion packages
-    RESULT << "Load " << multiversionSpec.size() << " multiversion specs." << endl;
-    ZConfig::instance().multiversionSpec( multiversionSpec );
+    RESULT << "Load " << setup.multiversionSpec.size() << " multiversion specs." << endl;
+    ZConfig::instance().multiversionSpec( setup.multiversionSpec );
 
-    node = node->children();
-    while (node) {
-	if (!node->isElement()) {
-	    node = node->next();
-	    continue;
-	}
+    for ( const auto &node: trial.nodes ) {
+      if ( node.name == "note" ) {
+        cout << "NOTE: " << node.value << endl;
+      } else if ( node.name == "vverify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
+        verify = true;
+      } else if ( node.name == "current" ) {
+        // unsupported
+        // string source_alias = node.getProp("channel");
+      } else if ( node.name == "subscribe" ) {
+        // unsupported
+        // string source_alias = node.getProp("channel");
+      } else if ( node.name == "install" ) {
 
-	if (node->equals("note")) {
+        string source_alias = node.getProp ("channel");
+        string name = node.getProp ("name");
+        if (name.empty())
+          name = node.getProp ("package");
+        string kind_name = node.getProp ("kind");
+        string soft = node.getProp ("soft");
+        string version = node.getProp ("version");
+        string release = node.getProp ("release");
+        string architecture = node.getProp ("arch");
 
-	    string note = node->getContent ();
-	    cout << "NOTE: " << note << endl;
-	} else if (node->equals ("vverify")) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
-	    verify = true;
-	} else if (node->equals ("current")) {
-            // unsupported
-	    string source_alias = node->getProp ("channel");
-	} else if (node->equals ("subscribe")) {
-            // unsupported
-	    string source_alias = node->getProp ("channel");
-	} else if (node->equals ("install")) {
+        PoolItem poolItem;
 
-	    string source_alias = node->getProp ("channel");
-	    string name = node->getProp ("name");
-	    if (name.empty())
-		name = node->getProp ("package");
-	    string kind_name = node->getProp ("kind");
-	    string soft = node->getProp ("soft");
-	    string version = node->getProp ("version");
-	    string release = node->getProp ("release");
-	    string architecture = node->getProp ("arch");
-
-	    PoolItem poolItem;
-
-	    poolItem = get_poolItem( source_alias, name, kind_name, version, release, architecture );
-	    if (poolItem) {
-		RESULT << "Installing "
-		    << ((poolItem->kind() != ResKind::package) ? (poolItem->kind().asString() + ":") : "")
-		    << name
-		    << (version.empty()?"":(string("-")+poolItem->edition().version()))
-		    << (release.empty()?"":(string("-")+poolItem->edition().release()))
-		    << (architecture.empty()?"":(string(".")+poolItem->arch().asString()))
-		    << " from channel " << source_alias << endl;;
-		poolItem.status().setToBeInstalled(ResStatus::USER);
-		if (!soft.empty())
-		    poolItem.status().setSoftInstall(true);
-	    } else {
-		cerr << "Unknown item " << source_alias << "::" << name << endl;
-		exit( 1 );
-	    }
-
-	} else if (node->equals ("uninstall")) {
-
-	    string name = node->getProp ("name");
-	    if (name.empty())
-		name = node->getProp ("package");
-	    string kind_name = node->getProp ("kind");
-	    string soft = node->getProp ("soft");
-	    string version = node->getProp ("ver");
-	    string release = node->getProp ("rel");
-	    string architecture = node->getProp ("arch");
-
-	    PoolItem poolItem;
-
-	    poolItem = get_poolItem ("@System", name, kind_name, version, release, architecture );
-	    if (poolItem) {
-		RESULT << "Uninstalling " << name
-		    << (version.empty()?"":(string("-")+poolItem->edition().version()))
-		    << (release.empty()?"":(string("-")+poolItem->edition().release()))
-		    << (architecture.empty()?"":(string(".")+poolItem->arch().asString()))
-		    << endl;
-		poolItem.status().setToBeUninstalled(ResStatus::USER);
-		if (!soft.empty())
-		    poolItem.status().setSoftUninstall(true);
-	    } else {
-		cerr << "Unknown system item " << name << endl;
-		exit( 1 );
-	    }
-
-	} else if (node->equals ("distupgrade")) {
-
-	    RESULT << "Doing distribution upgrade ..." << endl;
-	    resolver->doUpgrade();
-
-	    print_pool( resolver, MARKER );
-
-	} else if (node->equals ("update")||node->equals ("verify")) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
-
-	    RESULT << "Doing update ..." << endl;
-	    resolver->resolvePool();
-	    resolver->doUpdate();
-            print_solution (pool, instorder);
-            doUpdate = true;
-
-	} else if (node->equals ("instorder") || node->equals ("mediaorder")/*legacy*/) {
-
-	    RESULT << "Calculating installation order ..." << endl;
-
-	    instorder = true;
-
-	} else if (node->equals ("whatprovides")) {
-
-	    string kind_name = node->getProp ("kind");
-	    string prov_name = node->getProp ("provides");
-
-	    PoolItemSet poolItems;
-
-	    cout << "poolItems providing '" << prov_name << "'" << endl;
-
-	    poolItems = get_providing_poolItems (prov_name, kind_name);
-
-	    if (poolItems.empty()) {
-		cerr << "None found" << endl;
-	    } else {
-		for (PoolItemSet::const_iterator iter = poolItems.begin(); iter != poolItems.end(); ++iter) {
-		    cout << (*iter) << endl;
-		}
-	    }
-	} else if (node->equals ("addConflict")) {
-            vector<string> names;
-            str::split( node->getProp ("name"), back_inserter(names), "," );
-            for (unsigned i=0; i < names.size(); ++i) {
-                resolver->addExtraConflict(Capability (names[i], string2kind (node->getProp ("kind"))));
-            }
-	} else if (node->equals ("addRequire")) {
-            vector<string> names;
-            str::split( node->getProp ("name"), back_inserter(names), "," );
-            for (unsigned i=0; i < names.size(); ++i) {
-                resolver->addExtraRequire(Capability (names[i], string2kind (node->getProp ("kind"))));
-            }
-	} else if (node->equals ("upgradeRepo")) {
-            vector<string> names;
-            str::split( node->getProp ("name"), back_inserter(names), "," );
-            for (unsigned i=0; i < names.size(); ++i) {
-              Repository r = satpool.reposFind( names[i] );
-              if ( ! r )
-              {
-                ERR << "upgradeRepo '" << names[i] << "' not found. (been empty?)" << endl;
-                cerr << "upgradeRepo '" << names[i] << "' not found. (been empty?)" << endl;
-		exit( 1 );
-              }
-              else
-                resolver->addUpgradeRepo( r );
-            }
-	} else if (node->equals ("reportproblems")) {
-            bool success;
-            if (!solverQueue.empty())
-                success = resolver->resolveQueue(solverQueue);
-            else
-                success = resolver->resolvePool();
-	    if (success
-                && node->getProp ("ignoreValidSolution").empty()) {
-		RESULT << "No problems so far" << endl;
-	    }
-	    else {
-		print_problems( resolver );
-            }
-	} else if (node->equals ("takesolution")) {
-	    string problemNrStr = node->getProp ("problem");
-	    string solutionNrStr = node->getProp ("solution");
-	    assert (!problemNrStr.empty());
-	    assert (!solutionNrStr.empty());
-	    int problemNr = atoi (problemNrStr.c_str());
-	    int solutionNr = atoi (solutionNrStr.c_str());
-	    RESULT << "Want solution: " << solutionNr << endl;
-	    RESULT << "For problem:   " << problemNr << endl;
-	    ResolverProblemList problems = resolver->problems ();
-	    RESULT << "*T*(" << resolver->problems().size() << ")" << endl;
-
-	    int problemCounter = -1;
-	    int solutionCounter = -1;
-	    // find problem
-	    for (ResolverProblemList::iterator probIter = problems.begin(); probIter != problems.end(); ++probIter) {
-		problemCounter++;
-	         RESULT << "*P*(" << problemCounter << "|" << solutionCounter << ")" << endl;
-		if (problemCounter == problemNr) {
-		    ResolverProblem problem = **probIter;
-		    ProblemSolutionList solutionList = problem.solutions();
-		    //find solution
-		    for (ProblemSolutionList::iterator solIter = solutionList.begin();
-			 solIter != solutionList.end(); ++solIter) {
-			solutionCounter++;
-			RESULT << "*S*(" << problemCounter << "|" << solutionCounter << ")" << endl;
-			if (solutionCounter == solutionNr) {
-			    ProblemSolution_Ptr solution = *solIter;
-			    RESULT << "Taking solution: " << endl << *solution << endl;
-			    RESULT << "For problem: " << endl << problem << endl;
-			    ProblemSolutionList doList;
-			    doList.push_back (solution);
-			    resolver->applySolutions (doList);
-			    break;
-			}
-		    }
-		    break;
-		}
-	    }
-
-	    if ( problemCounter != problemNr || solutionCounter != solutionNr ) {
-		RESULT << "Did not find problem=" << problemCounter << ", solution="  << solutionCounter << endl;
-	    } else {
-		// resolve and check it again
-                bool success;
-                if (!solverQueue.empty())
-                    success = resolver->resolveQueue(solverQueue);
-                else
-                    success = resolver->resolvePool();
-
-		if (success) {
-		    RESULT << "No problems so far" << endl;
-		}
-		else {
-		    ResolverProblemList problems = resolver->problems ();
-		    RESULT << problems.size() << " problems found:" << endl;
-		    for (ResolverProblemList::iterator iter = problems.begin(); iter != problems.end(); ++iter) {
-			cout << **iter << endl;
-		    }
-		}
-	    }
-	} else if (node->equals ("showpool")) {
-	    resolver->resolvePool();
-	    string prefix = node->getProp ("prefix");
-	    string all = node->getProp ("all");
-            string get_licence = node->getProp ("getlicence");
-            string verbose = node->getProp ("verbose");
-	    print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
-
-	}
-	else if (node->equals ("showstatus")) {
-	    resolver->resolvePool();
-	    string prefix = node->getProp ("prefix");
-	    string all = node->getProp ("all");
-            string get_licence = node->getProp ("getlicence");
-            string verbose = node->getProp ("verbose");
-	    print_pool( resolver, "", true, "false", true );
-
-	}
-        else if (node->equals ("showselectable")){
-                Selectable::Ptr item;
-                string kind_name = node->getProp ("kind");
-                if ( kind_name.empty() )
-                    kind_name = "package";
-                string name = node->getProp ("name");
-                item = Selectable::get( ResKind(kind_name), name );
-                if ( item )
-                    dumpOn(cout, *item);
-                else
-                    cout << "Selectable '" << name << "' not valid" << endl;
+        poolItem = get_poolItem( source_alias, name, kind_name, version, release, architecture );
+        if (poolItem) {
+          RESULT << "Installing "
+                 << ((poolItem->kind() != ResKind::package) ? (poolItem->kind().asString() + ":") : "")
+                 << name
+                 << (version.empty()?"":(string("-")+poolItem->edition().version()))
+                 << (release.empty()?"":(string("-")+poolItem->edition().release()))
+                 << (architecture.empty()?"":(string(".")+poolItem->arch().asString()))
+                 << " from channel " << source_alias << endl;;
+          poolItem.status().setToBeInstalled(ResStatus::USER);
+          if (!soft.empty())
+            poolItem.status().setSoftInstall(true);
+        } else {
+          cerr << "Unknown item " << source_alias << "::" << name << endl;
+          exit( 1 );
         }
-        else if (node->equals ("graphic")) {
-            RESULT << "<graphic> is no longer supported by deptestomatic" << endl;
-        } else if (node->equals ("YOU") || node->equals ("PkgUI") ) {
-            RESULT << "<YOU> or <PkgUI> are no longer supported by deptestomatic" << endl;
-	} else if (node->equals ("lock")) {
-	    string source_alias = node->getProp ("channel");
-	    string package_name = node->getProp ("name");
-	    if (package_name.empty())
-		package_name = node->getProp ("package");
-	    string kind_name = node->getProp ("kind");
-	    string version = node->getProp ("ver");
-	    string release = node->getProp ("rel");
-	    string architecture = node->getProp ("arch");
+      } else if ( node.name == "uninstall") {
 
-	    if ( version.empty() )
-	    {
-	      if ( kind_name.empty() )
-		kind_name = "package";
-	      Selectable::Ptr item = Selectable::get( ResKind(kind_name), package_name );
-	      if ( item )
-	      {
-		item->setStatus( item->hasInstalledObj() ? ui::S_Protected : ui::S_Taboo );
-		RESULT << "Locking " << item << endl;
-	      }
-	      else
-	      {
-		cerr << "Unknown Selectable " << kind_name << ":" << package_name << endl;
-	      }
-	    }
-	    else
-	    {
-	      PoolItem poolItem;
-	      poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
-	      if (poolItem) {
-		RESULT << "Locking " << package_name << " from channel " << source_alias << poolItem << endl;
-		poolItem.status().setLock (true, ResStatus::USER);
-	      } else {
-		cerr << "Unknown package " << source_alias << "::" << package_name << endl;
-	      }
-	    }
-	} else if (node->equals ("validate")) {
-	    string source_alias = node->getProp ("channel");
-	    string package_name = node->getProp ("name");
-	    if (package_name.empty())
-		package_name = node->getProp ("package");
-	    string kind_name = node->getProp ("kind");
-	    string version = node->getProp ("ver");
-	    string release = node->getProp ("rel");
-	    string architecture = node->getProp ("arch");
+        string name = node.getProp ("name");
+        if (name.empty())
+          name = node.getProp ("package");
+        string kind_name = node.getProp ("kind");
+        string soft = node.getProp ("soft");
+        string version = node.getProp ("ver");
+        string release = node.getProp ("rel");
+        string architecture = node.getProp ("arch");
 
-            // Solving is needed
-            if (!solverQueue.empty())
-                resolver->resolveQueue(solverQueue);
+        PoolItem poolItem;
+
+        poolItem = get_poolItem ("@System", name, kind_name, version, release, architecture );
+        if (poolItem) {
+          RESULT << "Uninstalling " << name
+                 << (version.empty()?"":(string("-")+poolItem->edition().version()))
+                 << (release.empty()?"":(string("-")+poolItem->edition().release()))
+                 << (architecture.empty()?"":(string(".")+poolItem->arch().asString()))
+                 << endl;
+          poolItem.status().setToBeUninstalled(ResStatus::USER);
+          if (!soft.empty())
+            poolItem.status().setSoftUninstall(true);
+        } else {
+          cerr << "Unknown system item " << name << endl;
+          exit( 1 );
+        }
+      } else if ( node.name == "distupgrade" ) {
+
+        RESULT << "Doing distribution upgrade ..." << endl;
+        resolver->doUpgrade();
+
+        print_pool( resolver, MARKER );
+      } else if ( node.name == "update"|| node.name == "verify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
+
+        RESULT << "Doing update ..." << endl;
+        resolver->resolvePool();
+        resolver->doUpdate();
+        print_solution (pool, instorder);
+        doUpdate = true;
+      } else if ( node.name == "instorder" || node.name == "mediaorder" /*legacy*/ ) {
+
+        RESULT << "Calculating installation order ..." << endl;
+        instorder = true;
+      } else if ( node.name == "whatprovides" ) {
+
+        string kind_name = node.getProp ("kind");
+        string prov_name = node.getProp ("provides");
+
+        PoolItemSet poolItems;
+
+        cout << "poolItems providing '" << prov_name << "'" << endl;
+
+        poolItems = get_providing_poolItems (prov_name, kind_name);
+
+        if (poolItems.empty()) {
+          cerr << "None found" << endl;
+        } else {
+          for (PoolItemSet::const_iterator iter = poolItems.begin(); iter != poolItems.end(); ++iter) {
+            cout << (*iter) << endl;
+          }
+        }
+      } else if ( node.name == "addConflict" ) {
+        vector<string> names;
+        str::split( node.getProp ("name"), back_inserter(names), "," );
+        const auto &kind = string2kind (node.getProp ("kind"));
+        for (unsigned i=0; i < names.size(); ++i) {
+          resolver->addExtraConflict(Capability (names[i], kind));
+        }
+      } else if ( node.name == "addRequire" ) {
+        vector<string> names;
+        str::split( node.getProp ("name"), back_inserter(names), "," );
+        const auto &kind = string2kind (node.getProp ("kind"));
+        for (unsigned i=0; i < names.size(); ++i) {
+          resolver->addExtraRequire(Capability (names[i], kind ));
+        }
+      } else if ( node.name == "upgradeRepo" ) {
+        vector<string> names;
+        str::split( node.getProp ("name"), back_inserter(names), "," );
+        for (unsigned i=0; i < names.size(); ++i) {
+          Repository r = satpool.reposFind( names[i] );
+          if ( ! r )
+          {
+            ERR << "upgradeRepo '" << names[i] << "' not found. (been empty?)" << endl;
+            cerr << "upgradeRepo '" << names[i] << "' not found. (been empty?)" << endl;
+            exit( 1 );
+          }
+          else
+            resolver->addUpgradeRepo( r );
+        }
+      } else if ( node.name == "reportproblems" ) {
+        bool success;
+        if (!solverQueue.empty())
+          success = resolver->resolveQueue(solverQueue);
+        else
+          success = resolver->resolvePool();
+        if (success
+            && node.getProp ("ignoreValidSolution").empty()) {
+          RESULT << "No problems so far" << endl;
+        }
+        else {
+          print_problems( resolver );
+        }
+      } else if ( node.name == "takesolution" ) {
+        string problemNrStr = node.getProp ("problem");
+        string solutionNrStr = node.getProp ("solution");
+        assert (!problemNrStr.empty());
+        assert (!solutionNrStr.empty());
+        int problemNr = atoi (problemNrStr.c_str());
+        int solutionNr = atoi (solutionNrStr.c_str());
+        RESULT << "Want solution: " << solutionNr << endl;
+        RESULT << "For problem:   " << problemNr << endl;
+        ResolverProblemList problems = resolver->problems ();
+        RESULT << "*T*(" << resolver->problems().size() << ")" << endl;
+
+        int problemCounter = -1;
+        int solutionCounter = -1;
+        // find problem
+        for (ResolverProblemList::iterator probIter = problems.begin(); probIter != problems.end(); ++probIter) {
+          problemCounter++;
+          RESULT << "*P*(" << problemCounter << "|" << solutionCounter << ")" << endl;
+          if (problemCounter == problemNr) {
+            ResolverProblem problem = **probIter;
+            ProblemSolutionList solutionList = problem.solutions();
+            //find solution
+            for (ProblemSolutionList::iterator solIter = solutionList.begin();
+                 solIter != solutionList.end(); ++solIter) {
+              solutionCounter++;
+              RESULT << "*S*(" << problemCounter << "|" << solutionCounter << ")" << endl;
+              if (solutionCounter == solutionNr) {
+                ProblemSolution_Ptr solution = *solIter;
+                RESULT << "Taking solution: " << endl << *solution << endl;
+                RESULT << "For problem: " << endl << problem << endl;
+                ProblemSolutionList doList;
+                doList.push_back (solution);
+                resolver->applySolutions (doList);
+                break;
+              }
+            }
+            break;
+          }
+        }
+
+        if ( problemCounter != problemNr || solutionCounter != solutionNr ) {
+          RESULT << "Did not find problem=" << problemCounter << ", solution="  << solutionCounter << endl;
+        } else {
+          // resolve and check it again
+          bool success;
+          if (!solverQueue.empty())
+            success = resolver->resolveQueue(solverQueue);
+          else
+            success = resolver->resolvePool();
+
+          if (success) {
+            RESULT << "No problems so far" << endl;
+          }
+          else {
+            ResolverProblemList problems = resolver->problems ();
+            RESULT << problems.size() << " problems found:" << endl;
+            for (ResolverProblemList::iterator iter = problems.begin(); iter != problems.end(); ++iter) {
+              cout << **iter << endl;
+            }
+          }
+        }
+      } else if ( node.name == "showpool" ) {
+        resolver->resolvePool();
+        string prefix = node.getProp ("prefix");
+        string all = node.getProp ("all");
+        string get_licence = node.getProp ("getlicence");
+        string verbose = node.getProp ("verbose");
+        print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
+
+      } else if ( node.name == "showstatus" ) {
+        resolver->resolvePool();
+        string prefix = node.getProp ("prefix");
+        string all = node.getProp ("all");
+        string get_licence = node.getProp ("getlicence");
+        string verbose = node.getProp ("verbose");
+        print_pool( resolver, "", true, "false", true );
+
+      } else if (node.name == "showselectable" ){
+        Selectable::Ptr item;
+        string kind_name = node.getProp ("kind");
+        if ( kind_name.empty() )
+          kind_name = "package";
+        string name = node.getProp ("name");
+        item = Selectable::get( ResKind(kind_name), name );
+        if ( item )
+          dumpOn(cout, *item);
+        else
+          cout << "Selectable '" << name << "' not valid" << endl;
+      } else if ( node.name == "graphic" ) {
+        RESULT << "<graphic> is no longer supported by deptestomatic" << endl;
+      } else if ( node.name == ("YOU") || node.name == ("PkgUI") ) {
+        RESULT << "<YOU> or <PkgUI> are no longer supported by deptestomatic" << endl;
+      } else if ( node.name == "lock" ) {
+        string source_alias = node.getProp ("channel");
+        string package_name = node.getProp ("name");
+        if (package_name.empty())
+          package_name = node.getProp ("package");
+        string kind_name = node.getProp ("kind");
+        string version = node.getProp ("ver");
+        string release = node.getProp ("rel");
+        string architecture = node.getProp ("arch");
+
+        if ( version.empty() )
+        {
+          if ( kind_name.empty() )
+            kind_name = "package";
+          Selectable::Ptr item = Selectable::get( ResKind(kind_name), package_name );
+          if ( item )
+          {
+            item->setStatus( item->hasInstalledObj() ? ui::S_Protected : ui::S_Taboo );
+            RESULT << "Locking " << item << endl;
+          }
+          else
+          {
+            cerr << "Unknown Selectable " << kind_name << ":" << package_name << endl;
+          }
+        }
+        else
+        {
+          PoolItem poolItem;
+          poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
+          if (poolItem) {
+            RESULT << "Locking " << package_name << " from channel " << source_alias << poolItem << endl;
+            poolItem.status().setLock (true, ResStatus::USER);
+          } else {
+            cerr << "Unknown package " << source_alias << "::" << package_name << endl;
+          }
+        }
+      } else if ( node.name == "validate" ) {
+        string source_alias = node.getProp ("channel");
+        string package_name = node.getProp ("name");
+        if (package_name.empty())
+          package_name = node.getProp ("package");
+        string kind_name = node.getProp ("kind");
+        string version = node.getProp ("ver");
+        string release = node.getProp ("rel");
+        string architecture = node.getProp ("arch");
+
+        // Solving is needed
+        if (!solverQueue.empty())
+          resolver->resolveQueue(solverQueue);
+        else
+          resolver->resolvePool();
+
+        if (!package_name.empty()) {
+          PoolItem poolItem;
+          poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
+          if (poolItem) {
+            if (poolItem.isSatisfied())
+              RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
             else
-                resolver->resolvePool();
+              RESULT <<  package_name << " from channel " << source_alias << " IS NOT SATISFIED" << endl;
+          } else {
+            cerr << "Unknown package " << source_alias << "::" << package_name << endl;
+          }
+        } else {
+          // Checking all resolvables
+          isSatisfied (kind_name);
+        }
+      } else if ( node.name == "availablelocales" ) {
+        RESULT << "Available locales: ";
+        LocaleSet locales = pool.getAvailableLocales();
+        for (LocaleSet::const_iterator it = locales.begin(); it != locales.end(); ++it) {
+          if (it != locales.begin()) std::cout << ", ";
+          std::cout << it->code();
+        }
+        std::cout << endl;
 
-            if (!package_name.empty()) {
-                PoolItem poolItem;
-                poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
-                if (poolItem) {
-                    if (poolItem.isSatisfied())
-                        RESULT <<  package_name << " from channel " << source_alias << " IS SATISFIED" << endl;
-                    else
-                        RESULT <<  package_name << " from channel " << source_alias << " IS NOT SATISFIED" << endl;
-                } else {
-                    cerr << "Unknown package " << source_alias << "::" << package_name << endl;
-                }
+      } else if ( node.name == "keep" ) {
+        string kind_name = node.getProp ("kind");
+        string name = node.getProp ("name");
+        if (name.empty())
+          name = node.getProp ("package");
+
+        string source_alias = node.getProp ("channel");
+        if (source_alias.empty())
+          source_alias = "@System";
+
+        if (name.empty())
+        {
+          cerr << "transact need 'name' parameter" << endl;
+          return;
+        }
+
+        PoolItem poolItem;
+
+        poolItem = get_poolItem( source_alias, name, kind_name );
+
+        if (poolItem) {
+          // first: set anything
+          if (source_alias == "@System") {
+            poolItem.status().setToBeUninstalled( ResStatus::USER );
+          }
+          else {
+            poolItem.status().setToBeInstalled( ResStatus::USER );
+          }
+          // second: keep old state
+          poolItem.status().setTransact( false, ResStatus::USER );
+        }
+        else {
+          cerr << "Unknown item " << source_alias << "::" << name << endl;
+        }
+      } else if ( node.name == "addQueueInstall" ) {
+        string name = node.getProp ("name");
+        string soft = node.getProp ("soft");
+
+        if (name.empty()) {
+          cerr << "addQueueInstall need 'name' parameter" << endl;
+          return;
+        }
+        zypp::solver::detail::SolverQueueItemInstall_Ptr install =
+            new zypp::solver::detail::SolverQueueItemInstall(pool, name, (soft.empty() ? false : true));
+        solverQueue.push_back (install);
+      } else if ( node.name == "addQueueDelete" ) {
+        string name = node.getProp ("name");
+        string soft = node.getProp ("soft");
+
+        if (name.empty()) {
+          cerr << "addQueueDelete need 'name' parameter" << endl;
+          return;
+        }
+        zypp::solver::detail::SolverQueueItemDelete_Ptr del =
+            new zypp::solver::detail::SolverQueueItemDelete(pool, name, (soft.empty() ? false : true));
+        solverQueue.push_back (del);
+      } else if ( node.name == "addQueueLock" ) {
+        string soft = node.getProp ("soft");
+        string kind_name = node.getProp ("kind");
+        string name = node.getProp ("name");
+        if (name.empty())
+          name = node.getProp ("package");
+
+        string source_alias = node.getProp ("channel");
+        if (source_alias.empty())
+          source_alias = "@System";
+
+        if (name.empty())
+        {
+          cerr << "transact need 'name' parameter" << endl;
+          return;
+        }
+
+        PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
+        if (poolItem) {
+          zypp::solver::detail::SolverQueueItemLock_Ptr lock =
+              new zypp::solver::detail::SolverQueueItemLock(pool, poolItem, (soft.empty() ? false : true));
+          solverQueue.push_back (lock);
+        }
+        else {
+          cerr << "Unknown item " << source_alias << "::" << name << endl;
+        }
+      } else if ( node.name == "addQueueUpdate" ) {
+        string kind_name = node.getProp ("kind");
+        string name = node.getProp ("name");
+        if (name.empty())
+          name = node.getProp ("package");
+
+        string source_alias = node.getProp ("channel");
+        if (source_alias.empty())
+          source_alias = "@System";
+
+        if (name.empty())
+        {
+          cerr << "transact need 'name' parameter" << endl;
+          return;
+        }
+
+        PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
+        if (poolItem) {
+          zypp::solver::detail::SolverQueueItemUpdate_Ptr lock =
+              new zypp::solver::detail::SolverQueueItemUpdate(pool, poolItem);
+          solverQueue.push_back (lock);
+        }
+        else {
+          cerr << "Unknown item " << source_alias << "::" << name << endl;
+        }
+      } else if ( node.name == "addQueueInstallOneOf" ) {
+        zypp::solver::detail::PoolItemList poolItemList;
+        for ( const auto &child : node.children ) {
+          if ( child->name == "item" ) {
+            string kind_name = child->getProp ("kind");
+            string name = child->getProp ("name");
+            if (name.empty())
+              name = child->getProp ("package");
+
+            string source_alias = child->getProp ("channel");
+            if (source_alias.empty())
+              source_alias = "@System";
+
+            if (name.empty()) {
+              cerr << "transact need 'name' parameter" << endl;
             } else {
-                // Checking all resolvables
-                isSatisfied (kind_name);
-            }
-	} else if (node->equals ("availablelocales")) {
-	    RESULT << "Available locales: ";
-	    LocaleSet locales = pool.getAvailableLocales();
-	    for (LocaleSet::const_iterator it = locales.begin(); it != locales.end(); ++it) {
-		if (it != locales.begin()) std::cout << ", ";
-		std::cout << it->code();
-	    }
-	    std::cout << endl;
-
-	} else if (node->equals ("keep")) {
-	    string kind_name = node->getProp ("kind");
-	    string name = node->getProp ("name");
-	    if (name.empty())
-		name = node->getProp ("package");
-
-	    string source_alias = node->getProp ("channel");
-	    if (source_alias.empty())
-		source_alias = "@System";
-
-	    if (name.empty())
-	    {
-		cerr << "transact need 'name' parameter" << endl;
-		return;
-	    }
-
-            PoolItem poolItem;
-
-            poolItem = get_poolItem( source_alias, name, kind_name );
-
-            if (poolItem) {
-                // first: set anything
-                if (source_alias == "@System") {
-                    poolItem.status().setToBeUninstalled( ResStatus::USER );
-                }
-                else {
-                    poolItem.status().setToBeInstalled( ResStatus::USER );
-                }
-                // second: keep old state
-                poolItem.status().setTransact( false, ResStatus::USER );
-            }
-            else {
+              PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
+              if (poolItem) {
+                poolItemList.push_back(poolItem);
+              }
+              else {
                 cerr << "Unknown item " << source_alias << "::" << name << endl;
+              }
             }
-	} else if (node->equals ("addQueueInstall")) {
-	    string name = node->getProp ("name");
-	    string soft = node->getProp ("soft");
-
-	    if (name.empty())
-	    {
-		cerr << "addQueueInstall need 'name' parameter" << endl;
-		return;
-	    }
-            zypp::solver::detail::SolverQueueItemInstall_Ptr install =
-                new zypp::solver::detail::SolverQueueItemInstall(pool, name, (soft.empty() ? false : true));
-            solverQueue.push_back (install);
-	} else if (node->equals ("addQueueDelete")) {
-	    string name = node->getProp ("name");
-	    string soft = node->getProp ("soft");
-
-	    if (name.empty())
-	    {
-		cerr << "addQueueDelete need 'name' parameter" << endl;
-		return;
-	    }
-            zypp::solver::detail::SolverQueueItemDelete_Ptr del =
-                new zypp::solver::detail::SolverQueueItemDelete(pool, name, (soft.empty() ? false : true));
-            solverQueue.push_back (del);
-	} else if (node->equals ("addQueueLock")) {
-	    string soft = node->getProp ("soft");
-	    string kind_name = node->getProp ("kind");
-	    string name = node->getProp ("name");
-	    if (name.empty())
-		name = node->getProp ("package");
-
-	    string source_alias = node->getProp ("channel");
-	    if (source_alias.empty())
-		source_alias = "@System";
-
-	    if (name.empty())
-	    {
-		cerr << "transact need 'name' parameter" << endl;
-		return;
-	    }
-
-            PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
-            if (poolItem) {
-                zypp::solver::detail::SolverQueueItemLock_Ptr lock =
-                    new zypp::solver::detail::SolverQueueItemLock(pool, poolItem, (soft.empty() ? false : true));
-                solverQueue.push_back (lock);
-            }
-            else {
-                cerr << "Unknown item " << source_alias << "::" << name << endl;
-            }
-	} else if (node->equals ("addQueueUpdate")) {
-	    string kind_name = node->getProp ("kind");
-	    string name = node->getProp ("name");
-	    if (name.empty())
-		name = node->getProp ("package");
-
-	    string source_alias = node->getProp ("channel");
-	    if (source_alias.empty())
-		source_alias = "@System";
-
-	    if (name.empty())
-	    {
-		cerr << "transact need 'name' parameter" << endl;
-		return;
-	    }
-
-            PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
-            if (poolItem) {
-                zypp::solver::detail::SolverQueueItemUpdate_Ptr lock =
-                    new zypp::solver::detail::SolverQueueItemUpdate(pool, poolItem);
-                solverQueue.push_back (lock);
-            }
-            else {
-                cerr << "Unknown item " << source_alias << "::" << name << endl;
-            }
-	} else if (node->equals ("addQueueInstallOneOf")) {
-            XmlNode_Ptr requestNode = node->children();
-            zypp::solver::detail::PoolItemList poolItemList;
-            while (requestNode) {
-                if (requestNode->equals("item")) {
-                string kind_name = requestNode->getProp ("kind");
-                string name = requestNode->getProp ("name");
-                if (name.empty())
-                    name = requestNode->getProp ("package");
-
-                string source_alias = requestNode->getProp ("channel");
-                if (source_alias.empty())
-                    source_alias = "@System";
-
-                if (name.empty())
-                {
-                    cerr << "transact need 'name' parameter" << endl;
-                } else {
-                    PoolItem poolItem = get_poolItem( source_alias, name, kind_name );
-                    if (poolItem) {
-                        poolItemList.push_back(poolItem);
-                    }
-                    else {
-                        cerr << "Unknown item " << source_alias << "::" << name << endl;
-                    }
-                }
-                } else {
-                    cerr << "addQueueInstallOneOf: cannot find flag 'item'" << endl;
-                }
-                requestNode = requestNode->next();
-            }
-            if (poolItemList.empty()) {
-                cerr << "addQueueInstallOneOf has an empty list" << endl;
-                return;
-            } else {
-                zypp::solver::detail::SolverQueueItemInstallOneOf_Ptr install =
-                    new zypp::solver::detail::SolverQueueItemInstallOneOf(pool, poolItemList);
-                solverQueue.push_back (install);
-            }
-	} else if (node->equals ("createTestcase")) {
-	    string path = node->getProp ("path");
-            if (path.empty())
-                path = "./solverTestcase";
-            Testcase testcase (path);
-            testcase.createTestcase (*resolver);
-
-	} else {
-	    ERR << "Unknown tag '" << node->name() << "' in trial" << endl;
-	    cerr << "Unknown tag '" << node->name() << "' in trial" << endl;
-	}
-
-	node = node->next();
+          } else {
+            cerr << "addQueueInstallOneOf: cannot find flag 'item'" << endl;
+          }
+        }
+        if (poolItemList.empty()) {
+          cerr << "addQueueInstallOneOf has an empty list" << endl;
+          return;
+        } else {
+          zypp::solver::detail::SolverQueueItemInstallOneOf_Ptr install =
+              new zypp::solver::detail::SolverQueueItemInstallOneOf(pool, poolItemList);
+          solverQueue.push_back (install);
+        }
+      } else if ( node.name == "createTestcase" ) {
+        string path = node.getProp ("path");
+        if (path.empty())
+          path = "./solverTestcase";
+        Testcase testcase (path);
+        testcase.createTestcase (*resolver);
+      } else {
+        ERR << "Unknown tag '" << node.name << "' in trial" << endl;
+        cerr << "Unknown tag '" << node.name << "' in trial" << endl;
+      }
     }
 
     bool success = false;
-
     if (!doUpdate) {
-        if (verify) {
-            success = resolver->verifySystem ();
-	    print_pool( resolver );
-        } else {
-            if (!solverQueue.empty())
-                success = resolver->resolveQueue(solverQueue);
-            else
-                success = resolver->resolvePool();
-        }
-        if (success) {
-            print_solution (pool, instorder);
-        } else {
-            RESULT << "No valid solution found." << endl;
-            print_problems( resolver );
-        }
+      if (verify) {
+        success = resolver->verifySystem ();
+        print_pool( resolver );
+      } else {
+        if (!solverQueue.empty())
+          success = resolver->resolveQueue(solverQueue);
+        else
+          success = resolver->resolvePool();
+      }
+      if (success) {
+        print_solution (pool, instorder);
+      } else {
+        RESULT << "No valid solution found." << endl;
+        print_problems( resolver );
+      }
     }
-
-}
-
-
-//---------------------------------------------------------------------------------------------------------------------
-
-static void
-parse_xml_test (XmlNode_Ptr node)
-{
-    if (!node->equals("test")) {
-	ZYPP_THROW (Exception("Node not 'test' in parse_xml_test():"+node->name()));
-    }
-
-    node = node->children();
-
-    while (node) {
-	if (node->type() == XML_ELEMENT_NODE) {
-	    if (node->equals( "setup" )) {
-		parse_xml_setup( node );
-	    } else if (node->equals( "trial" )) {
-                ResPool pool = God->pool();
-		parse_xml_trial( node, pool );
-	    } else {
-		cerr << "Unknown tag '" << node->name() << "' in test" << endl;
-	    }
-	}
-
-	node = node->next();
-    }
-}
-
-
-static void
-process_xml_test_file (const Pathname & filename)
-{
-    xmlDocPtr xml_doc;
-    XmlNode_Ptr root;
-
-    xml_doc = xmlParseFile (filename.c_str());
-    if (xml_doc == NULL) {
-	cerr << "Can't parse test file '" << filename << "'" << endl;
-	exit (0);
-    }
-
-    root = new XmlNode (xmlDocGetRootElement (xml_doc));
-
-    DBG << "Parsing file '" << filename << "'" << endl;
-
-    parse_xml_test (root);
-
-    xmlFreeDoc (xml_doc);
 }
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -1630,7 +1291,7 @@ int cycleinfo( std::string_view cycle_r )
 int
 main (int argc, char *argv[])
 {
-  Pathname testFile( "solver-test.xml" );
+  Pathname testPath(".");
 
   for ( --argc,++argv; argc; --argc,++argv )
   {
@@ -1649,13 +1310,13 @@ main (int argc, char *argv[])
     }
     else
     {
-      testFile =  *argv;
+      testPath =  *argv;
     }
   }
 
-  if ( ! PathInfo(testFile).isFile() )
+  if ( ! PathInfo(testPath).isDir() )
   {
-    cerr << "Usage: deptestomatic [-h|-v] [solver-test.xml]" << endl;
+    cerr << "Usage: deptestomatic [-h|-v] [testdir]" << endl;
     exit (0);
   }
 
@@ -1673,10 +1334,22 @@ main (int argc, char *argv[])
   KeyRingCallbacks keyring_callbacks;
   DigestCallbacks digest_callbacks;
 
-  globalPath = testFile.dirname();
-
   DBG << "init_libzypp() done" << endl;
-  process_xml_test_file ( testFile );
+
+  std::string error;
+  zypp::misc::testcase::LoadTestcase loader;
+  if ( !loader.loadTestcaseAt( testPath, &error) ) {
+    cerr << "Loading the testcase failed with error: " << error << std::endl;
+    return 1;
+  }
+
+  testcaseSetup = &loader.setupInfo();
+  execute_setup( loader );
+
+  for ( const auto &trial : loader.trialInfo() ) {
+    ResPool pool = God->pool();
+    execute_trial( loader.setupInfo(), trial, pool );
+  }
 
   return 0;
 }
