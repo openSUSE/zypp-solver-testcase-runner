@@ -812,6 +812,11 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
       } else if ( node.name == "upgradeRepo" ) {
         vector<string> names;
         str::split( node.getProp ("name"), back_inserter(names), "," );
+	if ( names.empty() ) {
+	  ERR << "upgradeRepo  'name' empty!" << endl;
+	  cerr << "upgradeRepo 'name' empty!" << endl;
+	  exit( 1 );
+	}
         for (unsigned i=0; i < names.size(); ++i) {
           Repository r = satpool.reposFind( names[i] );
           if ( ! r )
