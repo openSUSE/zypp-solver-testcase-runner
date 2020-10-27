@@ -681,6 +681,11 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
       RESULT << "setRequestedLocales " << localesTracker.added() << endl;
     }
 
+    // Vendor
+    for ( const auto & vlist : setup.vendorLists ) {
+      VendorAttr::noTargetInstance().addVendorList( vlist );
+    }
+
     // AutoInstalled
     zypp::sat::Pool::instance().setAutoInstalled( setup.autoinstalled );
 
@@ -1338,7 +1343,7 @@ main (int argc, char *argv[])
 
   KeyRingCallbacks keyring_callbacks;
   DigestCallbacks digest_callbacks;
-
+  VendorAttr::noTargetInstance() = VendorAttr();	// unset any local system settings
   DBG << "init_libzypp() done" << endl;
 
   std::string error;
