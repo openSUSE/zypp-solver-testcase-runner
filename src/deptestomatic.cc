@@ -125,7 +125,7 @@ public:
 static std::ostream &
 printRes ( std::ostream & str, ResObject::constPtr r )
 {
-  if ( testcaseSetup->show_mediaid ) {
+  if ( testcaseSetup->show_mediaid() ) {
 	Resolvable::constPtr res = r;
 	Package::constPtr pkg = asKind<Package>(res);
 	if (pkg) str << "[" << pkg->mediaNr() << "]";
@@ -600,23 +600,23 @@ static void execute_setup( const zypp::misc::testcase::LoadTestcase &testcase )
 
   RESULT << "Read and applied setup from testcase" << std::endl;
 
-  for ( const auto &fi : setup.forceInstallTasks ) {
+  for ( const auto &fi : setup.forceInstallTasks() ) {
     PoolItem poolItem;
 
-    poolItem = get_poolItem( fi.channel, fi.package, fi.kind );
+    poolItem = get_poolItem( fi.channel(), fi.package(), fi.kind() );
     if ( poolItem )
     {
-      RESULT << "Force-installing " << fi.package << " from channel " << fi.channel << endl;;
+      RESULT << "Force-installing " << fi.package() << " from channel " << fi.channel() << endl;;
 
       poolItem.status().setToBeInstalled( ResStatus::USER );
     }
     else
     {
-      cerr << "Unknown package " << fi.channel << "::" << fi.package << endl;
+      cerr << "Unknown package " << fi.channel() << "::" << fi.package() << endl;
     }
   }
 
-  if( setup.set_licence )
+  if( setup.set_licence() )
     set_licence_Pool();
 }
 
@@ -652,26 +652,26 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
 
     MyResolver_Ptr resolver( new zypp::solver::detail::ResolverInternal( pool ) );
     // set solver flags:
-    resolver->setFocus				( setup.resolverFocus == ResolverFocus::Default ? ResolverFocus::Job : setup.resolverFocus ); // 'Default' would be our ZYppConf value
-    resolver->setIgnoreAlreadyRecommended	( setup.ignorealreadyrecommended );
-    resolver->setOnlyRequires			( setup.onlyRequires );
-    resolver->setForceResolve			( setup.forceResolve );
+    resolver->setFocus				( setup.resolverFocus() == ResolverFocus::Default ? ResolverFocus::Job : setup.resolverFocus() ); // 'Default' would be our ZYppConf value
+    resolver->setIgnoreAlreadyRecommended	( setup.ignorealreadyrecommended() );
+    resolver->setOnlyRequires			( setup.onlyRequires() );
+    resolver->setForceResolve			( setup.forceResolve() );
 
-    resolver->setCleandepsOnRemove		( setup.cleandepsOnRemove );
+    resolver->setCleandepsOnRemove		( setup.cleandepsOnRemove() );
 
-    resolver->setAllowDowngrade			( setup.allowDowngrade );
-    resolver->setAllowNameChange		( setup.allowNameChange );
-    resolver->setAllowArchChange		( setup.allowArchChange );
-    resolver->setAllowVendorChange		( setup.allowVendorChange );
+    resolver->setAllowDowngrade			( setup.allowDowngrade() );
+    resolver->setAllowNameChange		( setup.allowNameChange() );
+    resolver->setAllowArchChange		( setup.allowArchChange() );
+    resolver->setAllowVendorChange		( setup.allowVendorChange() );
 
-    resolver->dupSetAllowDowngrade		( setup.dupAllowDowngrade );
-    resolver->dupSetAllowNameChange		( setup.dupAllowNameChange );
-    resolver->dupSetAllowArchChange		( setup.dupAllowArchChange );
-    resolver->dupSetAllowVendorChange		( setup.dupAllowVendorChange );
+    resolver->dupSetAllowDowngrade		( setup.dupAllowDowngrade() );
+    resolver->dupSetAllowNameChange		( setup.dupAllowNameChange() );
+    resolver->dupSetAllowArchChange		( setup.dupAllowArchChange() );
+    resolver->dupSetAllowVendorChange		( setup.dupAllowVendorChange() );
 
     // RequestedLocales
     {
-      base::SetTracker<LocaleSet> localesTracker = setup.localesTracker;
+      base::SetTracker<LocaleSet> localesTracker = setup.localesTracker();
       localesTracker.removed().insert( localesTracker.current().begin(), localesTracker.current().end() );
       zypp::sat::Pool::instance().initRequestedLocales( localesTracker.removed() );
       RESULT << "initRequestedLocales " << localesTracker.removed() << endl;
@@ -682,33 +682,33 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
     }
 
     // Vendor
-    for ( const auto & vlist : setup.vendorLists ) {
+    for ( const auto & vlist : setup.vendorLists() ) {
       VendorAttr::noTargetInstance().addVendorList( vlist );
     }
 
     // AutoInstalled
-    zypp::sat::Pool::instance().setAutoInstalled( setup.autoinstalled );
+    zypp::sat::Pool::instance().setAutoInstalled( setup.autoinstalled() );
 
     // set modaliases
-    RESULT << "Load " << setup.modaliasList.size() << " modaliases." << endl;
-    target::Modalias::instance().modaliasList( setup.modaliasList );
+    RESULT << "Load " << setup.modaliasList().size() << " modaliases." << endl;
+    target::Modalias::instance().modaliasList( setup.modaliasList() );
 
     // set multiversion packages
-    RESULT << "Load " << setup.multiversionSpec.size() << " multiversion specs." << endl;
-    ZConfig::instance().multiversionSpec( setup.multiversionSpec );
+    RESULT << "Load " << setup.multiversionSpec().size() << " multiversion specs." << endl;
+    ZConfig::instance().multiversionSpec( setup.multiversionSpec() );
 
-    for ( const auto &node: trial.nodes ) {
-      if ( node.name == "note" ) {
-        cout << "NOTE: " << node.value << endl;
-      } else if ( node.name == "vverify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
+    for ( const auto &node: trial.nodes() ) {
+      if ( node.name() == "note" ) {
+        cout << "NOTE: " << node.value() << endl;
+      } else if ( node.name() == "vverify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
         verify = true;
-      } else if ( node.name == "current" ) {
+      } else if ( node.name() == "current" ) {
         // unsupported
         // string source_alias = node.getProp("channel");
-      } else if ( node.name == "subscribe" ) {
+      } else if ( node.name() == "subscribe" ) {
         // unsupported
         // string source_alias = node.getProp("channel");
-      } else if ( node.name == "install" ) {
+      } else if ( node.name() == "install" ) {
 
         string source_alias = node.getProp ("channel");
         string name = node.getProp ("name");
@@ -738,7 +738,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           cerr << "Unknown item " << source_alias << "::" << name << endl;
           exit( 1 );
         }
-      } else if ( node.name == "uninstall") {
+      } else if ( node.name() == "uninstall") {
 
         string name = node.getProp ("name");
         if (name.empty())
@@ -765,24 +765,24 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           cerr << "Unknown system item " << name << endl;
           exit( 1 );
         }
-      } else if ( node.name == "distupgrade" ) {
+      } else if ( node.name() == "distupgrade" ) {
 
         RESULT << "Doing distribution upgrade ..." << endl;
         resolver->doUpgrade();
 
         print_pool( resolver, MARKER );
-      } else if ( node.name == "update"|| node.name == "verify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
+      } else if ( node.name() == "update"|| node.name() == "verify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
 
         RESULT << "Doing update ..." << endl;
         resolver->resolvePool();
         resolver->doUpdate();
         print_solution (pool, instorder);
         doUpdate = true;
-      } else if ( node.name == "instorder" || node.name == "mediaorder" /*legacy*/ ) {
+      } else if ( node.name() == "instorder" || node.name() == "mediaorder" /*legacy*/ ) {
 
         RESULT << "Calculating installation order ..." << endl;
         instorder = true;
-      } else if ( node.name == "whatprovides" ) {
+      } else if ( node.name() == "whatprovides" ) {
 
         string kind_name = node.getProp ("kind");
         string prov_name = node.getProp ("provides");
@@ -800,21 +800,21 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
             cout << (*iter) << endl;
           }
         }
-      } else if ( node.name == "addConflict" ) {
+      } else if ( node.name() == "addConflict" ) {
         vector<string> names;
         str::split( node.getProp ("name"), back_inserter(names), "," );
         const auto &kind = string2kind (node.getProp ("kind"));
         for (unsigned i=0; i < names.size(); ++i) {
           resolver->addExtraConflict(Capability (names[i], kind));
         }
-      } else if ( node.name == "addRequire" ) {
+      } else if ( node.name() == "addRequire" ) {
         vector<string> names;
         str::split( node.getProp ("name"), back_inserter(names), "," );
         const auto &kind = string2kind (node.getProp ("kind"));
         for (unsigned i=0; i < names.size(); ++i) {
           resolver->addExtraRequire(Capability (names[i], kind ));
         }
-      } else if ( node.name == "upgradeRepo" ) {
+      } else if ( node.name() == "upgradeRepo" ) {
         vector<string> names;
         str::split( node.getProp ("name"), back_inserter(names), "," );
 	if ( names.empty() ) {
@@ -833,7 +833,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           else
             resolver->addUpgradeRepo( r );
         }
-      } else if ( node.name == "reportproblems" ) {
+      } else if ( node.name() == "reportproblems" ) {
         bool success;
         if (!solverQueue.empty())
           success = resolver->resolveQueue(solverQueue);
@@ -846,7 +846,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         else {
           print_problems( resolver );
         }
-      } else if ( node.name == "takesolution" ) {
+      } else if ( node.name() == "takesolution" ) {
         string problemNrStr = node.getProp ("problem");
         string solutionNrStr = node.getProp ("solution");
         assert (!problemNrStr.empty());
@@ -907,7 +907,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
             }
           }
         }
-      } else if ( node.name == "showpool" ) {
+      } else if ( node.name() == "showpool" ) {
         resolver->resolvePool();
         string prefix = node.getProp ("prefix");
         string all = node.getProp ("all");
@@ -915,7 +915,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         string verbose = node.getProp ("verbose");
         print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
 
-      } else if ( node.name == "showstatus" ) {
+      } else if ( node.name() == "showstatus" ) {
         resolver->resolvePool();
         string prefix = node.getProp ("prefix");
         string all = node.getProp ("all");
@@ -923,7 +923,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         string verbose = node.getProp ("verbose");
         print_pool( resolver, "", true, "false", true );
 
-      } else if (node.name == "showselectable" ){
+      } else if (node.name() == "showselectable" ){
         Selectable::Ptr item;
         string kind_name = node.getProp ("kind");
         if ( kind_name.empty() )
@@ -934,11 +934,11 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           dumpOn(cout, *item);
         else
           cout << "Selectable '" << name << "' not valid" << endl;
-      } else if ( node.name == "graphic" ) {
+      } else if ( node.name() == "graphic" ) {
         RESULT << "<graphic> is no longer supported by deptestomatic" << endl;
-      } else if ( node.name == ("YOU") || node.name == ("PkgUI") ) {
+      } else if ( node.name() == ("YOU") || node.name() == ("PkgUI") ) {
         RESULT << "<YOU> or <PkgUI> are no longer supported by deptestomatic" << endl;
-      } else if ( node.name == "lock" ) {
+      } else if ( node.name() == "lock" ) {
         string source_alias = node.getProp ("channel");
         string package_name = node.getProp ("name");
         if (package_name.empty())
@@ -974,7 +974,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
             cerr << "Unknown package " << source_alias << "::" << package_name << endl;
           }
         }
-      } else if ( node.name == "validate" ) {
+      } else if ( node.name() == "validate" ) {
         string source_alias = node.getProp ("channel");
         string package_name = node.getProp ("name");
         if (package_name.empty())
@@ -1005,7 +1005,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           // Checking all resolvables
           isSatisfied (kind_name);
         }
-      } else if ( node.name == "availablelocales" ) {
+      } else if ( node.name() == "availablelocales" ) {
         RESULT << "Available locales: ";
         LocaleSet locales = pool.getAvailableLocales();
         for (LocaleSet::const_iterator it = locales.begin(); it != locales.end(); ++it) {
@@ -1014,7 +1014,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         }
         std::cout << endl;
 
-      } else if ( node.name == "keep" ) {
+      } else if ( node.name() == "keep" ) {
         string kind_name = node.getProp ("kind");
         string name = node.getProp ("name");
         if (name.empty())
@@ -1048,7 +1048,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         else {
           cerr << "Unknown item " << source_alias << "::" << name << endl;
         }
-      } else if ( node.name == "addQueueInstall" ) {
+      } else if ( node.name() == "addQueueInstall" ) {
         string name = node.getProp ("name");
         string soft = node.getProp ("soft");
 
@@ -1059,7 +1059,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         zypp::solver::detail::SolverQueueItemInstall_Ptr install =
             new zypp::solver::detail::SolverQueueItemInstall(pool, name, (soft.empty() ? false : true));
         solverQueue.push_back (install);
-      } else if ( node.name == "addQueueDelete" ) {
+      } else if ( node.name() == "addQueueDelete" ) {
         string name = node.getProp ("name");
         string soft = node.getProp ("soft");
 
@@ -1070,7 +1070,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         zypp::solver::detail::SolverQueueItemDelete_Ptr del =
             new zypp::solver::detail::SolverQueueItemDelete(pool, name, (soft.empty() ? false : true));
         solverQueue.push_back (del);
-      } else if ( node.name == "addQueueLock" ) {
+      } else if ( node.name() == "addQueueLock" ) {
         string soft = node.getProp ("soft");
         string kind_name = node.getProp ("kind");
         string name = node.getProp ("name");
@@ -1096,7 +1096,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         else {
           cerr << "Unknown item " << source_alias << "::" << name << endl;
         }
-      } else if ( node.name == "addQueueUpdate" ) {
+      } else if ( node.name() == "addQueueUpdate" ) {
         string kind_name = node.getProp ("kind");
         string name = node.getProp ("name");
         if (name.empty())
@@ -1121,10 +1121,10 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         else {
           cerr << "Unknown item " << source_alias << "::" << name << endl;
         }
-      } else if ( node.name == "addQueueInstallOneOf" ) {
+      } else if ( node.name() == "addQueueInstallOneOf" ) {
         zypp::solver::detail::PoolItemList poolItemList;
-        for ( const auto &child : node.children ) {
-          if ( child->name == "item" ) {
+        for ( const auto &child : node.children() ) {
+          if ( child->name() == "item" ) {
             string kind_name = child->getProp ("kind");
             string name = child->getProp ("name");
             if (name.empty())
@@ -1157,15 +1157,15 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
               new zypp::solver::detail::SolverQueueItemInstallOneOf(pool, poolItemList);
           solverQueue.push_back (install);
         }
-      } else if ( node.name == "createTestcase" ) {
+      } else if ( node.name() == "createTestcase" ) {
         string path = node.getProp ("path");
         if (path.empty())
           path = "./solverTestcase";
         Testcase testcase (path);
         testcase.createTestcase (*resolver);
       } else {
-        ERR << "Unknown tag '" << node.name << "' in trial" << endl;
-        cerr << "Unknown tag '" << node.name << "' in trial" << endl;
+        ERR << "Unknown tag '" << node.name() << "' in trial" << endl;
+        cerr << "Unknown tag '" << node.name() << "' in trial" << endl;
       }
     }
 
