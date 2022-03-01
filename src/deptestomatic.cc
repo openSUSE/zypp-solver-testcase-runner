@@ -52,6 +52,7 @@
 #include "zypp/ZConfig.h"
 
 #include "zypp/base/String.h"
+#include "zypp/base/StringV.h"
 #include "zypp/base/LogTools.h"
 #include "zypp/base/LogControl.h"
 #include "zypp/base/Exception.h"
@@ -1230,22 +1231,6 @@ inline std::ostream & operator<<( std::ostream & str, CycleOrder obj )
 }
 
 
-inline size_t split( std::vector<std::string_view> & words_r, std::string_view line_r, std::string_view sepchars_r = " \t" )
-{
-  size_t ret = 0;
-  while ( ! line_r.empty() ) {
-    std::string_view::size_type p = line_r.find_first_not_of( sepchars_r );
-    if ( p == std::string_view::npos )
-      break;
-    line_r = line_r.substr( p );
-    p = line_r.find_first_of( sepchars_r );
-    words_r.push_back( p == std::string_view::npos ? line_r : line_r.substr( 0, p ) );
-    ++ret;
-    line_r = line_r.substr( p );
-  }
-  return ret;
-}
-
 inline bool addhexc2num( CycleOrder::Integral & num_r, char ch_r )
 {
   if ( '0' <= ch_r && ch_r <= '9' )
@@ -1275,7 +1260,9 @@ inline CycleOrder cycleOrder( std::string_view input_r )
 int cycleinfo( std::string_view cycle_r )
 {
   std::vector<std::string_view> words;
-  if ( split( words, cycle_r ) <= 2 ||  words[0] != "cycle:" || words[1] != "-->" ) {
+  strv::split( cycle_r , [&words]( std::string_view word ) { words.push_back( word ); } );
+
+  if ( words.size() <= 2 ||  words[0] != "cycle:" || words[1] != "-->" ) {
     cerr << "Parse cycle OOPS: " << words << endl;
     return 1;
   }
