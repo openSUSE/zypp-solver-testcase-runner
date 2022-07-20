@@ -213,7 +213,7 @@ List of known tags. See http://old-en.opensuse.org/Libzypp/Testsuite_solver for 
  * \li source::alias
  * \li ResObject::constPtr as fallback.
 */
-struct KNEAOrder : public std::binary_function<PoolItem,PoolItem,bool>
+struct KNEAOrder
 {
     // NOTE: operator() provides LESS semantics to order the set.
     // So LESS means 'prior in set'. We want 'better' archs and
