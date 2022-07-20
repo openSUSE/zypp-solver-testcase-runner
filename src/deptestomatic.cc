@@ -246,7 +246,7 @@ struct KNEAOrder : public std::binary_function<PoolItem,PoolItem,bool>
 
 typedef std::set<PoolItem, KNEAOrder> PoolItemOrderSet;
 
-struct Unique : public resfilter::PoolItemFilterFunctor
+struct Unique
 {
     PoolItemOrderSet itemset;
 
@@ -354,7 +354,7 @@ static void print_problems( MyResolver_Ptr resolver )
 
 //---------------------------------------------------------------------------------------------------------------------
 
-struct IsStatisfied : public resfilter::ResObjectFilterFunctor
+struct IsStatisfied
 {
     Resolvable::Kind kind;
 
@@ -394,7 +394,7 @@ void isSatisfied (const string & kind_name) {
 
 
 //---------------------------------------------------------------------------------------------------------------------
-struct FindPackage : public resfilter::ResObjectFilterFunctor
+struct FindPackage
 {
     PoolItem poolItem;
     Resolvable::Kind kind;
@@ -499,7 +499,7 @@ get_providing_poolItems (const string & prov_name, const string & kind_name = ""
 
 typedef multimap<string,PoolItem> ItemMap;
 
-struct SortItem : public resfilter::PoolItemFilterFunctor
+struct SortItem
 {
     ItemMap sorted;
     bool _show_all;
