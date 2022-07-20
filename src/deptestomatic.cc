@@ -267,7 +267,7 @@ uniquelyInstalled (const ResPool & pool)
     invokeOnEach( pool.begin( ),
 		  pool.end ( ),
                   functor::chain( resfilter::ByUninstalled (), resfilter::ByTransact() ),
-		  functor::functorRef<bool,PoolItem> (info) );
+		  std::ref(info) );
     return info.itemset;
 }
 
@@ -281,7 +281,7 @@ uniquelyUninstalled (const ResPool & pool)
     invokeOnEach( pool.begin( ),
 		  pool.end ( ),
                   functor::chain( resfilter::ByInstalled (), resfilter::ByTransact() ),
-		  functor::functorRef<bool,PoolItem> (info) );
+		  std::ref(info) );
     return info.itemset;
 }
 
@@ -381,14 +381,14 @@ void isSatisfied (const string & kind_name) {
         IsStatisfied info (ResKind::package);
         invokeOnEach( God->pool().begin( ),
                       God->pool().end ( ),
-		      functor::functorRef<bool,PoolItem> (info) );
+		      std::ref(info) );
     } else {
         Resolvable::Kind kind = string2kind (kind_name);
 	IsStatisfied info (kind);
 
 	invokeOnEach( God->pool().byKindBegin( kind ),
 		      God->pool().byKindEnd( kind ),
-		      functor::functorRef<bool,PoolItem> (info) );
+		      std::ref(info) );
     }
 }
 
@@ -412,6 +412,11 @@ struct FindPackage
     {
     }
 
+    void _remember( PoolItem p )
+    {
+      poolItem = p;
+    }
+
     bool operator()( PoolItem p)
     {
 	if (arch_set && arch != p->arch()) {				// if arch requested, force this arch
@@ -422,18 +427,15 @@ struct FindPackage
 	}
 
 	if (edition_set) {
-	    if (p->edition().match( edition ) == 0) {			// if edition requested, force this edition
-		poolItem = p;
-		return false;
-	    }
-	    return true;
+	    if (p->edition().match( edition ) != 0)
+	      return true;
 	}
 
 	if (!poolItem							// none yet
 	    || (poolItem->arch().compare( p->arch() ) < 0)		// new has better arch
 	    || (poolItem->edition().compare( p->edition() ) < 0))	// new has better edition
 	{
-	    poolItem = p;
+	    _remember( p );
 	}
 	return true;
     }
@@ -451,14 +453,14 @@ get_poolItem (const string & source_alias, const string & package_name, const st
 	invokeOnEach( God->pool().byIdentBegin( kind,package_name ),
 		      God->pool().byIdentEnd( kind,package_name ),
 		      resfilter::ByRepository(source_alias),
-		      functor::functorRef<bool,PoolItem> (info) );
+		      std::ref(info) );
 
 	poolItem = info.poolItem;
         if (!poolItem) {
             // try to find the resolvable over all channel. This is useful for e.g. languages
             invokeOnEach( God->pool().byIdentBegin( kind,package_name ),
                           God->pool().byIdentEnd( kind,package_name ),
-                          functor::functorRef<bool,PoolItem> (info) );
+                          std::ref(info) );
             poolItem = info.poolItem;
         }
     }
@@ -532,7 +534,7 @@ print_pool( MyResolver_Ptr resolver, const string & prefix = "", bool show_all =
     cout << "Current pool: " <<  God->pool().size() << endl;
     invokeOnEach( God->pool().begin( ),
 		  God->pool().end ( ),
-		  functor::functorRef<bool,PoolItem> (info) );
+		  std::ref(info) );
 
     int count = 0;
     for (ItemMap::const_iterator it = info.sorted.begin(); it != info.sorted.end(); ++it) {
@@ -577,7 +579,7 @@ set_licence_Pool()
 	SortItem info( true );
 	invokeOnEach( God->pool().begin( ),
 		  God->pool().end ( ),
-		  functor::functorRef<bool,PoolItem> (info) );
+		  std::ref(info) );
 
     for (ItemMap::const_iterator it = info.sorted.begin(); it != info.sorted.end(); ++it) {
 		it->second.status().setLicenceConfirmed();
@@ -730,7 +732,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
 
         poolItem = get_poolItem( source_alias, name, kind_name, version, release, architecture );
         if (poolItem) {
-          RESULT << "Installing "
+          RESULT << "Installing " << poolItem
                  << ((poolItem->kind() != ResKind::package) ? (poolItem->kind().asString() + ":") : "")
                  << name
                  << (version.empty()?"":(string("-")+poolItem->edition().version()))
@@ -962,7 +964,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           if ( item )
           {
             item->setStatus( item->hasInstalledObj() ? ui::S_Protected : ui::S_Taboo );
-            RESULT << "Locking " << item << endl;
+	    item->setStatus( ui::S_Taboo );
           }
           else
           {
@@ -1038,7 +1040,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
 
         PoolItem poolItem;
 
-        poolItem = get_poolItem( source_alias, name, kind_name );
+        poolItem = get_poolItem( source_alias, name, kind_name, node.getProp ("version"), node.getProp ("release") );
 
         if (poolItem) {
           // first: set anything
