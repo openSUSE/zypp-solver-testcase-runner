@@ -716,8 +716,21 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
       } else if ( node.name() == "subscribe" ) {
         // unsupported
         // string source_alias = node.getProp("channel");
-      } else if ( node.name() == "install" ) {
-
+      } else if ( str::hasPrefix( node.name(), "install" ) && ( node.name().size() == 7 || node.name()[7] == ' ' ) ) {
+        if ( node.name().size() > 7 ) {
+          // job: install patch:openSUSE-SLE-15.4-2022-2831
+          // as convenience for editing testcases
+          std::string spec { str::trim( node.name().substr(8) ) };
+          Capability cap { Capability::guessPackageSpec( spec ) };
+          OSD << "Guessed " << cap << std::endl
+              << "   from " << spec << std::endl;
+          if ( cap )
+            resolver->addExtraRequire( cap );
+          else
+            cerr << "Unknown job item " << node.name() << endl;
+          continue;
+        }
+        // else:
         string source_alias = node.getProp ("channel");
         string name = node.getProp ("name");
         if (name.empty())
