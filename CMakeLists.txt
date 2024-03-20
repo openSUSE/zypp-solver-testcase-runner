@@ -40,8 +40,8 @@ SET( CMAKE_CXX_STANDARD ${ZYPPCOMMON_CXX_STANDARD} )
 SET( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -s -O3" )
 SET( CMAKE_C_FLAGS_RELEASE   "${CMAKE_C_FLAGS_RELEASE}   -s -O3" )
 
-SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Woverloaded-virtual -Wnon-virtual-dtor -fstack-protector -fvisibility-inlines-hidden" )
-SET( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -g -Wall -fstack-protector" )
+SET( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -g -Wall -Woverloaded-virtual -Wnon-virtual-dtor -fstack-protector -fvisibility-inlines-hidden" )
+SET( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -fpermissive -g -Wall -fstack-protector" )
 
 INCLUDE_DIRECTORIES(
   ${LIBXML2_INCLUDE_DIRS}
@@ -59,7 +59,7 @@ SET( SOURCES
 
 ADD_EXECUTABLE( deptestomatic ${HEADERS} ${SOURCES}  )
 
-TARGET_LINK_LIBRARIES( deptestomatic ${ZYPP_LIBRARY} )
+TARGET_LINK_LIBRARIES( deptestomatic solv ${ZYPP_LIBRARY} )
 
 INSTALL(
   TARGETS deptestomatic

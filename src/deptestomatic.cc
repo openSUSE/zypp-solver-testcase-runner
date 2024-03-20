@@ -124,26 +124,19 @@ public:
 //-----------------------------------------------------------------------------
 
 static std::ostream &
-printRes ( std::ostream & str, ResObject::constPtr r )
+printRes ( std::ostream & str, PoolItem pi )
 {
   if ( testcaseSetup->show_mediaid() ) {
-	Resolvable::constPtr res = r;
-	Package::constPtr pkg = asKind<Package>(res);
-	if (pkg) str << "[" << pkg->mediaNr() << "]";
-    }
-    if (r->kind() != ResKind::package)
-	str << r->kind() << ':';
-    str  << r->name() << '-' << r->edition();
-    if (r->arch() != "") {
-	str << '.' << r->arch();
-    }
-    string alias = r->repoInfo().alias();
-    if (!alias.empty()
-        && alias != "@System")
-    {
-        str << '[' << alias << ']';
-    }
-
+    str << "[" << pi.mediaNr() << "]";
+  }
+  auto st = pi.status();
+  if ( st.isInstalled() ) {
+    str << pi.asString();
+    if ( st.isOrphaned() )
+      str << " (orphaned)";
+  } else {
+    str << pi.asUserString();
+  }
     return str;
 }
 
@@ -286,13 +279,18 @@ uniquelyUninstalled (const ResPool & pool)
 }
 
 static void
-print_solution ( const ResPool & pool, bool instorder)
+print_solution ( const ResPool & pool, bool instorder, bool printKeept )
 {
     PoolItemOrderSet install = uniquelyInstalled(pool);
     PoolItemOrderSet uninstall = uniquelyUninstalled(pool);
 
     RESULT << "Solution :" << endl;
 
+    if ( printKeept ) {
+      for ( const auto & pi : ResPool::instance().filter( []( PoolItem pi_r ){ return pi_r.status().staysInstalled(); } ) ) {
+        RESULT << "keep "; printRes( cout, pi ); cout << endl;
+      }
+    }
     for (PoolItemOrderSet::const_iterator iter = install.begin(); iter != install.end(); iter++) {
         RESULT << "install "; printRes( cout,  *iter); cout << endl;
     }
@@ -323,6 +321,13 @@ print_solution ( const ResPool & pool, bool instorder)
     return;
 }
 
+#if ( WITH_PROOF )
+extern "C"
+{
+  #include "Proof.h"
+}
+#endif
+
 static void print_problems( MyResolver_Ptr resolver )
 {
   ResolverProblemList problems = resolver->problems();
@@ -350,6 +355,13 @@ static void print_problems( MyResolver_Ptr resolver )
     }
     RESULT << "------------------------------------" << endl;
   }
+
+#if ( WITH_PROOF )
+  RESULT << "Proof:" << endl;
+  RESULT << "====================================" << endl;
+  RESULT << doProof( resolver->get() ) << endl;
+  RESULT << "====================================" << endl;
+#endif
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -637,6 +649,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
     bool verify = false;
     bool doUpdate = false;
     bool instorder = false;
+    bool printKeept = false;
 
     DBG << "execute_trial()" << endl;
 
@@ -790,14 +803,14 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
 
         RESULT << "Doing distribution upgrade ..." << endl;
         resolver->doUpgrade();
-
+        printKeept = true; // in print solution
         print_pool( resolver, MARKER );
       } else if ( node.name() == "update"|| node.name() == "verify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
 
         RESULT << "Doing update ..." << endl;
         resolver->resolvePool();
         resolver->doUpdate();
-        print_solution (pool, instorder);
+        print_solution (pool, instorder, printKeept );
         doUpdate = true;
       } else if ( node.name() == "instorder" || node.name() == "mediaorder" /*legacy*/ ) {
 
@@ -935,7 +948,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         string get_licence = node.getProp ("getlicence");
         string verbose = node.getProp ("verbose");
         print_pool( resolver, prefix, !all.empty(), get_licence, !verbose.empty() );
-
+        printKeept = true; // in print solution
       } else if ( node.name() == "showstatus" ) {
         resolver->resolvePool();
         string prefix = node.getProp ("prefix");
@@ -1202,7 +1215,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           success = resolver->resolvePool();
       }
       if (success) {
-        print_solution (pool, instorder);
+        print_solution (pool, instorder, printKeept);
       } else {
         RESULT << "No valid solution found." << endl;
         print_problems( resolver );
