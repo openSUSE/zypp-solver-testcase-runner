@@ -735,7 +735,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           // as convenience for editing testcases
           std::string spec { str::trim( node.name().substr(8) ) };
           Capability cap { Capability::guessPackageSpec( spec ) };
-          OSD << "Guessed " << cap << std::endl
+          cerr << "Guessed " << cap << std::endl
               << "   from " << spec << std::endl;
           if ( cap )
             resolver->addExtraRequire( cap );
