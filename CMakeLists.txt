@@ -30,6 +30,13 @@ ELSE()
   )
 ENDIF()
 
+SET( CMAKE_MODULE_PATH
+    ${CMAKE_INSTALL_PREFIX}/${LIB}/cmake/Zypp/
+    ${CMAKE_INSTALL_PREFIX}/lib64/cmake/Zypp/
+    ${CMAKE_INSTALL_PREFIX}/lib/cmake/Zypp/
+    ${CMAKE_MODULE_PATH}
+)
+
 FIND_PACKAGE( Zypp REQUIRED )
 
 INCLUDE(ZyppCommon)

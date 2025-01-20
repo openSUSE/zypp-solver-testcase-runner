@@ -82,6 +82,8 @@
 
 #include "KeyRingCallbacks.h"
 
+#define WITH_PROOF 0
+
 using namespace std;
 using namespace zypp;
 using zypp::ui::Selectable;
