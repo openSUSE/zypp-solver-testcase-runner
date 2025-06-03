@@ -1227,17 +1227,40 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
 //---------------------------------------------------------------------------------------------------------------------
 
 // libsolv: order.c
+#define TYPE_BROKEN     (1<<0)
+#define TYPE_CON        (1<<1)
+
+/* uninstall edges */
+#define TYPE_REQ_UI     (1<<4)
+#define TYPE_PREREQ_UI  (1<<5)
+#define TYPE_REQ_UU     (1<<6)
+#define TYPE_PREREQ_UU  (1<<7)
+
+/* install edges */
+#define TYPE_SUG        (1<<8)
+#define TYPE_REC        (1<<9)
+#define TYPE_REQ        (1<<10)
+#define TYPE_PREREQ     (1<<11)
+
+#define TYPE_CYCLETAIL  (1<<16)
+#define TYPE_CYCLEHEAD  (1<<17)
+
+
 enum class CycleOrderBits {
-  BROKEN      = (1<<0),
-  CON         = (1<<1),
-  REQ_P       = (1<<2),
-  PREREQ_P    = (1<<3),
-  SUG         = (1<<4),
-  REC         = (1<<5),
-  REQ         = (1<<6),
-  PREREQ      = (1<<7),
-  CYCLETAIL   = (1<<16),
-  CYCLEHEAD   = (1<<17),
+#define OUTS(V) V = TYPE_##V
+  OUTS(BROKEN   ),
+  OUTS(CON      ),
+  OUTS(REQ_UI   ),
+  OUTS(PREREQ_UI),
+  OUTS(REQ_UU   ),
+  OUTS(PREREQ_UU),
+  OUTS(SUG      ),
+  OUTS(REC      ),
+  OUTS(REQ      ),
+  OUTS(PREREQ   ),
+  OUTS(CYCLETAIL),
+  OUTS(CYCLEHEAD),
+#undef OUTS
 };
 ZYPP_DECLARE_FLAGS( CycleOrder, CycleOrderBits );
 ZYPP_DECLARE_OPERATORS_FOR_FLAGS( CycleOrder );
@@ -1246,20 +1269,21 @@ inline std::ostream & operator<<( std::ostream & str, CycleOrder obj )
 {
 #define OUTS(V) { CycleOrderBits::V, #V }
   return str << stringify( obj, {
-    OUTS( BROKEN ),
-    OUTS( CON ),
-    OUTS( REQ_P ),
-    OUTS( PREREQ_P ),
-    OUTS( SUG ),
-    OUTS( REC ),
-    OUTS( REQ ),
-    OUTS( PREREQ ),
-    OUTS( CYCLETAIL ),
-    OUTS( CYCLEHEAD ),
+  OUTS(BROKEN   ),
+  OUTS(CON      ),
+  OUTS(REQ_UI   ),
+  OUTS(PREREQ_UI),
+  OUTS(REQ_UU   ),
+  OUTS(PREREQ_UU),
+  OUTS(SUG      ),
+  OUTS(REC      ),
+  OUTS(REQ      ),
+  OUTS(PREREQ   ),
+  OUTS(CYCLETAIL),
+  OUTS(CYCLEHEAD),
   } );
 #undef OUTS
 }
-
 
 inline bool addhexc2num( CycleOrder::Integral & num_r, char ch_r )
 {
@@ -1291,6 +1315,8 @@ int cycleinfo( std::string_view cycle_r )
 {
   std::vector<std::string_view> words;
   strv::split( cycle_r , [&words]( std::string_view word ) { words.push_back( word ); } );
+  if ( words.size() && words[0] == "CRITICAL" )
+    words.erase( words.begin() );
 
   if ( words.size() <= 2 ||  words[0] != "cycle:" || words[1] != "-->" ) {
     cerr << "Parse cycle OOPS: " << words << endl;
@@ -1305,7 +1331,7 @@ int cycleinfo( std::string_view cycle_r )
     return 2;
   }
 
-  str::Format fmt { "%-40s %-10s %s" };
+  str::Format fmt { "%-50s %-10s %s" };
   auto writeln = [&fmt]( std::string_view nam, std::string_view req ) {
     cout << fmt % nam % req % cycleOrder( req.substr(2) ) << endl;
   };
@@ -1336,7 +1362,7 @@ main (int argc, char *argv[])
     {
       zypp::base::LogControl::instance().logfile( "-" );
     }
-    else if ( strncmp( *argv, "cycle:", 6 ) == 0 )
+    else if ( strncmp( *argv, "cycle:", 6 ) == 0 || strncmp( *argv, "CRITICAL", 8 ) == 0 )
     {
       return cycleinfo( *argv );
     }
