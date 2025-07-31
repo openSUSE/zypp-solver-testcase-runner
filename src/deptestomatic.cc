@@ -104,7 +104,20 @@ typedef set<PoolItem> PoolItemSet;
 #define MARKER ">!> "
 #define RESULT cout << MARKER
 
+//-----------------------------------------------------------------------------
+struct DiffableLineFormater : public base::LogControl::LineFormater
+{
+  std::string format( const std::string & group_r, base::logger::LogLevel level_r, const char * file_r, const char * func_r, int line_r, const std::string & message_r ) override
+  {
+    return str::form( "<%d> [%s] %s(%s):%d %s",
+                      level_r,
+                      group_r.c_str(),
+                      file_r, func_r, line_r,
+                      message_r.c_str() );
+  }
+};
 
+//-----------------------------------------------------------------------------
 RepoManager makeRepoManager( const Pathname & mgrdir_r )
 {
   RepoManagerOptions mgropt;
@@ -1363,6 +1376,11 @@ main (int argc, char *argv[])
     }
     else if ( *argv == string("-v") )
     {
+      zypp::base::LogControl::instance().logfile( "-" );
+    }
+    else if ( *argv == string("-vv") )
+    {
+      zypp::base::LogControl::instance().setLineFormater( zypp::shared_ptr<DiffableLineFormater>( new DiffableLineFormater ) );
       zypp::base::LogControl::instance().logfile( "-" );
     }
     else if ( strncmp( *argv, "cycle:", 6 ) == 0 || strncmp( *argv, "CRITICAL", 8 ) == 0 )
