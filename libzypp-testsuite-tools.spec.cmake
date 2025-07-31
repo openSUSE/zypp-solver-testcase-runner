@@ -23,7 +23,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 Summary:        Package, Patch, Pattern, and Product Management - testsuite-tools
 Group:          System/Packages
 Source:		%{name}-%{version}.tar.bz2
-BuildRequires:	cmake >= 3.1
+BuildRequires:	cmake >= 3.17
 BuildRequires:	gcc-c++ >= 7
 BuildRequires:	libzypp-devel >= 17.25.3
 
