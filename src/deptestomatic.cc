@@ -979,8 +979,12 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         if (package_name.empty())
           package_name = node.getProp ("package");
         string kind_name = node.getProp ("kind");
-        string version = node.getProp ("ver");
-        string release = node.getProp ("rel");
+        string version = node.getProp ("version");
+        if ( version.empty() )
+          version = node.getProp ("ver");
+        string release = node.getProp ("release");
+        if ( release.empty() )
+          release = node.getProp ("rel");
         string architecture = node.getProp ("arch");
 
         if ( version.empty() )
