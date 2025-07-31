@@ -822,8 +822,9 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
       } else if ( node.name() == "update"|| node.name() == "verify" ) {	// see libzypp@ca9bcf16, testcase writer mixed "update" and "verify"
 
         RESULT << "Doing update ..." << endl;
+        resolver->setUpdateMode( true );  // Add an update all packages job rather than doing a 2nd solverrun
         resolver->resolvePool();
-        resolver->doUpdate();
+        // resolver->doUpdate();          // A 2nd solverrun would be wrong here. It resets auto-results from resolvePool
         print_solution (pool, instorder, printKeept );
         doUpdate = true;
       } else if ( node.name() == "instorder" || node.name() == "mediaorder" /*legacy*/ ) {
