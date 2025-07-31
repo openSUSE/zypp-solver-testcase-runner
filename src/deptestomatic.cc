@@ -308,12 +308,11 @@ print_solution ( const ResPool & pool, bool instorder, bool printKeept )
     cout << "- - - - - - - - - -" << endl;
 
     if (instorder) {
-	cout << endl;
-	RESULT << "Installation Order:" << endl << endl;
+	RESULT << "Installation Order:" << endl;
 
 	sat::Transaction trans( sat::Transaction::loadFromPool );
 	trans.order();
-	RESULT << dump(trans) << endl;
+	cout << dump(trans) << endl;
 
 	cout << "- - - - - - - - - -" << endl;
     }
@@ -650,7 +649,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
 
     bool verify = false;
     bool doUpdate = false;
-    bool instorder = false;
+    bool instorder = true; //false;
     bool printKeept = false;
 
     DBG << "execute_trial()" << endl;
