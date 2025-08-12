@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
 PROJECT( DEPTESTOMATIC C CXX )
 SET( PACKAGE "libzypp-testsuite-tools" )
 
@@ -7,37 +7,30 @@ INCLUDE( ${DEPTESTOMATIC_SOURCE_DIR}/VERSION.cmake )
 SET( VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
-IF ( ZYPP_SOURCE )
-
-  IF ( NOT ZYPP_BUILDDIR )
-    message ( FATAL_ERROR "Define ZYPP_BUILDDIR to specify the binary location" )
-  ENDIF()
-
-  #we force the cache entries to make sure FindZypp.cmake does not reset them or they are not set already by a previous build
-  SET( ZYPP_INCLUDE_DIR "${ZYPP_SOURCE}" CACHE STRING "" FORCE )
-  SET( ZYPP_LIBRARY "${ZYPP_BUILDDIR}/zypp/libzypp.so" CACHE STRING "" FORCE )
-
+if ( ZYPP_STACK_BUILD )
+  SET( ZYPPER_TARGET_PREFIX "zypp_solver_testcaserunner")
   SET( CMAKE_MODULE_PATH
-    ${ZYPP_SOURCE}/cmake/modules/
-    ${DEPTESTOMATIC_SOURCE_DIR}/cmake/modules
+    ${zypp-stack_SOURCE_DIR}/libzypp/cmake/modules/
     ${CMAKE_MODULE_PATH}
   )
-ELSE()
+  include_directories(${ZYPP_STACK_INCLUDE_DIRS})
+
+  set( ZYPP_FOUND 1 )
+  set( ZYPP_INCLUDE_DIR ${zypp-stack_SOURCE_DIR}/libzypp )
+  set( ZYPP_LIBRARY zypp )
+  set( ZYPP_TUI_LIBRARY zypp-tui )
+  set( LIBRARY_DEPS libsolv ${ZYPP_LIBRARY} )
+
+else()
   SET( CMAKE_MODULE_PATH
-    ${ZYPP_PREFIX}/share/cmake/Modules
-    ${DEPTESTOMATIC_SOURCE_DIR}/cmake/modules
-    ${CMAKE_MODULE_PATH}
+      ${CMAKE_INSTALL_PREFIX}/${LIB}/cmake/Zypp/
+      ${CMAKE_INSTALL_PREFIX}/lib64/cmake/Zypp/
+      ${CMAKE_INSTALL_PREFIX}/lib/cmake/Zypp/
+      ${CMAKE_MODULE_PATH}
   )
+  FIND_PACKAGE( Zypp REQUIRED )
+  set( LIBRARY_DEPS solv ${ZYPP_LIBRARY} )
 ENDIF()
-
-SET( CMAKE_MODULE_PATH
-    ${CMAKE_INSTALL_PREFIX}/${LIB}/cmake/Zypp/
-    ${CMAKE_INSTALL_PREFIX}/lib64/cmake/Zypp/
-    ${CMAKE_INSTALL_PREFIX}/lib/cmake/Zypp/
-    ${CMAKE_MODULE_PATH}
-)
-
-FIND_PACKAGE( Zypp REQUIRED )
 
 INCLUDE(ZyppCommon)
 GENERATE_PACKAGING(${PACKAGE} ${VERSION})
@@ -66,7 +59,7 @@ SET( SOURCES
 
 ADD_EXECUTABLE( deptestomatic ${HEADERS} ${SOURCES}  )
 
-TARGET_LINK_LIBRARIES( deptestomatic solv ${ZYPP_LIBRARY} )
+TARGET_LINK_LIBRARIES( deptestomatic ${LIBRARY_DEPS} )
 
 INSTALL(
   TARGETS deptestomatic
