@@ -51,11 +51,11 @@
 #include "zypp/Locale.h"
 #include "zypp/ZConfig.h"
 
-#include "zypp/base/String.h"
-#include "zypp/base/StringV.h"
-#include "zypp/base/LogTools.h"
-#include "zypp/base/LogControl.h"
-#include "zypp/base/Exception.h"
+#include <zypp-core/base/String.h>
+#include <zypp-core/base/StringV.h>
+#include <zypp-core/base/LogTools.h>
+#include <zypp-core/base/LogControl.h>
+#include <zypp-core/base/Exception.h>
 #include "zypp/base/Algorithm.h"
 #include "zypp/base/SetTracker.h"
 
