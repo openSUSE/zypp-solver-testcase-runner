@@ -1,4 +1,10 @@
 -------------------------------------------------------------------
+Fri Jun 19 17:32:14 CEST 2026 - ma@suse.com
+
+- BuildRequire libzypp-17.38.14 for noUpdateProvide solver flag.
+- version 5.0.8
+
+-------------------------------------------------------------------
 Thu Jul 31 18:19:45 CEST 2025 - ma@suse.com
 
 - Require CMake 3.5
