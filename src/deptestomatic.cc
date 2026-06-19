@@ -192,17 +192,17 @@ string2kind (const std::string & str)
 std::ostream & dumpHelpOn( std::ostream & str )
 {
   str << "\
-List of known tags. See http://old-en.opensuse.org/Libzypp/Testsuite_solver for details: \n\
+List of known tags: \n\
   addConflict addQueueDelete addQueueInstall addQueueInstallOneOf addQueueLock addQueueUpdate \n\
   addRequire allowVendorChange arch availablelocales channel createTestcase current distupgrade force-install \n\
   forceResolve hardwareInfo ignorealreadyrecommended install instorder keep locale lock mediaid \n\
   onlyRequires reportproblems setlicencebit showpool showstatus showselectable source subscribe system \n\
-  systemCheck takesolution uninstall update upgradeRepo validate verify whatprovides" << endl;
-
-// <reportproblems/>
-// <takesolution problem="0" solution="0"/>
-// <takesolution problem="0" solution="0"/>
-// <instorder/>
+  systemCheck takesolution uninstall update upgradeRepo validate verify whatprovides \n\
+  \n\
+   - job: takesolution\n\
+     problem: #\n\
+     solution: #\n\
+" << endl;
 
   return str;
 }
@@ -347,10 +347,12 @@ static void print_problems( MyResolver_Ptr resolver )
   ResolverProblemList problems = resolver->problems();
   problems.sort( compare_problems() );
   RESULT << problems.size() << " problems found:" << endl;
+  unsigned problemNo = 0;
   for ( ResolverProblemList::iterator iter = problems.begin(); iter != problems.end(); ++iter )
   {
     ResolverProblem problem = **iter;
-    RESULT << "Problem:" << endl;
+    problemNo++;
+    RESULT << "Problem "<<problemNo<<":" << endl;
     RESULT << "====================================" << endl;
     RESULT << problem.description() << endl;
     RESULT << "------------------------------------" << endl;
@@ -359,11 +361,13 @@ static void print_problems( MyResolver_Ptr resolver )
     RESULT << "------------------------------------" << endl;
     RESULT << problem.details() << endl;
     ProblemSolutionList solutions = problem.solutions();
+    unsigned solutionNo = 0;
     for ( ProblemSolutionList::const_iterator iter = solutions.begin(); iter != solutions.end(); ++iter )
     {
       ProblemSolution solution = **iter;
+      solutionNo++;
       RESULT << "------------------------------------" << endl;
-      RESULT << "   Solution:" << endl;
+      RESULT << "   Solution "<<solutionNo<<":" << endl;
       RESULT << "      " << solution.description() << endl;
       RESULT << "      " << solution.details() << endl;
     }
@@ -905,14 +909,14 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
         RESULT << "Want solution: " << solutionNr << endl;
         RESULT << "For problem:   " << problemNr << endl;
         ResolverProblemList problems = resolver->problems ();
-        RESULT << "*T*(" << resolver->problems().size() << ")" << endl;
+        // RESULT << "*T*(" << resolver->problems().size() << ")" << endl;
 
-        int problemCounter = -1;
-        int solutionCounter = -1;
+        int problemCounter  = 0;
+        int solutionCounter = 0;
         // find problem
         for (ResolverProblemList::iterator probIter = problems.begin(); probIter != problems.end(); ++probIter) {
           problemCounter++;
-          RESULT << "*P*(" << problemCounter << "|" << solutionCounter << ")" << endl;
+          // RESULT << "*P*(" << problemCounter << "|" << solutionCounter << ")" << endl;
           if (problemCounter == problemNr) {
             ResolverProblem problem = **probIter;
             ProblemSolutionList solutionList = problem.solutions();
@@ -920,7 +924,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
             for (ProblemSolutionList::iterator solIter = solutionList.begin();
                  solIter != solutionList.end(); ++solIter) {
               solutionCounter++;
-              RESULT << "*S*(" << problemCounter << "|" << solutionCounter << ")" << endl;
+              // RESULT << "*S*(" << problemCounter << "|" << solutionCounter << ")" << endl;
               if (solutionCounter == solutionNr) {
                 ProblemSolution_Ptr solution = *solIter;
                 RESULT << "Taking solution: " << endl << *solution << endl;
@@ -1010,6 +1014,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           {
             item->setStatus( item->hasInstalledObj() ? ui::S_Protected : ui::S_Taboo );
 	    item->setStatus( ui::S_Taboo );
+            RESULT << "Locking " << package_name << " " << item << endl;
           }
           else
           {
@@ -1021,8 +1026,8 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
           PoolItem poolItem;
           poolItem = get_poolItem (source_alias, package_name, kind_name, version, release, architecture );
           if (poolItem) {
-            RESULT << "Locking " << package_name << " from channel " << source_alias << poolItem << endl;
             poolItem.status().setLock (true, ResStatus::USER);
+            //RESULT << "Locking " << package_name << " from channel " << source_alias << " " << poolItem << endl;
           } else {
             cerr << "Unknown package " << source_alias << "::" << package_name << endl;
           }
