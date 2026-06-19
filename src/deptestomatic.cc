@@ -697,6 +697,7 @@ static void execute_trial ( const zypp::misc::testcase::TestcaseSetup &setup, co
     resolver->setForceResolve			( setup.forceResolve() );
 
     resolver->setCleandepsOnRemove		( setup.cleandepsOnRemove() );
+    resolver->setNoUpdateProvide		( setup.noUpdateProvide() );
 
     resolver->setAllowDowngrade			( setup.allowDowngrade() );
     resolver->setAllowNameChange		( setup.allowNameChange() );
